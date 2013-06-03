@@ -44,7 +44,7 @@ public class RestEasyJavaSender implements JavaSender {
           .append("/")
           .append(pushApplicationID);
 
-        ClientRequest req = new ClientRequest(sb.toString());
+        final ClientRequest req = new ClientRequest(sb.toString());
 
         // this all is really just JSON:
         req.accept(MediaType.APPLICATION_JSON_TYPE);
