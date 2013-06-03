@@ -17,6 +17,7 @@
 
 package org.aerogear.unifiedpush;
 
+import java.util.List;
 import java.util.Map;
 
 public interface JavaSender {
@@ -28,5 +29,14 @@ public interface JavaSender {
      * @param pushApplicationID the ID of the logical PushApplication construct
      */
     void broadcast(Map<String, ? extends Object> json, String pushApplicationID);
+ 
+    /**
+     * Sends the given payload to a selection of MobileVariantInstances of the referenced PushApplication.
+     * 
+     * @param clientIdentifiers list of clients receiving the message
+     * @param json A map, representing the JSON payload
+     * @param pushApplicationID the ID of the logical PushApplication construct
+     */
+    void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID);
     
 }

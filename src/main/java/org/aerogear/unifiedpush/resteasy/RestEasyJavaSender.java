@@ -17,7 +17,10 @@
 
 package org.aerogear.unifiedpush.resteasy;
 
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ws.rs.core.MediaType;
 
@@ -27,33 +30,76 @@ import org.jboss.resteasy.client.ClientResponse;
 
 public class RestEasyJavaSender implements JavaSender {
     
+    private static final Logger logger = Logger.getLogger(RestEasyJavaSender.class.getName());
+    
     // final?
     private String serverURL;
     
-    public RestEasyJavaSender(String serverURL) {
-        this.serverURL = serverURL;
+    public RestEasyJavaSender(String rootServerURL) {
+        if (rootServerURL == null) {
+            throw new IllegalStateException("server can not be null");
+        }
+        
+        if (! rootServerURL.endsWith("/") ) {
+            rootServerURL = rootServerURL.concat("/"); 
+        }
+        this.serverURL = rootServerURL;
     }
 
     @Override
     public void broadcast(Map<String, ? extends Object> json,
             String pushApplicationID) {
-        
-        // setup the client class:
+
+        //  build the broadcast URL:
         StringBuilder sb = new StringBuilder();
         sb.append(serverURL)
-          .append("/")
+          .append("rest/sender/broadcast/")
           .append(pushApplicationID);
 
-        final ClientRequest req = new ClientRequest(sb.toString());
+        // fire !
+        submitPayload(sb.toString(), json, pushApplicationID);
+        
+    }
+
+    @Override
+    public void sendTo(List<String> clientIdentifiers,
+            Map<String, ? extends Object> json, String pushApplicationID) {
+
+        //  build the broadcast URL:
+        StringBuilder sb = new StringBuilder();
+        sb.append(serverURL)
+          .append("rest/sender/selected/")
+          .append(pushApplicationID);
+
+        
+        final Map<String, Object> selectedPayloadObject = 
+                new LinkedHashMap<String, Object>();
+        
+        // add the "clientIdentifiers" to the "alias" fie;d
+        selectedPayloadObject.put("alias", clientIdentifiers);
+        selectedPayloadObject.put("message", json);
+        
+        // fire the prepared JSON
+        submitPayload(sb.toString(),selectedPayloadObject, pushApplicationID);
+    }
+
+    private void submitPayload(String url, Map<String, ? extends Object> json,
+            String pushApplicationID) {
+        final ClientRequest req = new ClientRequest(url);
 
         // this all is really just JSON:
         req.accept(MediaType.APPLICATION_JSON_TYPE);
         req.body(MediaType.APPLICATION_JSON_TYPE, json); 
 
         // issue post against the Unified Push server:
-        ClientResponse resp = null;
+        ClientResponse<String> resp = null;
         try {
-            resp = req.post();
+            resp = req.post(String.class);
+            int statusCode = resp.getStatus();
+            if (statusCode != 200) {
+                logger.severe("Receiving status code: " + statusCode);
+            }
+            
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -62,7 +108,6 @@ public class RestEasyJavaSender implements JavaSender {
                 resp.releaseConnection();
             }
         }
-        
     }
 
 }

@@ -17,7 +17,9 @@
 
 package org.aerogear.unifiedpush.async;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.Before;
@@ -28,17 +30,56 @@ public class AsynSenderTest {
     
     @Before
     public void setup() {
-        client = new AsyncJavaSender("http://localhost:8080/ag-push/rest/sender/broadcast");
+        client = new AsyncJavaSender("http://localhost:8080/ag-push");
     }
     
     @Test
-    public void sendBroadcastMessage() {
+    public void sendSingleBroadcastMessage() {
+        long start = System.currentTimeMillis();
         Map<String, String> jsonPlayload = new HashMap<String, String>();
         
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit ");
+        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit (AsyncHttpClient)");
         jsonPlayload.put("sound", "default");
 
         // send it out:
         client.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+        
+        long end = System.currentTimeMillis();
+        System.out.println("Took: " + (end-start));
+    }
+
+    @Test
+    public void sendMultipleBroadcastMessages() {
+        long start = System.currentTimeMillis();
+        
+        for (int i=0; i<10;i++) {
+            Map<String, String> jsonPlayload = new HashMap<String, String>();
+            jsonPlayload.put("alert", "Count  : " + i +  " (AsyncHttpClient)");
+            jsonPlayload.put("sound", "default");
+
+            // send it out:
+            client.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+        }
+
+        long end = System.currentTimeMillis();
+        System.out.println("Took: " + (end-start));
+    }
+    
+    @Test
+    public void sendSelectiveSendToOne() {
+        long start = System.currentTimeMillis();
+        
+        List<String> identifiers = new ArrayList<String>();
+        identifiers.add("mwessendorf2");
+        
+        Map<String, String> jsonPlayload = new HashMap<String, String>();
+        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit  (AsyncHttpClient)");
+        jsonPlayload.put("sound", "default");
+
+        // send it out:
+        client.sendTo(identifiers, jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+        
+        long end = System.currentTimeMillis();
+        System.out.println("Took: " + (end-start));
     }
 }
