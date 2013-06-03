@@ -17,6 +17,60 @@
 
 package org.aerogear.unifiedpush.async;
 
-public class AsyncJavaSender {
+import java.util.Map;
+
+import org.aerogear.unifiedpush.JavaSender;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Response;
+
+public class AsyncJavaSender implements JavaSender{
+    // final?
+    private String serverURL;
+    
+    public AsyncJavaSender(String serverURL) {
+        this.serverURL = serverURL;
+    }
+
+
+    @Override
+    public void broadcast(Map<String, ? extends Object> json,
+            String pushApplicationID) {
+        // setup:
+        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
+        StringBuilder sb = new StringBuilder();
+        sb.append(serverURL)
+          .append("/")
+          .append(pushApplicationID);
+        
+        // transform JSON:
+        ObjectMapper om = new ObjectMapper();
+        String stringPayload = null;
+        try {
+            stringPayload = om.writeValueAsString(json);
+        } catch (Exception e) {
+            new IllegalStateException("Failed to encode JSON payload");
+        }
+        
+
+        try {
+            // currently, not really async...
+            Response response = 
+                    asyncHttpClient.preparePost(sb.toString())
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Content-type", "application/json")
+                        .setBody(stringPayload)
+                        .execute().get();
+
+            if (response.getStatusCode() != 200) {
+                // LOG warning
+            }
+        } catch (Exception e) { 
+            e.printStackTrace();
+        } finally {
+            asyncHttpClient.closeAsynchronously();
+        }
+    }
 
 }
