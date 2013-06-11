@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.unifiedpush.async;
+package org.aerogear.unifiedpush;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,25 +24,33 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
-public class AsynSenderTest {
-    private AsyncJavaSender client = null;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
+public class DefaultJavaSenderTest {
     
+    private DefaultJavaSender defaultJavaSender;
+
+    private Client client;
+
     @Before
     public void setup() {
-        client = new AsyncJavaSender("http://localhost:8080/ag-push");
-    }
-    
+        client = mock(Client.class);
+        defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
+     }
+
+
     @Test
     public void sendSingleBroadcastMessage() {
         long start = System.currentTimeMillis();
         Map<String, String> jsonPlayload = new HashMap<String, String>();
         
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit (AsyncHttpClient)");
+        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit (RESTEasy Client)");
         jsonPlayload.put("sound", "default");
-
         // send it out:
-        client.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+        defaultJavaSender.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
         
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
@@ -54,11 +62,11 @@ public class AsynSenderTest {
         
         for (int i=0; i<10;i++) {
             Map<String, String> jsonPlayload = new HashMap<String, String>();
-            jsonPlayload.put("alert", "Count  : " + i +  " (AsyncHttpClient)");
+            jsonPlayload.put("alert", "Count  : " + i +  " (RESTEasy Client)");
             jsonPlayload.put("sound", "default");
 
             // send it out:
-            client.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+            defaultJavaSender.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
         }
 
         long end = System.currentTimeMillis();
@@ -73,11 +81,11 @@ public class AsynSenderTest {
         identifiers.add("mwessendorf2");
         
         Map<String, String> jsonPlayload = new HashMap<String, String>();
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit  (AsyncHttpClient)");
+        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit  (RESTEasy Client)");
         jsonPlayload.put("sound", "default");
 
         // send it out:
-        client.sendTo(identifiers, jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+        defaultJavaSender.sendTo(identifiers, jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
         
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
