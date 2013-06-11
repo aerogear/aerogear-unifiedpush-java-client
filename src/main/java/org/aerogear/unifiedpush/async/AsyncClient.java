@@ -22,84 +22,47 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.aerogear.unifiedpush.JavaSender;
+import org.aerogear.unifiedpush.Client;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
-public class AsyncJavaSender implements JavaSender{
+public class AsyncClient implements Client {
     
-    private static final Logger logger = Logger.getLogger(AsyncJavaSender.class.getName());
-    
-    // final?
-    private String serverURL;
-    
-    public AsyncJavaSender(String rootServerURL) {
-        if (rootServerURL == null) {
-            throw new IllegalStateException("server can not be null");
-        }
-        
-        if (! rootServerURL.endsWith("/") ) {
-            rootServerURL = rootServerURL.concat("/"); 
-        }
-        this.serverURL = rootServerURL;
-    }
+    private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
 
+    private AsyncHttpClient asyncHttpClient;
 
     @Override
-    public void broadcast(Map<String, ? extends Object> json,
-            String pushApplicationID) {
-        // build the URL:
-        StringBuilder sb = new StringBuilder();
-        sb.append(serverURL)
-          .append("rest/sender/broadcast/")
-          .append(pushApplicationID);
-        
+    public void post(Map<String, ? extends Object> json, String url){
         // transform JSON:
         String payload = transformJSON(json);
-        
-
         // fire!
-        submitPayload(sb.toString(), payload);
+        submitPayload(url, payload);
         
     }
 
     @Override
-    public void sendTo(List<String> clientIdentifiers,
-            Map<String, ? extends Object> json, String pushApplicationID) {
+    public void post(Map<String, ? extends Object> json, List<String> clientIdentifiers, String url)  {
         // build the URL:
-        StringBuilder sb = new StringBuilder();
-        sb.append(serverURL)
-          .append("rest/sender/selected/")
-          .append(pushApplicationID);
-        
-        // build Map/JSON:
-        final Map<String, Object> selectedPayloadObject = 
+        final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
-        
-        // add the "clientIdentifiers" to the "alias" fie;d
+         // add the "clientIdentifiers" to the "alias" fie;d
         selectedPayloadObject.put("alias", clientIdentifiers);
         selectedPayloadObject.put("message", json);
-
-        
-        // transform to JSONString:
+         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
-        
-
         // fire!
-        submitPayload(sb.toString(), payload);
+        submitPayload(url, payload);
     }
 
 
     private void submitPayload(String url, String jsonPayloadObject) {
-        // setup:
-        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-        
 
         try {
             // currently, not really async...
-            Response response = 
+            Response response =
                     asyncHttpClient.preparePost(url)
                         .addHeader("Accept", "application/json")
                         .addHeader("Content-type", "application/json")
@@ -127,5 +90,11 @@ public class AsyncJavaSender implements JavaSender{
         }
         return stringPayload;
     }
-    
+
+
+    @Override
+    public void initialize(String url) {
+        asyncHttpClient = new AsyncHttpClient();
+    }
+
 }
