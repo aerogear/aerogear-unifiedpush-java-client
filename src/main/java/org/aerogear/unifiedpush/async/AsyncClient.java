@@ -29,10 +29,8 @@ import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
 
 public class AsyncClient implements Client {
-    
-    private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
 
-    private AsyncHttpClient asyncHttpClient;
+    private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
 
     @Override
     public void post(Map<String, ? extends Object> json, String url){
@@ -40,7 +38,6 @@ public class AsyncClient implements Client {
         String payload = transformJSON(json);
         // fire!
         submitPayload(url, payload);
-        
     }
 
     @Override
@@ -57,8 +54,8 @@ public class AsyncClient implements Client {
         submitPayload(url, payload);
     }
 
-
     private void submitPayload(String url, String jsonPayloadObject) {
+        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 
         try {
             // currently, not really async...
@@ -79,7 +76,7 @@ public class AsyncClient implements Client {
             asyncHttpClient.closeAsynchronously();
         }
     }
-    
+
     private String transformJSON(Object value) {
         ObjectMapper om = new ObjectMapper();
         String stringPayload = null;
@@ -90,11 +87,5 @@ public class AsyncClient implements Client {
         }
         return stringPayload;
     }
-
-
-    @Override
-    public void initialize(String url) {
-        asyncHttpClient = new AsyncHttpClient();
-    }
-
 }
+

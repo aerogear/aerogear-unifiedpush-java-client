@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface JavaSender {
-    
+
     /**
      * Sends the given payload to all MobileVariantInstances of the referenced PushApplication.
      * 
@@ -29,7 +29,7 @@ public interface JavaSender {
      * @param pushApplicationID the ID of the logical PushApplication construct
      */
     void broadcast(Map<String, ? extends Object> json, String pushApplicationID);
- 
+
     /**
      * Sends the given payload to a selection of MobileVariantInstances of the referenced PushApplication.
      * 
@@ -38,5 +38,5 @@ public interface JavaSender {
      * @param pushApplicationID the ID of the logical PushApplication construct
      */
     void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID);
-    
+
 }

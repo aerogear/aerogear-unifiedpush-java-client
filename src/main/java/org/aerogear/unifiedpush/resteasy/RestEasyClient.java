@@ -28,11 +28,8 @@ import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 
 public class RestEasyClient implements Client {
-    
+
     private static final Logger logger = Logger.getLogger(RestEasyClient.class.getName());
-
-    private ClientRequest clientRequest;
-
 
     @Override
     public void post(Map<String, ? extends Object> json, String url) {
@@ -44,16 +41,17 @@ public class RestEasyClient implements Client {
     public void post(Map<String, ? extends Object> json, List<String> clientIdentifiers, String url) {
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
-        
+
         // add the "clientIdentifiers" to the "alias" fie;d
         selectedPayloadObject.put("alias", clientIdentifiers);
         selectedPayloadObject.put("message", json);
-        
+
         // fire the prepared JSON
         submitPayload(url,selectedPayloadObject);
     }
 
     private void submitPayload(String url, Map<String, ? extends Object> json) {
+        final ClientRequest clientRequest  = new ClientRequest(url);
 
         // this all is really just JSON:
         clientRequest.accept(MediaType.APPLICATION_JSON_TYPE);
@@ -67,7 +65,7 @@ public class RestEasyClient implements Client {
             if (statusCode != 200) {
                 logger.severe("Receiving status code: " + statusCode);
             }
-            
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -77,12 +75,4 @@ public class RestEasyClient implements Client {
             }
         }
     }
-
-
-    @Override
-    public void initialize(String url) {
-       clientRequest  = new ClientRequest(url);
-    }
-
-
 }

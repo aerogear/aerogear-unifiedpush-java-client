@@ -25,11 +25,6 @@ import java.util.Map;
  *
  */
 public interface Client {
-    /**
-     * Setup or reset the connection
-     * @param url
-     */
-    void initialize(String url);
 
     /**
      * Mainly used for broadcast messages

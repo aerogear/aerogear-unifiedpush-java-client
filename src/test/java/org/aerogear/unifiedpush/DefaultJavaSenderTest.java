@@ -22,13 +22,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.aerogear.unifiedpush.async.AsyncClient;
+import org.aerogear.unifiedpush.resteasy.RestEasyClient;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
 public class DefaultJavaSenderTest {
-    
+
     private DefaultJavaSender defaultJavaSender;
 
     private Client client;
@@ -36,20 +38,21 @@ public class DefaultJavaSenderTest {
     @Before
     public void setup() {
         client = mock(Client.class);
+        client = new RestEasyClient();
+        client = new AsyncClient();
         defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
      }
-
 
     @Test
     public void sendSingleBroadcastMessage() {
         long start = System.currentTimeMillis();
         Map<String, String> jsonPlayload = new HashMap<String, String>();
-        
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit (RESTEasy Client)");
+
+        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
         jsonPlayload.put("sound", "default");
         // send it out:
-        defaultJavaSender.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
-        
+        defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37");
+
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
     }
@@ -57,34 +60,34 @@ public class DefaultJavaSenderTest {
     @Test
     public void sendMultipleBroadcastMessages() {
         long start = System.currentTimeMillis();
-        
+
         for (int i=0; i<10;i++) {
             Map<String, String> jsonPlayload = new HashMap<String, String>();
-            jsonPlayload.put("alert", "Count  : " + i +  " (RESTEasy Client)");
+            jsonPlayload.put("alert", "Count  : " + i );
             jsonPlayload.put("sound", "default");
 
             // send it out:
-            defaultJavaSender.broadcast(jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
+            defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37");
         }
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
     }
-    
+
     @Test
     public void sendSelectiveSendToOne() {
         long start = System.currentTimeMillis();
-        
+
         List<String> identifiers = new ArrayList<String>();
         identifiers.add("mwessendorf2");
-        
+
         Map<String, String> jsonPlayload = new HashMap<String, String>();
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit  (RESTEasy Client)");
+        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
         jsonPlayload.put("sound", "default");
 
         // send it out:
-        defaultJavaSender.sendTo(identifiers, jsonPlayload, "98a0c039-7ec3-44f9-ba7e-98a293f87b80");
-        
+        defaultJavaSender.sendTo(identifiers, jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37");
+
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
     }

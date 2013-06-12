@@ -19,7 +19,6 @@ package org.aerogear.unifiedpush;
 import java.util.List;
 import java.util.Map;
 
-
 public class DefaultJavaSender implements JavaSender{
 
     // final?
@@ -51,14 +50,12 @@ public class DefaultJavaSender implements JavaSender{
 
     @Override
     public void broadcast(Map<String, ? extends Object> json, String pushApplicationID) {
-        client.initialize(serverURL);
         StringBuilder sb = buildUrl("broadcast",pushApplicationID);
         client.post(json,sb.toString());
     }
 
     @Override
     public void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID) {
-        client.initialize(serverURL);
         StringBuilder sb = buildUrl("selected",pushApplicationID);
         client.post(json, clientIdentifiers, sb.toString());
     }
