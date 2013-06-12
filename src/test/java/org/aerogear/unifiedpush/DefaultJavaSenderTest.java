@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.aerogear.unifiedpush.async.AsyncClient;
-import org.aerogear.unifiedpush.resteasy.RestEasyClient;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -38,8 +36,6 @@ public class DefaultJavaSenderTest {
     @Before
     public void setup() {
         client = mock(Client.class);
-        client = new RestEasyClient();
-        client = new AsyncClient();
         defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
      }
 
