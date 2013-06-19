@@ -22,9 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.jboss.aerogear.unifiedpush.Client;
-import org.jboss.aerogear.unifiedpush.DefaultJavaSender;
+import org.jboss.aerogear.unifiedpush.resteasy.RestEasyClient;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
@@ -38,6 +38,7 @@ public class DefaultJavaSenderTest {
     @Before
     public void setup() {
         client = mock(Client.class);
+        client  = new RestEasyClient();
         defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
      }
 
@@ -49,12 +50,13 @@ public class DefaultJavaSenderTest {
         jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
         jsonPlayload.put("sound", "default");
         // send it out:
-        defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37");
+        defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37","nlasaf");
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
     }
 
+    @Ignore
     @Test
     public void sendMultipleBroadcastMessages() {
         long start = System.currentTimeMillis();
@@ -65,13 +67,14 @@ public class DefaultJavaSenderTest {
             jsonPlayload.put("sound", "default");
 
             // send it out:
-            defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37");
+            defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37","fdfd");
         }
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
     }
 
+    @Ignore
     @Test
     public void sendSelectiveSendToOne() {
         long start = System.currentTimeMillis();
@@ -84,7 +87,7 @@ public class DefaultJavaSenderTest {
         jsonPlayload.put("sound", "default");
 
         // send it out:
-        defaultJavaSender.sendTo(identifiers, jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37");
+        defaultJavaSender.sendTo(identifiers, jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37","fdfd");
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end-start));
