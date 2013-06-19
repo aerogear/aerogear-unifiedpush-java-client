@@ -27,8 +27,9 @@ public interface JavaSender {
      * 
      * @param json A map, representing the JSON payload
      * @param pushApplicationID the ID of the logical PushApplication construct
+     * @param masterSecret the master Password belonging to this Push Application
      */
-    void broadcast(Map<String, ? extends Object> json, String pushApplicationID);
+    void broadcast(Map<String, ? extends Object> json, String pushApplicationID, String masterSecret);
 
     /**
      * Sends the given payload to a selection of MobileVariantInstances of the referenced PushApplication.
@@ -36,7 +37,8 @@ public interface JavaSender {
      * @param clientIdentifiers list of clients receiving the message
      * @param json A map, representing the JSON payload
      * @param pushApplicationID the ID of the logical PushApplication construct
+     * @param masterSecret the master Password belonging to this Push Application
      */
-    void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID);
+    void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID, String masterSecret);
 
 }
