@@ -17,60 +17,67 @@
 
 package org.aerogear.unifiedpush.async;
 
+import com.ning.http.client.AsyncHttpClient;
+import com.ning.http.client.Realm;
+import com.ning.http.client.Response;
+import org.aerogear.unifiedpush.Client;
+import org.codehaus.jackson.map.ObjectMapper;
+
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-
-import org.aerogear.unifiedpush.Client;
-import org.codehaus.jackson.map.ObjectMapper;
-
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.Response;
 
 public class AsyncClient implements Client {
 
     private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
 
     @Override
-    public void post(Map<String, ? extends Object> json, String url){
+    public void post(Map<String, ? extends Object> json, String url, String pushApplicationId, String masterSecret) {
         // transform JSON:
         String payload = transformJSON(json);
         // fire!
-        submitPayload(url, payload);
+        submitPayload(url, payload, pushApplicationId, masterSecret);
     }
 
     @Override
-    public void post(Map<String, ? extends Object> json, List<String> clientIdentifiers, String url)  {
+    public void post(Map<String, ? extends Object> json, List<String> clientIdentifiers, String url, String pushApplicationId, String masterSecret) {
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
-         // add the "clientIdentifiers" to the "alias" fie;d
+        // add the "clientIdentifiers" to the "alias" fie;d
         selectedPayloadObject.put("alias", clientIdentifiers);
         selectedPayloadObject.put("message", json);
-         // transform to JSONString:
+        // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
         // fire!
-        submitPayload(url, payload);
+        submitPayload(url, payload, pushApplicationId, masterSecret);
     }
 
-    private void submitPayload(String url, String jsonPayloadObject) {
+    private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
         final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
 
         try {
+            Realm realm = new Realm.RealmBuilder()
+                    .setPrincipal(pushApplicationId)
+                    .setPassword(masterSecret)
+                    .setUsePreemptiveAuth(true)
+                    .setScheme(Realm.AuthScheme.BASIC)
+                    .build();
             // currently, not really async...
             Response response =
                     asyncHttpClient.preparePost(url)
-                        .addHeader("Accept", "application/json")
-                        .addHeader("Content-type", "application/json")
-                        .setBody(jsonPayloadObject)
-                        .execute().get();
+                            .addHeader("Accept", "application/json")
+                            .addHeader("Content-type", "application/json")
+                            .setRealm(realm)
+                            .setBody(jsonPayloadObject)
+                            .execute().get();
 
             int statusCode = response.getStatusCode();
             if (statusCode != 200) {
                 logger.severe("Receiving status code: " + statusCode);
             }
-        } catch (Exception e) { 
+        } catch (Exception e) {
             e.printStackTrace();
         } finally {
             asyncHttpClient.closeAsynchronously();

@@ -43,20 +43,19 @@ public class DefaultJavaSender implements JavaSender{
         StringBuilder sb = new StringBuilder();
         sb.append(serverURL)
                 .append("rest/sender/")
-                .append(type + "/")
-                .append(pushApplicationID);
+                .append(type) ;
         return sb;
     }
 
     @Override
-    public void broadcast(Map<String, ? extends Object> json, String pushApplicationID) {
+    public void broadcast(Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
         StringBuilder sb = buildUrl("broadcast",pushApplicationID);
-        client.post(json,sb.toString());
+        client.post(json,sb.toString(), pushApplicationID, masterSecret);
     }
 
     @Override
-    public void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID) {
+    public void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
         StringBuilder sb = buildUrl("selected",pushApplicationID);
-        client.post(json, clientIdentifiers, sb.toString());
+        client.post(json, clientIdentifiers, sb.toString(), pushApplicationID, masterSecret);
     }
 }
