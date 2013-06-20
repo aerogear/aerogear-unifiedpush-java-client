@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.aerogear.unifiedpush.resteasy;
+package org.jboss.aerogear.unifiedpush.resteasy;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.aerogear.unifiedpush.Client;
 import javax.ws.rs.core.MediaType;
 
+import org.jboss.aerogear.unifiedpush.Client;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 

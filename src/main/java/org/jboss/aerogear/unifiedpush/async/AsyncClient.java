@@ -15,15 +15,15 @@
  * limitations under the License.
  */
 
-package org.aerogear.unifiedpush.async;
+package org.jboss.aerogear.unifiedpush.async;
 
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import org.aerogear.unifiedpush.Client;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.aerogear.unifiedpush.Client;
 
 import com.ning.http.client.AsyncHttpClient;
 import com.ning.http.client.Response;
