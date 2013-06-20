@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package org.aerogear.unifiedpush;
+package org.jboss.aerogear.unifiedpush;
 
 import java.util.ArrayList;
 import java.util.HashMap;
