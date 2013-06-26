@@ -80,12 +80,13 @@ public class RestEasyClient implements Client {
         );
         AuthCache authCache = new BasicAuthCache();
         BasicScheme basicAuth = new BasicScheme();
+        basicAuth.authenticate(credentials, methodReq);
         authCache.put(targetHost, basicAuth);
         BasicHttpContext localContext = new BasicHttpContext();
         localContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
         ClientExecutor clientExecutor = new ApacheHttpClient4Executor(
                 httpClient, localContext);
-        final ClientRequest clientRequest = new ClientRequest(url, clientExecutor);
+        final ClientRequest clientRequest = new ClientRequest(url,);
 
         // this all is really just JSON:
         clientRequest.accept(MediaType.APPLICATION_JSON_TYPE);
