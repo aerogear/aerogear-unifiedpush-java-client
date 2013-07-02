@@ -26,10 +26,12 @@ import org.apache.http.impl.auth.BasicScheme;
 import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.protocol.BasicHttpContext;
+import org.jboss.aerogear.unifiedpush.Client;
 import org.jboss.resteasy.client.ClientExecutor;
 import org.jboss.resteasy.client.ClientRequest;
 import org.jboss.resteasy.client.ClientResponse;
 import org.jboss.resteasy.client.core.executors.ApacheHttpClient4Executor;
+
 import javax.ws.rs.core.MediaType;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -37,9 +39,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.jboss.aerogear.unifiedpush.Client;
-
-
 
 public class RestEasyClient implements Client {
 
@@ -80,13 +79,12 @@ public class RestEasyClient implements Client {
         );
         AuthCache authCache = new BasicAuthCache();
         BasicScheme basicAuth = new BasicScheme();
-        basicAuth.authenticate(credentials, methodReq);
         authCache.put(targetHost, basicAuth);
         BasicHttpContext localContext = new BasicHttpContext();
         localContext.setAttribute(ClientContext.AUTH_CACHE, authCache);
         ClientExecutor clientExecutor = new ApacheHttpClient4Executor(
                 httpClient, localContext);
-        final ClientRequest clientRequest = new ClientRequest(url,);
+        final ClientRequest clientRequest = new ClientRequest(url, clientExecutor);
 
         // this all is really just JSON:
         clientRequest.accept(MediaType.APPLICATION_JSON_TYPE);
