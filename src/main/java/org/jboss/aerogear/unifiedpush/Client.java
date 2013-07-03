@@ -30,14 +30,18 @@ public interface Client {
      * Mainly used for broadcast messages
      * @param payload
      * @param url
+     * @param pushApplicationID
+     * @param masterSecret
      */
-    void post(Map<String, ? extends Object>  payload, String url);
+    void post(Map<String, ? extends Object>  payload, String url, String pushApplicationID, String masterSecret);
 
     /**
      * Mainly used for selective messages
      * @param payload
      * @param clientIdentifiers
      * @param url
+     * @param pushApplicationID
+     * @param masterSecret
      */
-    void post(Map<String, ? extends Object>  payload, List<String> clientIdentifiers, String url);
+    void post(Map<String, ? extends Object>  payload, List<String> clientIdentifiers, String url, String pushApplicationID, String masterSecret);
 }
