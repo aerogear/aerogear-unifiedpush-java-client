@@ -24,9 +24,9 @@
     <name>java-sender</name>
 
     <parent>
-        <groupId>org.jboss</groupId>
-        <artifactId>jboss-parent</artifactId>
-        <version>10</version>
+        <groupId>org.jboss.aerogear</groupId>
+        <artifactId>aerogear-parent</artifactId>
+        <version>0.1.0</version>
     </parent>
 
     <licenses>
