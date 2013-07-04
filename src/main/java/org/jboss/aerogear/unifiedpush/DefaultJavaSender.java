@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush;
 import java.util.List;
 import java.util.Map;
 
-public class DefaultJavaSender implements JavaSender{
+public class DefaultJavaSender implements JavaSender {
 
     // final?
     private String serverURL;
@@ -31,7 +31,7 @@ public class DefaultJavaSender implements JavaSender{
             throw new IllegalStateException("server can not be null");
         }
 
-        if (! rootServerURL.endsWith("/") ) {
+        if (!rootServerURL.endsWith("/")) {
             rootServerURL = rootServerURL.concat("/");
         }
         this.serverURL = rootServerURL;
@@ -43,19 +43,19 @@ public class DefaultJavaSender implements JavaSender{
         StringBuilder sb = new StringBuilder();
         sb.append(serverURL)
                 .append("rest/sender/")
-                .append(type) ;
+                .append(type);
         return sb;
     }
 
     @Override
     public void broadcast(Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
-        StringBuilder sb = buildUrl("broadcast",pushApplicationID);
-        client.post(json,sb.toString(), pushApplicationID, masterSecret);
+        StringBuilder sb = buildUrl("broadcast", pushApplicationID);
+        client.post(json, sb.toString(), pushApplicationID, masterSecret);
     }
 
     @Override
     public void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
-        StringBuilder sb = buildUrl("selected",pushApplicationID);
+        StringBuilder sb = buildUrl("selected", pushApplicationID);
         client.post(json, clientIdentifiers, sb.toString(), pushApplicationID, masterSecret);
     }
 }
