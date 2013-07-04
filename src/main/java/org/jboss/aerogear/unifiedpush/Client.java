@@ -33,7 +33,7 @@ public interface Client {
      * @param pushApplicationID
      * @param masterSecret
      */
-    void post(Map<String, ? extends Object>  payload, String url, String pushApplicationID, String masterSecret);
+    void post(Map<String, ? extends Object> payload, String url, String pushApplicationID, String masterSecret);
 
     /**
      * Mainly used for selective messages
@@ -43,5 +43,5 @@ public interface Client {
      * @param pushApplicationID
      * @param masterSecret
      */
-    void post(Map<String, ? extends Object>  payload, List<String> clientIdentifiers, String url, String pushApplicationID, String masterSecret);
+    void post(Map<String, ? extends Object> payload, List<String> clientIdentifiers, String url, String pushApplicationID, String masterSecret);
 }

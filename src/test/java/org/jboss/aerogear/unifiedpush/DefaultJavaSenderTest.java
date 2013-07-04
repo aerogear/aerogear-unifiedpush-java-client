@@ -38,9 +38,9 @@ public class DefaultJavaSenderTest {
     @Before
     public void setup() {
         client = mock(Client.class);
-        client  = new RestEasyClient();
+        client = new RestEasyClient();
         defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
-     }
+    }
 
     @Test
     public void sendSingleBroadcastMessage() {
@@ -50,10 +50,10 @@ public class DefaultJavaSenderTest {
         jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
         jsonPlayload.put("sound", "default");
         // send it out:
-        defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37","nlasaf");
+        defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37", "nlasaf");
 
         long end = System.currentTimeMillis();
-        System.out.println("Took: " + (end-start));
+        System.out.println("Took: " + (end - start));
     }
 
     @Ignore
@@ -61,17 +61,17 @@ public class DefaultJavaSenderTest {
     public void sendMultipleBroadcastMessages() {
         long start = System.currentTimeMillis();
 
-        for (int i=0; i<10;i++) {
+        for (int i = 0; i < 10; i++) {
             Map<String, String> jsonPlayload = new HashMap<String, String>();
-            jsonPlayload.put("alert", "Count  : " + i );
+            jsonPlayload.put("alert", "Count  : " + i);
             jsonPlayload.put("sound", "default");
 
             // send it out:
-            defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37","fdfd");
+            defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37", "fdfd");
         }
 
         long end = System.currentTimeMillis();
-        System.out.println("Took: " + (end-start));
+        System.out.println("Took: " + (end - start));
     }
 
     @Ignore
@@ -87,9 +87,9 @@ public class DefaultJavaSenderTest {
         jsonPlayload.put("sound", "default");
 
         // send it out:
-        defaultJavaSender.sendTo(identifiers, jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37","fdfd");
+        defaultJavaSender.sendTo(identifiers, jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37", "fdfd");
 
         long end = System.currentTimeMillis();
-        System.out.println("Took: " + (end-start));
+        System.out.println("Took: " + (end - start));
     }
 }
