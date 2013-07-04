@@ -94,4 +94,3 @@ public class AsyncClient implements Client {
         return stringPayload;
     }
 }
-

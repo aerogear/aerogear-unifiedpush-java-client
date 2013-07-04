@@ -17,7 +17,6 @@
 
 package org.jboss.aerogear.unifiedpush.resteasy;
 
-
 import org.apache.http.HttpHost;
 import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
@@ -76,7 +75,7 @@ public class RestEasyClient implements Client {
         httpClient.getCredentialsProvider().setCredentials(
                 new AuthScope(AuthScope.ANY_HOST, AuthScope.ANY_PORT),
                 new UsernamePasswordCredentials(pushApplicationID, masterSecret)
-        );
+                );
         AuthCache authCache = new BasicAuthCache();
         BasicScheme basicAuth = new BasicScheme();
         authCache.put(targetHost, basicAuth);
