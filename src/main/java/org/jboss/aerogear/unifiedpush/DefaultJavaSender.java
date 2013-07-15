@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush;
 
+import org.jboss.aerogear.unifiedpush.client.Client;
+
 import java.util.List;
 import java.util.Map;
 

@@ -45,24 +45,18 @@
   </developers>
 
   <dependencies>
-  	<dependency>
-  	  <groupId>com.ning</groupId>
-  	  <artifactId>async-http-client</artifactId>
-  	  <version>1.7.14</version>
-  	</dependency>
 
     <dependency>
-      <groupId>org.jboss.resteasy</groupId>
-      <artifactId>resteasy-jaxrs</artifactId>
-      <version>2.3.2.Final</version>
+      <groupId>net.iharder</groupId>
+      <artifactId>base64</artifactId>
+      <version>2.3.8</version>
     </dependency>
-    
     <dependency>
       <groupId>org.jboss.resteasy</groupId>
       <artifactId>resteasy-jackson-provider</artifactId>
       <version>2.3.2.Final</version>
+      <scope>provided</scope>
     </dependency>
-	  
     <!-- TEST dependencies -->
     <dependency>
       <groupId>junit</groupId>

@@ -14,21 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.async;
+package org.jboss.aerogear.unifiedpush.client;
 
-import com.ning.http.client.AsyncHttpClient;
-import com.ning.http.client.Realm;
-import com.ning.http.client.Response;
+
+import net.iharder.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
-import org.jboss.aerogear.unifiedpush.Client;
 
-public class AsyncClient implements Client {
+public class HttpUrlConnectionClient implements Client {
 
-    private static final Logger logger = Logger.getLogger(AsyncClient.class.getName());
+    private static final Logger logger = Logger.getLogger(HttpUrlConnectionClient.class.getName());
 
     @Override
     public void post(Map<String, ? extends Object> json, String url, String pushApplicationId, String masterSecret) {
@@ -53,33 +57,30 @@ public class AsyncClient implements Client {
     }
 
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
-        final AsyncHttpClient asyncHttpClient = new AsyncHttpClient();
-
         try {
-            Realm realm = new Realm.RealmBuilder()
-                    .setPrincipal(pushApplicationId)
-                    .setPassword(masterSecret)
-                    .setUsePreemptiveAuth(true)
-                    .setScheme(Realm.AuthScheme.BASIC)
-                    .build();
-            // currently, not really async...
-            Response response =
-                    asyncHttpClient.preparePost(url)
-                            .addHeader("Accept", "application/json")
-                            .addHeader("Content-type", "application/json")
-                            .setRealm(realm)
-                            .setBody(jsonPayloadObject)
-                            .execute().get();
+            URL pushUrl = new URL(url);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) pushUrl.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            String credentials = pushApplicationId + ":" + masterSecret;
+            String encoded = Base64.encodeBytes(credentials.getBytes("UTF-8"));
+            httpURLConnection.setRequestProperty("Authorization", "Basic " + encoded);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setRequestProperty("Content-Type", "application/json");
+            httpURLConnection.setRequestProperty("Accept", "application/json");
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.connect();
+            byte[] outputBytes = jsonPayloadObject.getBytes("UTF-8");
+            OutputStream os = httpURLConnection.getOutputStream();
+            os.write(outputBytes);
+            os.close();
+            int status = httpURLConnection.getResponseCode();
 
-            int statusCode = response.getStatusCode();
-            if (statusCode != 200) {
-                logger.severe("Receiving status code: " + statusCode);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            asyncHttpClient.closeAsynchronously();
+        } catch (MalformedURLException e) {
+            logger.severe("Invalid Server URL");
+        } catch (IOException e) {
+            logger.severe("IO Exception");
         }
+
     }
 
     private String transformJSON(Object value) {
