@@ -20,25 +20,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jboss.aerogear.unifiedpush.client.Client;
-import org.jboss.aerogear.unifiedpush.client.HttpUrlConnectionClient;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
-public class DefaultJavaSenderTest {
+public class SenderClientTest {
 
-    private DefaultJavaSender defaultJavaSender;
-
-    private Client client;
+    private JavaSender defaultJavaSender;
 
     @Before
     public void setup() {
-        client = mock(Client.class);
-        client = new HttpUrlConnectionClient();
-        defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
+        defaultJavaSender = new SenderClient("http://localhost:8080/ag-push");
     }
 
     @Test

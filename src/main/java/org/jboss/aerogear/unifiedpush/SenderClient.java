@@ -14,12 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.jboss.aerogear.unifiedpush.client;
-
+package org.jboss.aerogear.unifiedpush;
 
 import net.iharder.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -30,20 +28,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HttpUrlConnectionClient implements Client {
+public class SenderClient implements JavaSender {
 
-    private static final Logger logger = Logger.getLogger(HttpUrlConnectionClient.class.getName());
+    private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
 
-    @Override
-    public void post(Map<String, ? extends Object> json, String url, String pushApplicationId, String masterSecret) {
-        // transform JSON:
-        String payload = transformJSON(json);
-        // fire!
-        submitPayload(url, payload, pushApplicationId, masterSecret);
+    // final?
+    private String serverURL;
+
+    public SenderClient(String rootServerURL) {
+        if (rootServerURL == null) {
+            throw new IllegalStateException("server can not be null");
+        }
+
+        if (!rootServerURL.endsWith("/")) {
+            rootServerURL = rootServerURL.concat("/");
+        }
+        this.serverURL = rootServerURL;
+    }
+
+    protected StringBuilder buildUrl(String type, String pushApplicationID) {
+        //  build the broadcast URL:
+        StringBuilder sb = new StringBuilder();
+        sb.append(serverURL)
+                .append("rest/sender/")
+                .append(type);
+        return sb;
     }
 
     @Override
-    public void post(Map<String, ? extends Object> json, List<String> clientIdentifiers, String url, String pushApplicationId, String masterSecret) {
+    public void broadcast(Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
+        StringBuilder sb = buildUrl("broadcast", pushApplicationID);
+        // transform JSON:
+        String payload = transformJSON(json);
+        // fire!
+        submitPayload(sb.toString(), payload, pushApplicationID, masterSecret);
+    }
+
+    @Override
+    public void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
+        StringBuilder sb = buildUrl("selected", pushApplicationID);
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
@@ -53,7 +76,7 @@ public class HttpUrlConnectionClient implements Client {
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
         // fire!
-        submitPayload(url, payload, pushApplicationId, masterSecret);
+        submitPayload(sb.toString(), payload, pushApplicationID, masterSecret);
     }
 
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
