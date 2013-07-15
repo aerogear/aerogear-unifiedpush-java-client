@@ -20,25 +20,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.jboss.aerogear.unifiedpush.resteasy.RestEasyClient;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.mockito.Mockito.mock;
 
-public class DefaultJavaSenderTest {
+public class SenderClientTest {
 
-    private DefaultJavaSender defaultJavaSender;
-
-    private Client client;
+    private JavaSender defaultJavaSender;
 
     @Before
     public void setup() {
-        client = mock(Client.class);
-        client = new RestEasyClient();
-        defaultJavaSender = new DefaultJavaSender("http://localhost:8080/ag-push", client);
+        defaultJavaSender = new SenderClient("http://localhost:8080/ag-push");
     }
 
     @Test
@@ -49,13 +42,13 @@ public class DefaultJavaSenderTest {
         jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
         jsonPlayload.put("sound", "default");
         // send it out:
-        defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37", "nlasaf");
+        defaultJavaSender.broadcast(jsonPlayload, "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b");
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end - start));
     }
 
-    @Ignore
+
     @Test
     public void sendMultipleBroadcastMessages() {
         long start = System.currentTimeMillis();
@@ -66,14 +59,14 @@ public class DefaultJavaSenderTest {
             jsonPlayload.put("sound", "default");
 
             // send it out:
-            defaultJavaSender.broadcast(jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37", "fdfd");
+            defaultJavaSender.broadcast(jsonPlayload, "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b");
         }
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end - start));
     }
 
-    @Ignore
+
     @Test
     public void sendSelectiveSendToOne() {
         long start = System.currentTimeMillis();
@@ -86,7 +79,7 @@ public class DefaultJavaSenderTest {
         jsonPlayload.put("sound", "default");
 
         // send it out:
-        defaultJavaSender.sendTo(identifiers, jsonPlayload, "8e976eab-b628-46e5-8790-13f70289af37", "fdfd");
+        defaultJavaSender.sendTo(identifiers, jsonPlayload, "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b");
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end - start));
