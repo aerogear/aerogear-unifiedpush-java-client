@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush;
 
+import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
+
 import java.util.List;
 import java.util.Map;
 
@@ -24,20 +26,14 @@ public interface JavaSender {
     /**
      * Sends the given payload to all MobileVariantInstances of the referenced PushApplication.
      * 
-     * @param json A map, representing the JSON payload
-     * @param pushApplicationID the ID of the logical PushApplication construct
-     * @param masterSecret the master Password belonging to this Push Application
+     * @param unifiedMessage
      */
-    void broadcast(Map<String, ? extends Object> json, String pushApplicationID, String masterSecret);
+    void broadcast(UnifiedMessage unifiedMessage);
 
     /**
      * Sends the given payload to a selection of MobileVariantInstances of the referenced PushApplication.
-     * 
-     * @param clientIdentifiers list of clients receiving the message
-     * @param json A map, representing the JSON payload
-     * @param pushApplicationID the ID of the logical PushApplication construct
-     * @param masterSecret the master Password belonging to this Push Application
+     * @param unifiedMessage
      */
-    void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID, String masterSecret);
+    void sendTo(UnifiedMessage unifiedMessage);
 
 }

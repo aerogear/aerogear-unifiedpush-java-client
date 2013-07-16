@@ -17,9 +17,8 @@
 package org.jboss.aerogear.unifiedpush;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -37,12 +36,17 @@ public class SenderClientTest {
     @Test
     public void sendSingleBroadcastMessage() {
         long start = System.currentTimeMillis();
-        Map<String, String> jsonPlayload = new HashMap<String, String>();
 
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
-        jsonPlayload.put("sound", "default");
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .build();
+
         // send it out:
-        defaultJavaSender.broadcast(jsonPlayload, "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b");
+        defaultJavaSender.broadcast(unifiedMessage);
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end - start));
@@ -54,12 +58,16 @@ public class SenderClientTest {
         long start = System.currentTimeMillis();
 
         for (int i = 0; i < 10; i++) {
-            Map<String, String> jsonPlayload = new HashMap<String, String>();
-            jsonPlayload.put("alert", "Count  : " + i);
-            jsonPlayload.put("sound", "default");
+           UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                    .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                    .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                    .alert("Count  : " + i)
+                    .sound("default")
+                    .build();
+
 
             // send it out:
-            defaultJavaSender.broadcast(jsonPlayload, "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b");
+            defaultJavaSender.broadcast(unifiedMessage);
         }
 
         long end = System.currentTimeMillis();
@@ -74,12 +82,16 @@ public class SenderClientTest {
         List<String> identifiers = new ArrayList<String>();
         identifiers.add("mwessendorf2");
 
-        Map<String, String> jsonPlayload = new HashMap<String, String>();
-        jsonPlayload.put("alert", "Hello from Java Sender API, via JUnit");
-        jsonPlayload.put("sound", "default");
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .identifiers(identifiers)
+                .build();
 
         // send it out:
-        defaultJavaSender.sendTo(identifiers, jsonPlayload, "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b");
+        defaultJavaSender.sendTo(unifiedMessage);
 
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end - start));
