@@ -80,9 +80,10 @@ public class SenderClient implements JavaSender {
     }
 
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
+        HttpURLConnection httpURLConnection = null;
         try {
             URL pushUrl = new URL(url);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) pushUrl.openConnection();
+            httpURLConnection = (HttpURLConnection) pushUrl.openConnection();
             httpURLConnection.setRequestMethod("POST");
             String credentials = pushApplicationId + ":" + masterSecret;
             String encoded = Base64.encodeBytes(credentials.getBytes("UTF-8"));
@@ -102,8 +103,9 @@ public class SenderClient implements JavaSender {
             logger.severe("Invalid Server URL");
         } catch (IOException e) {
             logger.severe("IO Exception");
+        } finally {
+            httpURLConnection.disconnect();
         }
-
     }
 
     private String transformJSON(Object value) {
