@@ -23,6 +23,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +32,9 @@ import java.util.logging.Logger;
 public class SenderClient implements JavaSender {
 
     private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
+    private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    // final?
-    private String serverURL;
+    private final String serverURL;
 
     public SenderClient(String rootServerURL) {
         if (rootServerURL == null) {
@@ -75,38 +76,75 @@ public class SenderClient implements JavaSender {
         selectedPayloadObject.put("message", json);
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
+
         // fire!
         submitPayload(sb.toString(), payload, pushApplicationID, masterSecret);
     }
 
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
+        String credentials = pushApplicationId + ":" + masterSecret;
+        
         HttpURLConnection httpURLConnection = null;
         try {
-            URL pushUrl = new URL(url);
-            httpURLConnection = (HttpURLConnection) pushUrl.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            String credentials = pushApplicationId + ":" + masterSecret;
-            String encoded = Base64.encodeBytes(credentials.getBytes("UTF-8"));
-            httpURLConnection.setRequestProperty("Authorization", "Basic " + encoded);
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setRequestProperty("Content-Type", "application/json");
-            httpURLConnection.setRequestProperty("Accept", "application/json");
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.connect();
-            byte[] outputBytes = jsonPayloadObject.getBytes("UTF-8");
-            OutputStream os = httpURLConnection.getOutputStream();
-            os.write(outputBytes);
-            os.close();
+            String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
+
+            // POST the payload to the UnifiedPush Server
+            httpURLConnection = post(url, encoded, jsonPayloadObject);
+
             int status = httpURLConnection.getResponseCode();
+            logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", status));
 
         } catch (MalformedURLException e) {
             logger.severe("Invalid Server URL");
         } catch (IOException e) {
             logger.severe("IO Exception");
         } finally {
-            httpURLConnection.disconnect();
+            // tear down
+            if (httpURLConnection != null) {
+                httpURLConnection.disconnect();
+            }
         }
     }
+    /**
+     * Returns HttpURLConnection that 'posts' the given JSON to the given UnifiedPush Server URL.
+     */
+    private HttpURLConnection post(String url, String encodedCredentials, String jsonPayloadObject) throws IOException {
+
+        if (url == null || encodedCredentials == null || jsonPayloadObject == null ) {
+            throw new IllegalArgumentException("arguments cannot be null");
+        }
+
+        byte[] bytes = jsonPayloadObject.getBytes(UTF_8);
+        HttpURLConnection conn = getConnection(url);
+        conn.setDoOutput(true);
+        conn.setUseCaches(false);
+        conn.setFixedLengthStreamingMode(bytes.length);
+        conn.setRequestProperty("Authorization", "Basic " + encodedCredentials);
+        conn.setRequestProperty("Content-Type", "application/json");
+        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestMethod("POST");
+        OutputStream out = null;
+        try {
+            out = conn.getOutputStream();
+            out.write(bytes);
+        } finally {
+            // in case something blows up, while writing
+            // the payload, we wanna close the stream:
+            if (out != null) {
+                out.close();
+            }
+        }
+        return conn;
+    }
+
+    /**
+     * Convenience method to open/establish a HttpURLConnection.
+     */
+    private HttpURLConnection getConnection(String url) throws IOException {
+        HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
+        return conn;
+    }
+
 
     private String transformJSON(Object value) {
         ObjectMapper om = new ObjectMapper();
