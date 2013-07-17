@@ -29,9 +29,13 @@ public class UnifiedMessage {
 
     private String masterSecret;
 
-    private List<String> identifiers;
+    private List<String> aliases;
 
     private Map<String, Object> attributes;
+
+    private String category;
+
+    private List<String> deviceType;
 
     public static class Builder {
 
@@ -39,7 +43,11 @@ public class UnifiedMessage {
 
         private String masterSecret;
 
-        private List<String> identifiers = new ArrayList<String>();
+        private String category;
+
+        private List<String> deviceType = new ArrayList<String>();
+
+        private List<String> aliases = new ArrayList<String>();
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
@@ -53,8 +61,18 @@ public class UnifiedMessage {
             return this;
         }
 
-        public Builder identifiers(List<String> identifiers) {
-            this.identifiers = identifiers;
+        public Builder aliases(List<String> aliases) {
+            this.aliases = aliases;
+            return this;
+        }
+
+        public Builder category(String category) {
+            this.category = category;
+            return this;
+        }
+
+        public Builder deviceType(List<String> deviceType) {
+            this.deviceType = deviceType;
             return this;
         }
 
@@ -87,7 +105,9 @@ public class UnifiedMessage {
 
     private UnifiedMessage(Builder builder) {
         this.attributes  = builder.attributes;
-        this.identifiers = builder.identifiers;
+        this.aliases = builder.aliases;
+        this.category = builder.category;
+        this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
     }
@@ -108,12 +128,12 @@ public class UnifiedMessage {
         this.masterSecret = masterSecret;
     }
 
-    public List<String> getIdentifiers() {
-        return identifiers;
+    public List<String> getAliases() {
+        return aliases;
     }
 
-    public void setIdentifiers(List<String> identifiers) {
-        this.identifiers = identifiers;
+    public void setAliases(List<String> aliases) {
+        this.aliases = aliases;
     }
 
     public Map<String, Object> getAttributes() {
@@ -122,5 +142,21 @@ public class UnifiedMessage {
 
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public List<String> getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(List<String> deviceType) {
+        this.deviceType = deviceType;
     }
 }
