@@ -73,7 +73,9 @@ public class SenderClient implements JavaSender {
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
         // add the "clientIdentifiers" to the "alias" fie;d
+
         selectedPayloadObject.put("alias", unifiedMessage.getAliases());
+
         selectedPayloadObject.put("message", unifiedMessage.getAttributes());
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);

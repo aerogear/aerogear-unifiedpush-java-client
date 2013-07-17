@@ -29,6 +29,7 @@ public class UnifiedMessage {
 
     private String masterSecret;
 
+
     private List<String> aliases;
 
     private Map<String, Object> attributes;
@@ -60,6 +61,7 @@ public class UnifiedMessage {
             this.masterSecret = masterSecret;
             return this;
         }
+
 
         public Builder aliases(List<String> aliases) {
             this.aliases = aliases;
