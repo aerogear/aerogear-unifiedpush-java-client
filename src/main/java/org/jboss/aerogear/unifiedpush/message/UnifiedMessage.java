@@ -27,7 +27,33 @@ import java.util.Map;
  * The message format is very simple: A generic JSON map is used to sent messages to Android and iOS devices.
  * The applications on the devices will receive the JSON map and are responsible for performing a lookup to read values of the given keys.
  * @see <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">http://www.aerogear.org/docs/specs/aerogear-push-messages/</a>
- */
+ *
+ * To construct a message use the {@link org.jboss.aerogear.unifiedpush.message.Builder} like this :
+ * <pre>
+ * {@code
+ * // For a broadcast messages
+ * UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+ *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+ *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+ *       .alert("Hello")
+ *       .sound("default")
+ *       .badge("welcome")
+ *       .build();
+ * // For selective messages
+ *  List<String> aliases = new ArrayList<String>();
+ *  aliases.add("mike");
+ *  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+ *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+ *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+ *       .alert("Hello")
+ *       .sound("default")
+ *       .aliases(aliases)
+ *       .deviceType("iPad","AndroidTablet")
+ *       .build();
+ * </pre>
+ * }
+ *
+ * */
 public class UnifiedMessage {
 
     private String pushApplicationId;
@@ -59,48 +85,126 @@ public class UnifiedMessage {
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
+        /**
+         * This is a mandatory field
+         * @param pushApplicationId
+         * @return
+         */
         public Builder pushApplicationId(String pushApplicationId) {
             this.pushApplicationId = pushApplicationId;
             return this;
         }
 
+        /**
+         * This is a mandatory field
+         * @param masterSecret
+         * @return
+         */
         public Builder masterSecret(String masterSecret) {
             this.masterSecret = masterSecret;
             return this;
         }
 
+        /**
+         * Sets a list of "identifiers", like username or email address.
+         * @param aliases
+         * @return
+         */
         public Builder aliases(List<String> aliases) {
             this.aliases = aliases;
             return this;
         }
 
+        /**
+         * A category is a semantical tag.
+         * @param category
+         * @return
+         */
         public Builder category(String category) {
             this.category = category;
             return this;
         }
 
+        /**
+         * A filter for notifying only users running a certain device
+         * @param deviceType
+         * @return
+         */
         public Builder deviceType(List<String> deviceType) {
             this.deviceType = deviceType;
             return this;
         }
 
+        /**
+         * A map of attributes containing business specific values
+         * @param attributes
+         * @return
+         */
         public Builder attributes(Map<String, Object> attributes) {
             this.attributes = attributes;
             return this;
         }
 
+        /**
+         * An attribute containing a business value
+         * @param key
+         * @param value
+         * @return
+         */
         public Builder attribute(String key, String value) {
             this.attributes.put(key,value);
             return this;
         }
 
+        /**
+         * Triggers a dialog, displaying the value - no iOS API needs to be invoked by the app developer
+         * @param message
+         * @return
+         */
         public Builder alert(String message) {
             this.attributes.put("alert",message);
             return this;
         }
 
+        /**
+         * Plays a given sound - no iOS API needs to be invoked by the app developer
+         * @param sound
+         * @return
+         */
         public Builder sound(String sound) {
             this.attributes.put("sound",sound);
+            return this;
+        }
+
+        /**
+         * Sets the value of the badge icon - no iOS API needs to be invoked by the app developer
+         * @param badge
+         * @return
+         */
+        public Builder badge(String badge) {
+            this.attributes.put("badge",badge);
+            return this;
+        }
+
+        /**
+         * Needed when broadcasting a message to a SimplePush Network
+         * Note: Do not use this method for a "selective send"
+         * @param version
+         * @return
+         */
+        public Builder simplePush(String version) {
+            this.attributes.put("simple-push",version);
+            return this;
+        }
+
+        /**
+         * Needed when doing a selective send to a SimplePush Network
+         * Note: Do not use this method for a "broadcast send"
+         * @param channels
+         * @return
+         */
+        public Builder simplePush(Map channels) {
+            this.attributes.put("simple-push",channels);
             return this;
         }
 
@@ -123,6 +227,7 @@ public class UnifiedMessage {
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
     }
+
 
     public String getPushApplicationId() {
         return pushApplicationId;
