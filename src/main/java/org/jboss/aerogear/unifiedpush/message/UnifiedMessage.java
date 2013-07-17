@@ -22,7 +22,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
+/**
+ * an UnifiedMessage represents a message in the format expected from the Unified Push Server
+ * The message format is very simple: A generic JSON map is used to sent messages to Android and iOS devices.
+ * The applications on the devices will receive the JSON map and are responsible for performing a lookup to read values of the given keys.
+ * @see <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">http://www.aerogear.org/docs/specs/aerogear-push-messages/</a>
+ */
 public class UnifiedMessage {
 
     private String pushApplicationId;
@@ -38,6 +43,9 @@ public class UnifiedMessage {
 
     private List<String> deviceType;
 
+    /**
+     * A builder to provide a Fluid API
+     */
     public static class Builder {
 
         private String pushApplicationId;
@@ -105,6 +113,10 @@ public class UnifiedMessage {
 
     }
 
+    /**
+     * private constructor as UnifiedMessage can only be created through the Builder
+     * @param builder
+     */
     private UnifiedMessage(Builder builder) {
         this.attributes  = builder.attributes;
         this.aliases = builder.aliases;
