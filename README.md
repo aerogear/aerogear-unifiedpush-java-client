@@ -8,15 +8,14 @@ A Java API for sending Push Notifications with the [AeroGear UnifiedPush Sender]
         <dependency>
              <groupId>org.jboss.aerogear.unifiedpush</groupId>
              <artifactId>java-sender</artifactId>
-             <version>1.0-SNAPSHOT</version>
+             <version>0.1.0</version>
         </dependency>
 
 ## Usage
 
 Create a ```JavaSender```:
 
-    DefaultJavaSender defaultJavaSender =
-      new DefaultJavaSender("http://localhost:8080/ag-push", new RestEasyClient());
+    JavaSender defaultJavaSender = new SenderClient("http://localhost:8080/ag-push");
 
 
 Construct the JSON payload:
@@ -27,7 +26,7 @@ Construct the JSON payload:
 
 Send it to a ```PushApplication```:
 
-    defaultJavaSender.broadcast(jsonPlayload, pushApplicationID);
+    defaultJavaSender.broadcast(jsonPlayload, pushApplicationID, masterSecret);
         
         
 
