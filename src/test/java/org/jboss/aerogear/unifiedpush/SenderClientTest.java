@@ -87,7 +87,7 @@ public class SenderClientTest {
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .alert("Hello from Java Sender API, via JUnit")
                 .sound("default")
-                .identifiers(identifiers)
+                .aliases(identifiers)
                 .build();
 
         // send it out:

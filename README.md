@@ -1,5 +1,3 @@
-# aerogear-unified-push-java-client [![Build Status](https://travis-ci.org/aerogear/aerogear-unified-push-java-client.png)](https://travis-ci.org/aerogear/aerogear-unified-push-java-client)
-
 
 A Java API for sending Push Notifications with the [AeroGear UnifiedPush Sender](https://github.com/aerogear/aerogear-unified-push-server).
 
@@ -47,7 +45,7 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .alert("Hello from Java Sender API, via JUnit")
                 .sound("default")
-                .identifiers(identifiers)
+                .aliases(identifiers)
                 .build();
 ```
 
@@ -55,3 +53,5 @@ Send the message
 
 ``` defaultJavaSender.broadcast(unifiedMessage); ```
 
+        
+        
