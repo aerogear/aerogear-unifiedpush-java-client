@@ -86,9 +86,9 @@ public class UnifiedMessage {
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
         /**
-         * This is a mandatory field
+         * Specifies which Push Application the message is for.
          * @param pushApplicationId
-         * @return
+         * @return the current {@link Builder} instance
          */
         public Builder pushApplicationId(String pushApplicationId) {
             this.pushApplicationId = pushApplicationId;
@@ -96,9 +96,9 @@ public class UnifiedMessage {
         }
 
         /**
-         * This is a mandatory field
+         * Set the masterSecret used to authenticate against the Push Server
          * @param masterSecret
-         * @return
+         * @return the current {@link Builder} instance
          */
         public Builder masterSecret(String masterSecret) {
             this.masterSecret = masterSecret;
@@ -107,8 +107,8 @@ public class UnifiedMessage {
 
         /**
          * Sets a list of "identifiers", like username or email address.
-         * @param aliases
-         * @return
+         * @param aliases a list of "identifiers", like username or email address.
+         * @return the current {@link Builder} instance
          */
         public Builder aliases(List<String> aliases) {
             this.aliases = aliases;
@@ -117,8 +117,8 @@ public class UnifiedMessage {
 
         /**
          * A category is a semantical tag.
-         * @param category
-         * @return
+         * @param category , a semantical tag
+         * @return the current {@link Builder} instance
          */
         public Builder category(String category) {
             this.category = category;
@@ -127,8 +127,8 @@ public class UnifiedMessage {
 
         /**
          * A filter for notifying only users running a certain device
-         * @param deviceType
-         * @return
+         * @param deviceType , a list of devices i.e ["iPad","iPhone"]
+         * @return the current {@link Builder} instance
          */
         public Builder deviceType(List<String> deviceType) {
             this.deviceType = deviceType;
@@ -136,9 +136,9 @@ public class UnifiedMessage {
         }
 
         /**
-         * A map of attributes containing business specific values
+         * A map of attributes containing application specific values
          * @param attributes
-         * @return
+         * @return the current {@link Builder} instance
          */
         public Builder attributes(Map<String, Object> attributes) {
             this.attributes = attributes;
@@ -146,10 +146,10 @@ public class UnifiedMessage {
         }
 
         /**
-         * An attribute containing a business value
-         * @param key
-         * @param value
-         * @return
+         * An attribute containing an application specific value
+         * @param key of an application specific entry
+         * @param value of an application specific entry
+         * @return the current {@link Builder} instance
          */
         public Builder attribute(String key, String value) {
             this.attributes.put(key,value);
@@ -157,9 +157,9 @@ public class UnifiedMessage {
         }
 
         /**
-         * Triggers a dialog, displaying the value - no iOS API needs to be invoked by the app developer
-         * @param message
-         * @return
+         * Triggers a dialog, displaying the value
+         * @param message that will be displayed on the alert UI element
+         * @return the current {@link Builder} instance
          */
         public Builder alert(String message) {
             this.attributes.put("alert",message);
@@ -168,8 +168,8 @@ public class UnifiedMessage {
 
         /**
          * Plays a given sound - no iOS API needs to be invoked by the app developer
-         * @param sound
-         * @return
+         * @param sound , i.e name of the sound file
+         * @return the current {@link Builder} instance
          */
         public Builder sound(String sound) {
             this.attributes.put("sound",sound);
@@ -178,8 +178,8 @@ public class UnifiedMessage {
 
         /**
          * Sets the value of the badge icon - no iOS API needs to be invoked by the app developer
-         * @param badge
-         * @return
+         * @param badge , i.e file name of the icon
+         * @return the current {@link Builder} instance
          */
         public Builder badge(String badge) {
             this.attributes.put("badge",badge);
@@ -189,8 +189,8 @@ public class UnifiedMessage {
         /**
          * Needed when broadcasting a message to a SimplePush Network
          * Note: Do not use this method for a "selective send"
-         * @param version
-         * @return
+         * @param version to pass to the broadcast channel
+         * @return the current {@link Builder} instance
          */
         public Builder simplePush(String version) {
             this.attributes.put("simple-push",version);
@@ -200,11 +200,11 @@ public class UnifiedMessage {
         /**
          * Needed when doing a selective send to a SimplePush Network
          * Note: Do not use this method for a "broadcast send"
-         * @param channels
-         * @return
+         * @param entries representing a key:value where key is an alias (category) of the channel and value some version string
+         * @return the current {@link Builder} instance
          */
-        public Builder simplePush(Map channels) {
-            this.attributes.put("simple-push",channels);
+        public Builder simplePush(Map entries) {
+            this.attributes.put("simple-push",entries);
             return this;
         }
 
