@@ -176,7 +176,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * Plays a given sound - no iOS API needs to be invoked by the app developer.
+         * Plays a given sound - On iOS no API needs to be invoked to play the sound file.
+         * However on other platforms custom API call may be required.
          *
          * @param sound , i.e name of the sound file
          * @return the current {@link Builder} instance
@@ -201,11 +202,11 @@ public class UnifiedMessage {
          * Needed when broadcasting a message to a SimplePush Network
          * Note: Do not use this method for a "selective send".
          *
-         * @param version to pass to the broadcast channel
+         * @param version to pass to the broadcast channel, i.e "version=5"
          * @return the current {@link Builder} instance
          */
         public Builder simplePush(String version) {
-            this.attributes.put("simple-push",version);
+            this.attributes.put("simple-push",fixVersion(version));
             return this;
         }
 
@@ -213,16 +214,26 @@ public class UnifiedMessage {
          * Needed when doing a selective send to a SimplePush Network
          * Note: Do not use this method for a "broadcast send".
          *
-         * @param entries representing a key:value where key is an alias (category) of the channel and value some version string
+         * @param entries representing a key:value where key is an alias (category) of the channel and value some version (i.e "version=5")
          * @return the current {@link Builder} instance
          */
-        public Builder simplePush(Map entries) {
+        public Builder simplePush(Map<String, String> entries) {
+            for (Map.Entry<String, String> entry : entries.entrySet()) {
+                entry.setValue(fixVersion(entry.getValue()));
+            }
             this.attributes.put("simple-push",entries);
             return this;
         }
 
         public UnifiedMessage build() {
             return new UnifiedMessage(this);
+        }
+
+        private String fixVersion(String version){
+            if(!version.startsWith("version=")){
+                version = "version=" + version;
+            }
+            return version;
         }
 
 
