@@ -85,6 +85,11 @@ public class UnifiedMessage {
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
+        private final String alert = "alert";
+        private final String sound = "sound";
+        private final String badge = "badge";
+        private final String simplePush = "simple-push";
+
         /**
          * Specifies which Push Application the message is for.
          *
@@ -171,7 +176,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder alert(String message) {
-            this.attributes.put("alert",message);
+            this.attributes.put(alert,message);
             return this;
         }
 
@@ -183,7 +188,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder sound(String sound) {
-            this.attributes.put("sound",sound);
+            this.attributes.put(this.sound,sound);
             return this;
         }
 
@@ -194,7 +199,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder badge(String badge) {
-            this.attributes.put("badge",badge);
+            this.attributes.put(this.badge,badge);
             return this;
         }
 
@@ -206,7 +211,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder simplePush(String version) {
-            this.attributes.put("simple-push",fixVersion(version));
+            this.attributes.put(simplePush,fixVersion(version));
             return this;
         }
 
@@ -221,7 +226,7 @@ public class UnifiedMessage {
             for (Map.Entry<String, String> entry : entries.entrySet()) {
                 entry.setValue(fixVersion(entry.getValue()));
             }
-            this.attributes.put("simple-push",entries);
+            this.attributes.put(simplePush,entries);
             return this;
         }
 
@@ -230,7 +235,7 @@ public class UnifiedMessage {
         }
 
         private String fixVersion(String version){
-            if(!version.startsWith("version=")){
+            if(version != null && !version.startsWith("version=")){
                 version = "version=" + version;
             }
             return version;

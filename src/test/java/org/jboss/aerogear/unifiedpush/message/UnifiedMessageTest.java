@@ -32,32 +32,45 @@ public class UnifiedMessageTest {
          UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
+                .attribute("custom","customValue")
                 .build();
         assertEquals("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", unifiedMessage.getPushApplicationId());
         assertEquals("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b",unifiedMessage.getMasterSecret());
+        assertEquals("customValue",unifiedMessage.getAttributes().get("customValue"));
+     }
+
+    @Test
+    public void specialKeysTests() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .badge("badge")
+                .build();
         assertEquals("Hello from Java Sender API, via JUnit",unifiedMessage.getAttributes().get("alert"));
         assertEquals("default",unifiedMessage.getAttributes().get("sound"));
+        assertEquals("badge",unifiedMessage.getAttributes().get("badge"));
     }
 
     @Test
-    public void simpleSelectiveMessageTest() {
+    public void simpleSelectiveMessageWithAliasesTest() {
         List aliases = new ArrayList<String>();
         aliases.add("mike");
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
                 .aliases(aliases)
                 .build();
-        assertEquals("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c",unifiedMessage.getPushApplicationId());
-        assertEquals("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b",unifiedMessage.getMasterSecret());
-        assertEquals("Hello from Java Sender API, via JUnit",unifiedMessage.getAttributes().get("alert"));
-        assertEquals("default",unifiedMessage.getAttributes().get("sound"));
         assertEquals(1,unifiedMessage.getAliases().size());
+    }
+
+    @Test
+    public void simpleSelectiveMessageWithDevicesTest() {
+        List devices = new ArrayList<String>();
+        devices.add("iPad");
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .deviceType(devices)
+                .build();
+        assertEquals(1,unifiedMessage.getDeviceType().size());
     }
 
     @Test
