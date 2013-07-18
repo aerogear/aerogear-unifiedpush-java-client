@@ -87,6 +87,7 @@ public class UnifiedMessage {
 
         /**
          * Specifies which Push Application the message is for.
+         *
          * @param pushApplicationId
          * @return the current {@link Builder} instance
          */
@@ -97,6 +98,7 @@ public class UnifiedMessage {
 
         /**
          * Set the masterSecret used to authenticate against the Push Server
+         *
          * @param masterSecret
          * @return the current {@link Builder} instance
          */
@@ -107,6 +109,7 @@ public class UnifiedMessage {
 
         /**
          * Sets a list of "identifiers", like username or email address.
+         *
          * @param aliases a list of "identifiers", like username or email address.
          * @return the current {@link Builder} instance
          */
@@ -117,6 +120,7 @@ public class UnifiedMessage {
 
         /**
          * A category is a semantical tag.
+         *
          * @param category , a semantical tag
          * @return the current {@link Builder} instance
          */
@@ -126,7 +130,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * A filter for notifying only users running a certain device
+         * A filter for notifying only users running a certain device.
+         *
          * @param deviceType , a list of devices i.e ["iPad","iPhone"]
          * @return the current {@link Builder} instance
          */
@@ -136,8 +141,10 @@ public class UnifiedMessage {
         }
 
         /**
-         * A map of attributes containing application specific values
-         * @param attributes
+         * A map containing various key-value pairs, that represent application
+         * specific values. The mobile application is asked to look for those keys.
+         *
+         * @param attributes map containing several key-value pairs
          * @return the current {@link Builder} instance
          */
         public Builder attributes(Map<String, Object> attributes) {
@@ -146,7 +153,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * An attribute containing an application specific value
+         * Adds an application specific value for the given key.
+         *
          * @param key of an application specific entry
          * @param value of an application specific entry
          * @return the current {@link Builder} instance
@@ -157,7 +165,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * Triggers a dialog, displaying the value
+         * Triggers a dialog, displaying the value.
+         *
          * @param message that will be displayed on the alert UI element
          * @return the current {@link Builder} instance
          */
@@ -167,7 +176,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * Plays a given sound - no iOS API needs to be invoked by the app developer
+         * Plays a given sound - no iOS API needs to be invoked by the app developer.
+         *
          * @param sound , i.e name of the sound file
          * @return the current {@link Builder} instance
          */
@@ -177,7 +187,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * Sets the value of the badge icon - no iOS API needs to be invoked by the app developer
+         * Sets the value of the badge icon - no iOS API needs to be invoked by the app developer.
+         *
          * @param badge , i.e file name of the icon
          * @return the current {@link Builder} instance
          */
@@ -188,7 +199,8 @@ public class UnifiedMessage {
 
         /**
          * Needed when broadcasting a message to a SimplePush Network
-         * Note: Do not use this method for a "selective send"
+         * Note: Do not use this method for a "selective send".
+         *
          * @param version to pass to the broadcast channel
          * @return the current {@link Builder} instance
          */
@@ -199,7 +211,8 @@ public class UnifiedMessage {
 
         /**
          * Needed when doing a selective send to a SimplePush Network
-         * Note: Do not use this method for a "broadcast send"
+         * Note: Do not use this method for a "broadcast send".
+         *
          * @param entries representing a key:value where key is an alias (category) of the channel and value some version string
          * @return the current {@link Builder} instance
          */
