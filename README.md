@@ -51,5 +51,5 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
 
 Send the message
 
-``` defaultJavaSender.broadcast(unifiedMessage); ```
+``` defaultJavaSender.sendTo(unifiedMessage); ```
 
