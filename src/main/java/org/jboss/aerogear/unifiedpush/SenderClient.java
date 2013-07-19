@@ -18,6 +18,8 @@ package org.jboss.aerogear.unifiedpush;
 
 import net.iharder.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -25,7 +27,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
@@ -57,28 +58,30 @@ public class SenderClient implements JavaSender {
     }
 
     @Override
-    public void broadcast(Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
-        StringBuilder sb = buildUrl("broadcast", pushApplicationID);
+    public void broadcast(UnifiedMessage unifiedMessage) {
+        StringBuilder sb = buildUrl("broadcast", unifiedMessage.getPushApplicationId());
         // transform JSON:
-        String payload = transformJSON(json);
+        String payload = transformJSON(unifiedMessage.getAttributes());
         // fire!
-        submitPayload(sb.toString(), payload, pushApplicationID, masterSecret);
+        submitPayload(sb.toString(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret());
     }
 
     @Override
-    public void sendTo(List<String> clientIdentifiers, Map<String, ? extends Object> json, String pushApplicationID, String masterSecret) {
-        StringBuilder sb = buildUrl("selected", pushApplicationID);
+    public void sendTo(UnifiedMessage unifiedMessage) {
+        StringBuilder sb = buildUrl("selected", unifiedMessage.getPushApplicationId());
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
         // add the "clientIdentifiers" to the "alias" fie;d
-        selectedPayloadObject.put("alias", clientIdentifiers);
-        selectedPayloadObject.put("message", json);
+
+        selectedPayloadObject.put("alias", unifiedMessage.getAliases());
+
+        selectedPayloadObject.put("message", unifiedMessage.getAttributes());
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
 
         // fire!
-        submitPayload(sb.toString(), payload, pushApplicationID, masterSecret);
+        submitPayload(sb.toString(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret());
     }
 
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
