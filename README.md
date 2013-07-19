@@ -53,5 +53,3 @@ Send the message
 
 ``` defaultJavaSender.broadcast(unifiedMessage); ```
 
-        
-        
