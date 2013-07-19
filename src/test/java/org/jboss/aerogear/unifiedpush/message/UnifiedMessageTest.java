@@ -36,7 +36,7 @@ public class UnifiedMessageTest {
                 .build();
         assertEquals("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", unifiedMessage.getPushApplicationId());
         assertEquals("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b",unifiedMessage.getMasterSecret());
-        assertEquals("customValue",unifiedMessage.getAttributes().get("customValue"));
+        assertEquals("customValue",unifiedMessage.getAttributes().get("custom"));
      }
 
     @Test
