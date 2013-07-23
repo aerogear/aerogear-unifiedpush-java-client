@@ -51,9 +51,9 @@ public class SenderClient implements JavaSender {
 
     /**
      * Construct the URL fired against the Unified Push Server
-     * @param type , a String defining the sending method, could be "broadcast" or "selected"
-     * @param pushApplicationID, the push Application identifier
-     * @return a stringBuilder containing the constructed URL
+     * @param type a String defining the sending method, could be "broadcast" or "selected"
+     * @param pushApplicationID the push Application identifier
+     * @return a StringBuilder containing the constructed URL
      */
     protected StringBuilder buildUrl(String type, String pushApplicationID) {
         if(serverURL == null){
