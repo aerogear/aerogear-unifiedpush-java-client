@@ -23,15 +23,15 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * an UnifiedMessage represents a message in the format expected from the Unified Push Server
+ * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
  * The message format is very simple: A generic JSON map is used to sent messages to Android and iOS devices.
  * The applications on the devices will receive the JSON map and are responsible for performing a lookup to read values of the given keys.
- * @see <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">http://www.aerogear.org/docs/specs/aerogear-push-messages/</a>
- *
- * To construct a message use the {@link org.jboss.aerogear.unifiedpush.message.Builder} like this :
+ * See the {@link <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">Message Specification</a>} for more information.
+ * <p>
+ * To construct a message use the {@link Builder} like this :
  * <pre>
  * {@code
- * // For a broadcast messages
+ * // For 'broadcast' messages
  * UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
  *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
  *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
@@ -39,21 +39,19 @@ import java.util.Map;
  *       .sound("default")
  *       .badge("welcome")
  *       .build();
- * // For selective messages
- *  List<String> aliases = new ArrayList<String>();
- *  aliases.add("mike");
+ *
+ * // For 'selective' messages
  *  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
  *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
  *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
  *       .alert("Hello")
  *       .sound("default")
- *       .aliases(aliases)
- *       .deviceType("iPad","AndroidTablet")
+ *       .aliases(Arrays.asList("mike", "john"))
+ *       .deviceType(Arrays.asList("iPad","AndroidTablet"))
  *       .build();
- * </pre>
  * }
- *
- * */
+ * </pre>
+ */
 public class UnifiedMessage {
 
     private String pushApplicationId;
@@ -93,7 +91,7 @@ public class UnifiedMessage {
         /**
          * Specifies which Push Application the message is for.
          *
-         * @param pushApplicationId
+         * @param pushApplicationId The pushApplicationID
          * @return the current {@link Builder} instance
          */
         public Builder pushApplicationId(String pushApplicationId) {
@@ -104,7 +102,7 @@ public class UnifiedMessage {
         /**
          * Set the masterSecret used to authenticate against the Push Server
          *
-         * @param masterSecret
+         * @param masterSecret The masterSecret
          * @return the current {@link Builder} instance
          */
         public Builder masterSecret(String masterSecret) {
@@ -126,7 +124,7 @@ public class UnifiedMessage {
         /**
          * A category is a semantical tag.
          *
-         * @param category , a semantical tag
+         * @param category a semantical tag
          * @return the current {@link Builder} instance
          */
         public Builder category(String category) {
@@ -137,7 +135,7 @@ public class UnifiedMessage {
         /**
          * A filter for notifying only users running a certain device.
          *
-         * @param deviceType , a list of devices i.e ["iPad","iPhone"]
+         * @param deviceType a list of devices i.e ["iPad","iPhone"]
          * @return the current {@link Builder} instance
          */
         public Builder deviceType(List<String> deviceType) {
@@ -184,7 +182,7 @@ public class UnifiedMessage {
          * Plays a given sound - On iOS no API needs to be invoked to play the sound file.
          * However on other platforms custom API call may be required.
          *
-         * @param sound , i.e name of the sound file
+         * @param sound i.e name of the sound file
          * @return the current {@link Builder} instance
          */
         public Builder sound(String sound) {
@@ -195,7 +193,7 @@ public class UnifiedMessage {
         /**
          * Sets the value of the badge icon - no iOS API needs to be invoked by the app developer.
          *
-         * @param badge , i.e file name of the icon
+         * @param badge i.e file name of the icon
          * @return the current {@link Builder} instance
          */
         public Builder badge(String badge) {

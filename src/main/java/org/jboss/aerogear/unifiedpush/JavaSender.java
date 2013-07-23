@@ -26,13 +26,14 @@ public interface JavaSender {
     /**
      * Sends the given payload to all MobileVariantInstances of the referenced PushApplication.
      * 
-     * @param unifiedMessage
+     * @param unifiedMessage The {@link UnifiedMessage} to send
      */
     void broadcast(UnifiedMessage unifiedMessage);
 
     /**
      * Sends the given payload to a selection of MobileVariantInstances of the referenced PushApplication.
-     * @param unifiedMessage
+     *
+     * @param unifiedMessage The {@link UnifiedMessage} to send
      */
     void sendTo(UnifiedMessage unifiedMessage);
 
