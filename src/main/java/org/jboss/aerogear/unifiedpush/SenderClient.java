@@ -33,22 +33,26 @@ import java.util.logging.Logger;
 public class SenderClient implements JavaSender {
 
     private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
+
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
-    private final String serverURL;
+    private String serverURL;
 
     public SenderClient(String rootServerURL) {
         if (rootServerURL == null) {
             throw new IllegalStateException("server can not be null");
         }
+        this.setServerURL(rootServerURL);
+    }
 
-        if (!rootServerURL.endsWith("/")) {
-            rootServerURL = rootServerURL.concat("/");
-        }
-        this.serverURL = rootServerURL;
+    public SenderClient() {
+
     }
 
     protected StringBuilder buildUrl(String type, String pushApplicationID) {
+        if(serverURL == null){
+           throw new IllegalStateException("server can not be null");
+        }
         //  build the broadcast URL:
         StringBuilder sb = new StringBuilder();
         sb.append(serverURL)
@@ -158,5 +162,16 @@ public class SenderClient implements JavaSender {
             new IllegalStateException("Failed to encode JSON payload");
         }
         return stringPayload;
+    }
+
+    public String getServerURL() {
+        return serverURL;
+    }
+
+    public void setServerURL(String serverURL) {
+         if (!serverURL.endsWith("/")) {
+             serverURL = serverURL.concat("/");
+        }
+        this.serverURL = serverURL;
     }
 }
