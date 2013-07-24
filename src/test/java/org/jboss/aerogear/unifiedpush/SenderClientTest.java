@@ -37,7 +37,6 @@ public class SenderClientTest {
     public void sendSingleBroadcastMessage() {
         long start = System.currentTimeMillis();
 
-
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
@@ -52,19 +51,17 @@ public class SenderClientTest {
         System.out.println("Took: " + (end - start));
     }
 
-
     @Test
     public void sendMultipleBroadcastMessages() {
         long start = System.currentTimeMillis();
 
         for (int i = 0; i < 10; i++) {
-           UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+            UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                     .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                     .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                     .alert("Count  : " + i)
                     .sound("default")
                     .build();
-
 
             // send it out:
             defaultJavaSender.broadcast(unifiedMessage);
@@ -73,7 +70,6 @@ public class SenderClientTest {
         long end = System.currentTimeMillis();
         System.out.println("Took: " + (end - start));
     }
-
 
     @Test
     public void sendSelectiveSendToOne() {
