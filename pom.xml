@@ -46,8 +46,9 @@
 
     <developers>
         <developer>
-            <id>matzew</id>
-            <name>Matthias Wessendorf</name>
+            <id>aerogear</id>
+            <name>AeroGear Team</name>
+            <email>aerogear-dev@lists.jboss.org</email>
         </developer>
     </developers>
 
