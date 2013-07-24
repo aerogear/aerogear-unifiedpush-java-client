@@ -29,15 +29,15 @@ public class UnifiedMessageTest {
 
     @Test
     public void simpleBroadcastMessageTest() {
-         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
-                .attribute("custom","customValue")
+                .attribute("custom", "customValue")
                 .build();
         assertEquals("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c", unifiedMessage.getPushApplicationId());
-        assertEquals("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b",unifiedMessage.getMasterSecret());
-        assertEquals("customValue",unifiedMessage.getAttributes().get("custom"));
-     }
+        assertEquals("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b", unifiedMessage.getMasterSecret());
+        assertEquals("customValue", unifiedMessage.getAttributes().get("custom"));
+    }
 
     @Test
     public void specialKeysTests() {
@@ -46,9 +46,9 @@ public class UnifiedMessageTest {
                 .sound("default")
                 .badge("badge")
                 .build();
-        assertEquals("Hello from Java Sender API, via JUnit",unifiedMessage.getAttributes().get("alert"));
-        assertEquals("default",unifiedMessage.getAttributes().get("sound"));
-        assertEquals("badge",unifiedMessage.getAttributes().get("badge"));
+        assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getAttributes().get("alert"));
+        assertEquals("default", unifiedMessage.getAttributes().get("sound"));
+        assertEquals("badge", unifiedMessage.getAttributes().get("badge"));
     }
 
     @Test
@@ -59,7 +59,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .aliases(aliases)
                 .build();
-        assertEquals(1,unifiedMessage.getAliases().size());
+        assertEquals(1, unifiedMessage.getAliases().size());
     }
 
     @Test
@@ -70,7 +70,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .deviceType(devices)
                 .build();
-        assertEquals(1,unifiedMessage.getDeviceType().size());
+        assertEquals(1, unifiedMessage.getDeviceType().size());
     }
 
     @Test
@@ -78,7 +78,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush("version=1")
                 .build();
-        assertEquals("version=1",unifiedMessage.getAttributes().get("simple-push"));
+        assertEquals("version=1", unifiedMessage.getAttributes().get("simple-push"));
     }
 
     @Test
@@ -86,26 +86,26 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush("2")
                 .build();
-        assertEquals("version=2",unifiedMessage.getAttributes().get("simple-push"));
+        assertEquals("version=2", unifiedMessage.getAttributes().get("simple-push"));
     }
 
     @Test
     public void simplePushSelectiveVersionMessageTest() {
         Map<String, String> simplePush = new HashMap<String, String>();
-        simplePush.put("channel1","version=1");
+        simplePush.put("channel1", "version=1");
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush(simplePush)
                 .build();
-        assertEquals("version=1", ((Map)unifiedMessage.getAttributes().get("simple-push")).get("channel1"));
+        assertEquals("version=1", ((Map) unifiedMessage.getAttributes().get("simple-push")).get("channel1"));
     }
 
     @Test
     public void simplePushSelectiveWrongVersionFormatMessageTest() {
         Map<String, String> simplePush = new HashMap<String, String>();
-        simplePush.put("channel1","1");
+        simplePush.put("channel1", "1");
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush(simplePush)
                 .build();
-        assertEquals("version=1", ((Map)unifiedMessage.getAttributes().get("simple-push")).get("channel1"));
+        assertEquals("version=1", ((Map) unifiedMessage.getAttributes().get("simple-push")).get("channel1"));
     }
 }
