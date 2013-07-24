@@ -56,8 +56,8 @@ public class SenderClient implements JavaSender {
      * @return a StringBuilder containing the constructed URL
      */
     protected StringBuilder buildUrl(String type, String pushApplicationID) {
-        if(serverURL == null){
-           throw new IllegalStateException("server can not be null");
+        if (serverURL == null) {
+            throw new IllegalStateException("server can not be null");
         }
         //  build the broadcast URL:
         StringBuilder sb = new StringBuilder();
@@ -96,7 +96,7 @@ public class SenderClient implements JavaSender {
 
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
         String credentials = pushApplicationId + ":" + masterSecret;
-        
+
         HttpURLConnection httpURLConnection = null;
         try {
             String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
@@ -118,12 +118,13 @@ public class SenderClient implements JavaSender {
             }
         }
     }
+
     /**
      * Returns HttpURLConnection that 'posts' the given JSON to the given UnifiedPush Server URL.
      */
     private HttpURLConnection post(String url, String encodedCredentials, String jsonPayloadObject) throws IOException {
 
-        if (url == null || encodedCredentials == null || jsonPayloadObject == null ) {
+        if (url == null || encodedCredentials == null || jsonPayloadObject == null) {
             throw new IllegalArgumentException("arguments cannot be null");
         }
 
@@ -158,7 +159,6 @@ public class SenderClient implements JavaSender {
         return conn;
     }
 
-
     private String transformJSON(Object value) {
         ObjectMapper om = new ObjectMapper();
         String stringPayload = null;
@@ -175,8 +175,8 @@ public class SenderClient implements JavaSender {
     }
 
     public void setServerURL(String serverURL) {
-         if (!serverURL.endsWith("/")) {
-             serverURL = serverURL.concat("/");
+        if (!serverURL.endsWith("/")) {
+            serverURL = serverURL.concat("/");
         }
         this.serverURL = serverURL;
     }

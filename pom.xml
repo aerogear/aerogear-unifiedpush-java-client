@@ -37,10 +37,18 @@
         </license>
     </licenses>
 
+    <scm>
+        <connection>scm:git:git://github.com/aerogear/aerogear-unified-push-java-client.git</connection>
+        <developerConnection>scm:git:git@github.com:aerogear/aerogear-unified-push-java-client.git</developerConnection>
+        <url>https://github.com/aerogear/aerogear-unified-push-java-client</url>
+        <tag>HEAD</tag>
+    </scm>
+
     <developers>
         <developer>
-            <id>matzew</id>
-            <name>Matthias Wessendorf</name>
+            <id>aerogear</id>
+            <name>AeroGear Team</name>
+            <email>aerogear-dev@lists.jboss.org</email>
         </developer>
     </developers>
 

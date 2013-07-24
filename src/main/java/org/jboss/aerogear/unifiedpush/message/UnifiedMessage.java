@@ -163,7 +163,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder attribute(String key, String value) {
-            this.attributes.put(key,value);
+            this.attributes.put(key, value);
             return this;
         }
 
@@ -174,7 +174,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder alert(String message) {
-            this.attributes.put(alert,message);
+            this.attributes.put(alert, message);
             return this;
         }
 
@@ -186,7 +186,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder sound(String sound) {
-            this.attributes.put(this.sound,sound);
+            this.attributes.put(this.sound, sound);
             return this;
         }
 
@@ -197,7 +197,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder badge(String badge) {
-            this.attributes.put(this.badge,badge);
+            this.attributes.put(this.badge, badge);
             return this;
         }
 
@@ -209,7 +209,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder simplePush(String version) {
-            this.attributes.put(simplePush,fixVersion(version));
+            this.attributes.put(simplePush, fixVersion(version));
             return this;
         }
 
@@ -224,7 +224,7 @@ public class UnifiedMessage {
             for (Map.Entry<String, String> entry : entries.entrySet()) {
                 entry.setValue(fixVersion(entry.getValue()));
             }
-            this.attributes.put(simplePush,entries);
+            this.attributes.put(simplePush, entries);
             return this;
         }
 
@@ -232,13 +232,12 @@ public class UnifiedMessage {
             return new UnifiedMessage(this);
         }
 
-        private String fixVersion(String version){
-            if(version != null && !version.startsWith("version=")){
+        private String fixVersion(String version) {
+            if (version != null && !version.startsWith("version=")) {
                 version = "version=" + version;
             }
             return version;
         }
-
 
     }
 
@@ -247,14 +246,13 @@ public class UnifiedMessage {
      * @param builder
      */
     private UnifiedMessage(Builder builder) {
-        this.attributes  = builder.attributes;
+        this.attributes = builder.attributes;
         this.aliases = builder.aliases;
         this.category = builder.category;
         this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
     }
-
 
     public String getPushApplicationId() {
         return pushApplicationId;
