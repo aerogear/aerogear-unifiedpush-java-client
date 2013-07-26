@@ -165,7 +165,7 @@ public class SenderClient implements JavaSender {
         try {
             stringPayload = om.writeValueAsString(value);
         } catch (Exception e) {
-            new IllegalStateException("Failed to encode JSON payload");
+            throw new IllegalStateException("Failed to encode JSON payload");
         }
         return stringPayload;
     }
