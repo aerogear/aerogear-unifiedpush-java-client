@@ -46,7 +46,7 @@ import java.util.Map;
  *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
  *       .alert("Hello")
  *       .sound("default")
- *       .variants(Arrays.asList("HR_Premium"))
+ *       .variants(Arrays.asList("c3f0a94f-48de-4b77-a08e-68114460857e")) //e.g. HR_Premium
  *       .aliases(Arrays.asList("mike", "john"))
  *       .deviceType(Arrays.asList("iPad","AndroidTablet"))
  *       .build();
@@ -129,7 +129,7 @@ public class UnifiedMessage {
         /**
          * A filter for notifying only specific mobile variants of the Push Application
          *
-         * @param variants a list of mobile variants"
+         * @param variants a list of mobile variants ids
          * @return the current {@link Builder} instance
          */
         public Builder variants(List<String> variants) {
