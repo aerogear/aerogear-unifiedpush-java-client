@@ -82,7 +82,7 @@ public class SenderClient implements JavaSender {
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
-        // add the "clientIdentifiers" to the "alias" fie;d
+        // add the "clientIdentifiers" to the "alias" field
 
         selectedPayloadObject.put("alias", unifiedMessage.getAliases());
 
