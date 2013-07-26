@@ -51,11 +51,11 @@ public class SenderClient implements JavaSender {
 
     /**
      * Construct the URL fired against the Unified Push Server
+     *
      * @param type a String defining the sending method, could be "broadcast" or "selected"
-     * @param pushApplicationID the push Application identifier
      * @return a StringBuilder containing the constructed URL
      */
-    protected StringBuilder buildUrl(String type, String pushApplicationID) {
+    protected StringBuilder buildUrl(String type) {
         if (serverURL == null) {
             throw new IllegalStateException("server can not be null");
         }
@@ -69,7 +69,7 @@ public class SenderClient implements JavaSender {
 
     @Override
     public void broadcast(UnifiedMessage unifiedMessage) {
-        StringBuilder sb = buildUrl("broadcast", unifiedMessage.getPushApplicationId());
+        StringBuilder sb = buildUrl("broadcast");
         // transform JSON:
         String payload = transformJSON(unifiedMessage.getAttributes());
         // fire!
@@ -78,7 +78,7 @@ public class SenderClient implements JavaSender {
 
     @Override
     public void sendTo(UnifiedMessage unifiedMessage) {
-        StringBuilder sb = buildUrl("selected", unifiedMessage.getPushApplicationId());
+        StringBuilder sb = buildUrl("selected");
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
@@ -165,7 +165,7 @@ public class SenderClient implements JavaSender {
         try {
             stringPayload = om.writeValueAsString(value);
         } catch (Exception e) {
-            new IllegalStateException("Failed to encode JSON payload");
+            throw new IllegalStateException("Failed to encode JSON payload");
         }
         return stringPayload;
     }
