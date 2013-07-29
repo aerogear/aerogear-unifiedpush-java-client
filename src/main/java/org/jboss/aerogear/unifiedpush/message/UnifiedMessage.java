@@ -46,6 +46,7 @@ import java.util.Map;
  *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
  *       .alert("Hello")
  *       .sound("default")
+ *       .variants(Arrays.asList("c3f0a94f-48de-4b77-a08e-68114460857e")) //e.g. HR_Premium
  *       .aliases(Arrays.asList("mike", "john"))
  *       .deviceType(Arrays.asList("iPad","AndroidTablet"))
  *       .build();
@@ -57,6 +58,8 @@ public class UnifiedMessage {
     private String pushApplicationId;
 
     private String masterSecret;
+
+    private List<String> variants;
 
     private List<String> aliases;
 
@@ -78,6 +81,8 @@ public class UnifiedMessage {
         private String category;
 
         private List<String> deviceType = new ArrayList<String>();
+
+        private List<String> variants = new ArrayList<String>();
 
         private List<String> aliases = new ArrayList<String>();
 
@@ -118,6 +123,17 @@ public class UnifiedMessage {
          */
         public Builder aliases(List<String> aliases) {
             this.aliases = aliases;
+            return this;
+        }
+
+        /**
+         * A filter for notifying only specific mobile variants of the Push Application
+         *
+         * @param variants a list of mobile variants ids
+         * @return the current {@link Builder} instance
+         */
+        public Builder variants(List<String> variants) {
+            this.variants = variants;
             return this;
         }
 
@@ -248,6 +264,7 @@ public class UnifiedMessage {
     private UnifiedMessage(Builder builder) {
         this.attributes = builder.attributes;
         this.aliases = builder.aliases;
+        this.variants = builder.variants;
         this.category = builder.category;
         this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
@@ -276,6 +293,14 @@ public class UnifiedMessage {
 
     public void setAliases(List<String> aliases) {
         this.aliases = aliases;
+    }
+
+    public List<String> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<String> variants) {
+        this.variants = variants;
     }
 
     public Map<String, Object> getAttributes() {
