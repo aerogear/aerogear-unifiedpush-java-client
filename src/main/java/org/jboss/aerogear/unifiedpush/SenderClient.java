@@ -86,6 +86,18 @@ public class SenderClient implements JavaSender {
 
         selectedPayloadObject.put("alias", unifiedMessage.getAliases());
 
+        if(unifiedMessage.getCategory() != null) {
+            selectedPayloadObject.put("category", unifiedMessage.getAliases());
+        }
+
+        if(!unifiedMessage.getDeviceType().isEmpty()) {
+            selectedPayloadObject.put("deviceType", unifiedMessage.getAliases());
+        }
+
+        if(!unifiedMessage.getVariants().isEmpty()) {
+            selectedPayloadObject.put("variants", unifiedMessage.getVariants());
+        }
+
         selectedPayloadObject.put("message", unifiedMessage.getAttributes());
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);

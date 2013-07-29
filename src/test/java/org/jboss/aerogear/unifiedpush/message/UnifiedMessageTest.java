@@ -71,7 +71,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .variants(variants)
                 .build();
-        assertEquals(2, ((List) unifiedMessage.getAttributes().get("variants")).size());
+        assertEquals(2, unifiedMessage.getVariants().size());
     }
 
     @Test
@@ -82,7 +82,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .deviceType(devices)
                 .build();
-        assertEquals(1, ((List) unifiedMessage.getAttributes().get("deviceType")).size());
+        assertEquals(1, unifiedMessage.getDeviceType().size());
     }
 
     @Test
