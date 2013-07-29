@@ -271,59 +271,62 @@ public class UnifiedMessage {
         this.masterSecret = builder.masterSecret;
     }
 
+    /**
+     * Get the push Application Id
+     * @return the push Application Id
+     */
     public String getPushApplicationId() {
         return pushApplicationId;
     }
 
-    public void setPushApplicationId(String pushApplicationId) {
-        this.pushApplicationId = pushApplicationId;
-    }
-
+    /**
+     * Get the masterSecret used to authenticate against the Push Server
+     * @return the master Secret
+     */
     public String getMasterSecret() {
         return masterSecret;
     }
 
-    public void setMasterSecret(String masterSecret) {
-        this.masterSecret = masterSecret;
-    }
-
+    /**
+     * Get a list of "identifiers", like username or email address.
+     * @return a list of "identifiers", like username or email address.
+     */
     public List<String> getAliases() {
         return aliases;
     }
 
-    public void setAliases(List<String> aliases) {
-        this.aliases = aliases;
-    }
-
+    /**
+     * Get A filter for notifying only specific mobile variants of the Push Application
+     * @return A filter for notifying only specific mobile variants of the Push Application
+     */
     public List<String> getVariants() {
         return variants;
     }
 
-    public void setVariants(List<String> variants) {
-        this.variants = variants;
-    }
-
+    /**
+     * Get a map containing various key-value pairs, that represent application
+     * specific values. The mobile application is asked to look for those keys.
+     * @return A map containing various key-value pairs, that represent application
+     * specific values. The mobile application is asked to look for those keys.
+     */
     public Map<String, Object> getAttributes() {
         return attributes;
     }
 
-    public void setAttributes(Map<String, Object> attributes) {
-        this.attributes = attributes;
-    }
 
+    /**
+     * Get a category,a semantical tag.
+     * @return
+     */
     public String getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
+    /**
+     * Get a filter for notifying only users running a certain device.
+     * @return a filter for notifying only users running a certain device.
+     */
     public List<String> getDeviceType() {
         return deviceType;
-    }
-
-    public void setDeviceType(List<String> deviceType) {
-        this.deviceType = deviceType;
     }
 }
