@@ -59,15 +59,9 @@ public class UnifiedMessage {
 
     private String masterSecret;
 
-    private List<String> variants;
-
     private List<String> aliases;
 
     private Map<String, Object> attributes;
-
-    private String category;
-
-    private List<String> deviceType;
 
     /**
      * A builder to provide a Fluid API
@@ -133,7 +127,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder variants(List<String> variants) {
-            this.variants = variants;
+            this.attributes.put("variants",variants);
             return this;
         }
 
@@ -144,7 +138,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder category(String category) {
-            this.category = category;
+            this.attributes.put("category",category);
             return this;
         }
 
@@ -155,7 +149,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder deviceType(List<String> deviceType) {
-            this.deviceType = deviceType;
+            this.attributes.put("deviceType",deviceType);
             return this;
         }
 
@@ -264,9 +258,6 @@ public class UnifiedMessage {
     private UnifiedMessage(Builder builder) {
         this.attributes = builder.attributes;
         this.aliases = builder.aliases;
-        this.variants = builder.variants;
-        this.category = builder.category;
-        this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
     }
@@ -295,35 +286,11 @@ public class UnifiedMessage {
         this.aliases = aliases;
     }
 
-    public List<String> getVariants() {
-        return variants;
-    }
-
-    public void setVariants(List<String> variants) {
-        this.variants = variants;
-    }
-
     public Map<String, Object> getAttributes() {
         return attributes;
     }
 
     public void setAttributes(Map<String, Object> attributes) {
         this.attributes = attributes;
-    }
-
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
-
-    public List<String> getDeviceType() {
-        return deviceType;
-    }
-
-    public void setDeviceType(List<String> deviceType) {
-        this.deviceType = deviceType;
     }
 }
