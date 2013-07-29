@@ -295,6 +295,14 @@ public class UnifiedMessage {
         this.aliases = aliases;
     }
 
+    public List<String> getVariants() {
+        return variants;
+    }
+
+    public void setVariants(List<String> variants) {
+        this.variants = variants;
+    }
+
     public Map<String, Object> getAttributes() {
         return attributes;
     }
