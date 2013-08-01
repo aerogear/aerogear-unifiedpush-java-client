@@ -69,6 +69,8 @@ public class UnifiedMessage {
 
     private List<String> deviceType;
 
+    private Map<String, String> simplePushMap;
+
     /**
      * A builder to provide a Fluid API
      */
@@ -87,6 +89,8 @@ public class UnifiedMessage {
         private List<String> aliases = new ArrayList<String>();
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
+
+        private Map<String, String> simplePushMap;
 
         private final String alert = "alert";
         private final String sound = "sound";
@@ -240,7 +244,7 @@ public class UnifiedMessage {
             for (Map.Entry<String, String> entry : entries.entrySet()) {
                 entry.setValue(fixVersion(entry.getValue()));
             }
-            this.attributes.put(simplePush, entries);
+            this.simplePushMap = entries;
             return this;
         }
 
@@ -270,6 +274,7 @@ public class UnifiedMessage {
         this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
+        this.simplePushMap = builder.simplePushMap;
     }
 
     /**
@@ -335,5 +340,13 @@ public class UnifiedMessage {
      */
     public List<String> getDeviceType() {
         return deviceType;
+    }
+
+    public Map<String, String> getSimplePushMap() {
+        return simplePushMap;
+    }
+
+    public void setSimplePushMap(Map<String, String> simplePushMap) {
+        this.simplePushMap = simplePushMap;
     }
 }
