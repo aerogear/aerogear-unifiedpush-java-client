@@ -91,11 +91,15 @@ public class SenderClient implements JavaSender {
         }
 
         if(!unifiedMessage.getDeviceType().isEmpty()) {
-            selectedPayloadObject.put("deviceType", unifiedMessage.getAliases());
+            selectedPayloadObject.put("deviceType", unifiedMessage.getDeviceType());
         }
 
         if(!unifiedMessage.getVariants().isEmpty()) {
             selectedPayloadObject.put("variants", unifiedMessage.getVariants());
+        }
+
+        if(unifiedMessage.getSimplePushMap()!= null) {
+            selectedPayloadObject.put("simple-push", unifiedMessage.getSimplePushMap());
         }
 
         selectedPayloadObject.put("message", unifiedMessage.getAttributes());

@@ -108,7 +108,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush(simplePush)
                 .build();
-        assertEquals("version=1", ((Map) unifiedMessage.getAttributes().get("simple-push")).get("channel1"));
+        assertEquals("version=1", unifiedMessage.getSimplePushMap().get("channel1"));
     }
 
     @Test
@@ -118,6 +118,6 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush(simplePush)
                 .build();
-        assertEquals("version=1", ((Map) unifiedMessage.getAttributes().get("simple-push")).get("channel1"));
+        assertEquals("version=1", unifiedMessage.getSimplePushMap().get("channel1"));
     }
 }
