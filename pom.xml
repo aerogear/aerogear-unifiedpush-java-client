@@ -15,12 +15,12 @@
   See the License for the specific language governing permissions and
   limitations under the License.
 -->
-<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unified-push-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.0-SNAPSHOT</version>
+    <version>0.2.0</version>
     <name>unified-push-java-client</name>
 
     <parent>
@@ -41,7 +41,7 @@
         <connection>scm:git:git://github.com/aerogear/aerogear-unified-push-java-client.git</connection>
         <developerConnection>scm:git:git@github.com:aerogear/aerogear-unified-push-java-client.git</developerConnection>
         <url>https://github.com/aerogear/aerogear-unified-push-java-client</url>
-        <tag>HEAD</tag>
+        <tag>0.2.0</tag>
     </scm>
 
     <developers>
