@@ -44,11 +44,11 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .alert("Hello from Java Sender API, via JUnit")
                 .sound("default")
-                .badge("badge")
+                .badge("1")
                 .build();
         assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getAttributes().get("alert"));
         assertEquals("default", unifiedMessage.getAttributes().get("sound"));
-        assertEquals("badge", unifiedMessage.getAttributes().get("badge"));
+        assertEquals(1, unifiedMessage.getAttributes().get("badge"));
     }
 
     @Test

@@ -217,7 +217,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder badge(String badge) {
-            this.attributes.put(this.badge, badge);
+            this.attributes.put(this.badge, Integer.parseInt(badge));
             return this;
         }
 
