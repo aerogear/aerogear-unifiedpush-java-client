@@ -20,7 +20,7 @@
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unified-push-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.2-SNAPSHOT</version>
+    <version>0.2.1-SNAPSHOT</version>
     <name>unified-push-java-client</name>
 
     <parent>
