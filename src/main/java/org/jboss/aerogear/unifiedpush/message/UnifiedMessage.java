@@ -72,7 +72,7 @@ public class UnifiedMessage {
     private Map<String, String> simplePushMap;
 
     /**
-     * A builder to provide a Fluid API
+     * A builder to provide a fluent API
      */
     public static class Builder {
 
