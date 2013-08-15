@@ -52,3 +52,21 @@ Send the message
 
 ``` defaultJavaSender.sendTo(unifiedMessage); ```
 
+## Known issues
+
+On Java7 you might see a ```SSLProtocolException: handshake alert: unrecognized_name``` expection when the UnifiedPush server is running on https. There are a few workarounds:
+
+* JBoss' ```standalone.xml``` configuration file:
+```
+<system-properties>
+   <property name="jsse.enableSNIExtension" value="false"/>
+</system-properties>
+```
+
+* in the Java app, that is _using_ the Java Client SDK: ```System.setProperty("jsse.enableSNIExtension", "false");```
+* Or via commandline argument: ```-Djsse.enableSNIExtension=false```
+
+
+
+
+ 
