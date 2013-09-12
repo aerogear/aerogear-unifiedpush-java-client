@@ -120,8 +120,18 @@ public class SenderClient implements JavaSender {
             // POST the payload to the UnifiedPush Server
             httpURLConnection = post(url, encoded, jsonPayloadObject);
 
-            int status = httpURLConnection.getResponseCode();
-            logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", status));
+            int statusCode = httpURLConnection.getResponseCode();
+            logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", statusCode));
+
+            // if we got a redirect, let's extract the 'Location' header from the response
+            // and submit the payload again
+            if (isRedirect(statusCode)) {
+                String redirectURL = httpURLConnection.getHeaderField("Location");
+                logger.info(String.format("Performing redirect to '%s'", redirectURL));
+
+                // execute the 'redirect'
+                this.submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret);
+            }
 
         } catch (MalformedURLException e) {
             logger.severe("Invalid Server URL");
@@ -173,6 +183,16 @@ public class SenderClient implements JavaSender {
     private HttpURLConnection getConnection(String url) throws IOException {
         HttpURLConnection conn = (HttpURLConnection) new URL(url).openConnection();
         return conn;
+    }
+
+    /**
+     * checks if the given status code is a redirect (301, 302 or 303 response status code)
+     */
+    private boolean isRedirect(int statusCode) {
+        if (statusCode == HttpURLConnection.HTTP_MOVED_PERM || statusCode == HttpURLConnection.HTTP_MOVED_TEMP || statusCode == HttpURLConnection.HTTP_SEE_OTHER) {
+            return true;
+        }
+        return false;
     }
 
     private String transformJSON(Object value) {
