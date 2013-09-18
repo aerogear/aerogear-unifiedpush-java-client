@@ -17,6 +17,8 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
+import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -241,7 +243,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder simplePush(Map<String, String> entries) {
-            if (entries != null) {
+            if (!isEmpty(entries)) {
                 for (Map.Entry<String, String> entry : entries.entrySet()) {
                     entry.setValue(fixVersion(entry.getValue()));
                 }
