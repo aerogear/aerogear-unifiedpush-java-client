@@ -84,24 +84,27 @@ public class SenderClient implements JavaSender {
                 new LinkedHashMap<String, Object>();
         // add the "clientIdentifiers" to the "alias" field
 
-        selectedPayloadObject.put("alias", unifiedMessage.getAliases());
-
+        
+        if (unifiedMessage.getAliases() != null && !unifiedMessage.getAliases().isEmpty()) {
+            selectedPayloadObject.put("alias", unifiedMessage.getAliases());
+        }
+        
         if(unifiedMessage.getCategory() != null) {
             selectedPayloadObject.put("category", unifiedMessage.getAliases());
         }
 
-        if(!unifiedMessage.getDeviceType().isEmpty()) {
+        if(unifiedMessage.getDeviceType() != null && !unifiedMessage.getDeviceType().isEmpty()) {
             selectedPayloadObject.put("deviceType", unifiedMessage.getDeviceType());
         }
 
-        if(!unifiedMessage.getVariants().isEmpty()) {
+        if(unifiedMessage.getVariants() != null && !unifiedMessage.getVariants().isEmpty()) {
             selectedPayloadObject.put("variants", unifiedMessage.getVariants());
         }
 
-        if(unifiedMessage.getSimplePushMap()!= null) {
+        if(unifiedMessage.getSimplePushMap()!= null && !unifiedMessage.getSimplePushMap().isEmpty()) {
             selectedPayloadObject.put("simple-push", unifiedMessage.getSimplePushMap());
         }
-
+        
         selectedPayloadObject.put("message", unifiedMessage.getAttributes());
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);

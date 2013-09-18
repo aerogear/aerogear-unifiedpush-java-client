@@ -241,8 +241,10 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder simplePush(Map<String, String> entries) {
-            for (Map.Entry<String, String> entry : entries.entrySet()) {
-                entry.setValue(fixVersion(entry.getValue()));
+            if (entries != null) {
+                for (Map.Entry<String, String> entry : entries.entrySet()) {
+                    entry.setValue(fixVersion(entry.getValue()));
+                }
             }
             this.simplePushMap = entries;
             return this;
