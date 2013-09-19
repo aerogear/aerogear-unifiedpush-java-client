@@ -16,6 +16,8 @@
  */
 package org.jboss.aerogear.unifiedpush;
 
+import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
+
 import net.iharder.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
@@ -39,7 +41,7 @@ public class SenderClient implements JavaSender {
     private String serverURL;
 
     public SenderClient(String rootServerURL) {
-        if (rootServerURL == null) {
+        if (isEmpty(rootServerURL)) {
             throw new IllegalStateException("server can not be null");
         }
         this.setServerURL(rootServerURL);
@@ -56,7 +58,7 @@ public class SenderClient implements JavaSender {
      * @return a StringBuilder containing the constructed URL
      */
     protected StringBuilder buildUrl(String type) {
-        if (serverURL == null) {
+        if (isEmpty(serverURL)) {
             throw new IllegalStateException("server can not be null");
         }
         //  build the broadcast URL:
@@ -82,27 +84,31 @@ public class SenderClient implements JavaSender {
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
-        // add the "clientIdentifiers" to the "alias" field
 
-        selectedPayloadObject.put("alias", unifiedMessage.getAliases());
-
-        if(unifiedMessage.getCategory() != null) {
-            selectedPayloadObject.put("category", unifiedMessage.getAliases());
+        if (!isEmpty(unifiedMessage.getAliases())) {
+            selectedPayloadObject.put("alias", unifiedMessage.getAliases());
+        }
+        
+        if (!isEmpty(unifiedMessage.getCategory())) {
+            selectedPayloadObject.put("category", unifiedMessage.getCategory());
         }
 
-        if(!unifiedMessage.getDeviceType().isEmpty()) {
+        if (!isEmpty(unifiedMessage.getDeviceType())) {
             selectedPayloadObject.put("deviceType", unifiedMessage.getDeviceType());
         }
 
-        if(!unifiedMessage.getVariants().isEmpty()) {
+        if (!isEmpty(unifiedMessage.getVariants())) {
             selectedPayloadObject.put("variants", unifiedMessage.getVariants());
         }
 
-        if(unifiedMessage.getSimplePushMap()!= null) {
+        if (!isEmpty(unifiedMessage.getSimplePushMap())) {
             selectedPayloadObject.put("simple-push", unifiedMessage.getSimplePushMap());
         }
-
-        selectedPayloadObject.put("message", unifiedMessage.getAttributes());
+        
+        if (!isEmpty(unifiedMessage.getAttributes())) {
+            selectedPayloadObject.put("message", unifiedMessage.getAttributes());
+        }
+        
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
 

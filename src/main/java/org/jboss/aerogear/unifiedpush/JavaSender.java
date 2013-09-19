@@ -18,9 +18,6 @@ package org.jboss.aerogear.unifiedpush;
 
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 
-import java.util.List;
-import java.util.Map;
-
 public interface JavaSender {
 
     /**
