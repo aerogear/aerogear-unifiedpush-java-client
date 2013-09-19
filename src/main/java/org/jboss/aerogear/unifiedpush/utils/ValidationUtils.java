@@ -19,19 +19,41 @@ package org.jboss.aerogear.unifiedpush.utils;
 import java.util.Collection;
 import java.util.Map;
 
+/**
+ * Utility class offering methods for validating instances.
+ * 
+ */
 public final class ValidationUtils {
 
     private ValidationUtils() {
     }
 
+    /**
+     * Checks if the given {@link Collection} is null or empty.
+     * 
+     * @param c the collection to be checked
+     * @return true if null or empty and false otherwise
+     */
     public static <E> boolean isEmpty(Collection<E> c) {
         return c == null || c.isEmpty();
     }
 
+    /**
+     * Checks if the given {@link Map} is null or empty.
+     * 
+     * @param map the map to be checked
+     * @return true if null or empty and false otherwise
+     */
     public static <K, V> boolean isEmpty(Map<K, V> map) {
         return map == null || map.isEmpty();
     }
 
+    /**
+     * Checks if the given {@link String} is null or empty.
+     * 
+     * @param str the string to be checked
+     * @return true if null or empty and false otherwise
+     */
     public static boolean isEmpty(String str) {
         return str == null || "".equals(str);
     }
