@@ -21,17 +21,10 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 public interface JavaSender {
 
     /**
-     * Sends the given payload to all installations of the referenced PushApplication.
-     * 
-     * @param unifiedMessage The {@link UnifiedMessage} to send
-     */
-    void broadcast(UnifiedMessage unifiedMessage);
-
-    /**
-     * Sends the given payload to a selection of installations of the referenced PushApplication.
+     * Sends the given payload to installations of the referenced PushApplication.
      *
      * @param unifiedMessage The {@link UnifiedMessage} to send
      */
-    void sendTo(UnifiedMessage unifiedMessage);
+    void send(UnifiedMessage unifiedMessage);
 
 }

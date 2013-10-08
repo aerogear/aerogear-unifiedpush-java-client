@@ -70,16 +70,7 @@ public class SenderClient implements JavaSender {
     }
 
     @Override
-    public void broadcast(UnifiedMessage unifiedMessage) {
-        StringBuilder sb = buildUrl("broadcast");
-        // transform JSON:
-        String payload = transformJSON(unifiedMessage.getAttributes());
-        // fire!
-        submitPayload(sb.toString(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret());
-    }
-
-    @Override
-    public void sendTo(UnifiedMessage unifiedMessage) {
+    public void send(UnifiedMessage unifiedMessage) {
         StringBuilder sb = buildUrl("selected");
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
