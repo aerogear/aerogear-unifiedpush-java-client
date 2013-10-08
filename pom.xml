@@ -20,7 +20,7 @@
     <groupId>org.jboss.aerogear.unifiedpush</groupId>
     <artifactId>unified-push-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>0.2.2</version>
+    <version>0.3.0-SNAPSHOT</version>
     <name>unified-push-java-client</name>
 
     <parent>
@@ -41,7 +41,7 @@
         <connection>scm:git:git://github.com/aerogear/aerogear-unified-push-java-client.git</connection>
         <developerConnection>scm:git:git@github.com:aerogear/aerogear-unified-push-java-client.git</developerConnection>
         <url>https://github.com/aerogear/aerogear-unified-push-java-client</url>
-        <tag>0.2.2</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <developers>
