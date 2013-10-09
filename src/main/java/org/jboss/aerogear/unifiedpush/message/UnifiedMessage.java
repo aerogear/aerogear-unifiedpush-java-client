@@ -33,16 +33,7 @@ import java.util.Map;
  * To construct a message use the {@link Builder} like this :
  * <pre>
  * {@code
- * // For 'broadcast' messages
- * UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
- *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
- *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
- *       .alert("Hello")
- *       .sound("default")
- *       .badge("welcome")
- *       .build();
- *
- * // For 'selective' messages
+ * // Sending an UnifiedMessage
  *  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
  *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
  *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
@@ -224,20 +215,7 @@ public class UnifiedMessage {
         }
 
         /**
-         * Needed when broadcasting a message to a SimplePush Network
-         * Note: Do not use this method for a "selective send".
-         *
-         * @param version to pass to the broadcast channel, i.e "version=5"
-         * @return the current {@link Builder} instance
-         */
-        public Builder simplePush(String version) {
-            this.attributes.put(simplePush, fixVersion(version));
-            return this;
-        }
-
-        /**
          * Needed when doing a selective send to a SimplePush Network
-         * Note: Do not use this method for a "broadcast send".
          *
          * @param entries representing a key:value where key is an alias (category) of the channel and value some version (i.e "version=5")
          * @return the current {@link Builder} instance
