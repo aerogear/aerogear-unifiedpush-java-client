@@ -17,24 +17,7 @@ Create a ```JavaSender```:
     JavaSender defaultJavaSender =
       new SenderClient("http://localhost:8080/ag-push");
 
-### Send a Broadcast message
-
-Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
-
-```
- UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
-                .build();
-```
-
-Send the message
-
-``` defaultJavaSender.broadcast(unifiedMessage); ```
-
-### Send a Selective message
+### Send a message
 
 Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
 
@@ -52,7 +35,7 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
 
 Send the message
 
-``` defaultJavaSender.sendTo(unifiedMessage); ```
+``` defaultJavaSender.send(unifiedMessage); ```
 
 ## Known issues
 
