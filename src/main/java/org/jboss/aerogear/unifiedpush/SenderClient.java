@@ -54,24 +54,23 @@ public class SenderClient implements JavaSender {
     /**
      * Construct the URL fired against the Unified Push Server
      *
-     * @param type a String defining the sending method, could be "broadcast" or "selected"
      * @return a StringBuilder containing the constructed URL
      */
-    protected StringBuilder buildUrl(String type) {
+    protected StringBuilder buildUrl() {
         if (isEmpty(serverURL)) {
             throw new IllegalStateException("server can not be null");
         }
+
         //  build the broadcast URL:
-        StringBuilder sb = new StringBuilder();
-        sb.append(serverURL)
-                .append("rest/sender/")
-                .append(type);
+        final StringBuilder sb = new StringBuilder();
+        sb.append(serverURL).append("rest/sender/");
+
         return sb;
     }
 
     @Override
     public void send(UnifiedMessage unifiedMessage) {
-        StringBuilder sb = buildUrl("selected");
+        final StringBuilder sb = buildUrl();
         // build the URL:
         final Map<String, Object> selectedPayloadObject =
                 new LinkedHashMap<String, Object>();
@@ -119,6 +118,7 @@ public class SenderClient implements JavaSender {
 
             int statusCode = httpURLConnection.getResponseCode();
             logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", statusCode));
+			logger.info("To: " + url);
 
             // if we got a redirect, let's extract the 'Location' header from the response
             // and submit the payload again
