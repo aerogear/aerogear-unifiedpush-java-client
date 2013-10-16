@@ -4,10 +4,19 @@ A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](h
 
 ## Getting started
 
+Add the following dependencies to your ```pom.xml``` file:
+
         <dependency>
              <groupId>org.jboss.aerogear.unifiedpush</groupId>
              <artifactId>unified-push-java-client</artifactId>
-             <version>0.2.1</version>
+             <version>0.2.2</version>
+        </dependency>
+
+        <!-- RestEasy's Jackson Plugin -->
+        <dependency>
+            <groupId>org.jboss.resteasy</groupId>
+            <artifactId>resteasy-jackson-provider</artifactId>
+            <version>2.3.2.Final</version>
         </dependency>
 
 ## Usage
