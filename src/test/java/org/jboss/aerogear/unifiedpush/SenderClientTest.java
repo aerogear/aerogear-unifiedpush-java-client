@@ -18,24 +18,50 @@ package org.jboss.aerogear.unifiedpush;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
+import org.jboss.aerogear.unifiedpush.utils.ValidationUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest(ValidationUtils.class)
 public class SenderClientTest {
 
     private JavaSender defaultJavaSender;
 
     @Before
     public void setup() {
-        defaultJavaSender = new SenderClient("http://localhost:8080/ag-push");
+        defaultJavaSender = new SenderClient("http://dummyserver.com/ag-push");
     }
 
     @Test
-    public void sendSelectiveSendToOne() {
-        long start = System.currentTimeMillis();
+    public void sendSendWithCallback() {
+
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            @Override
+            public void success(int statusCode) {
+                fail();
+            }
+
+            @Override
+            public void complete(int statusCode) {
+                assertTrue("handling status " + statusCode, true);
+            }
+
+            @Override
+            public void failure(Throwable throwable) {
+                fail();
+            }
+        };
 
         List<String> identifiers = new ArrayList<String>();
         identifiers.add("mwessendorf2");
@@ -49,9 +75,87 @@ public class SenderClientTest {
                 .build();
 
         // send it out:
-        defaultJavaSender.send(unifiedMessage);
-
-        long end = System.currentTimeMillis();
-        System.out.println("Took: " + (end - start));
+        defaultJavaSender.send(unifiedMessage, callback);
     }
+
+    @Test
+    public void sendSendWithCallbackAndException() {
+        defaultJavaSender.setServerURL("invalidServer");
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            @Override
+            public void success(int statusCode) {
+                fail();
+            }
+
+            @Override
+            public void complete(int statusCode) {
+                fail();
+            }
+
+            @Override
+            public void failure(Throwable throwable) {
+                assertTrue("handling status ", true);
+            }
+        };
+
+        List<String> identifiers = new ArrayList<String>();
+        identifiers.add("mwessendorf2");
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .aliases(identifiers)
+                .build();
+
+        // send it out:
+        defaultJavaSender.send(unifiedMessage, callback);
+    }
+
+    @Test
+    public void sendSendWithCallbackAndSuccess() {
+        //let's mock the http status to simulate a 200 OK
+        PowerMockito.mockStatic(ValidationUtils.class);
+        PowerMockito.when(ValidationUtils.isSuccess(404)).thenReturn(true);
+        defaultJavaSender.setServerURL("http://dummyserver.com/ag-push");
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            boolean isSuccess;
+
+            @Override
+            public void success(int statusCode) {
+                isSuccess = true;
+            }
+
+            @Override
+            public void complete(int statusCode) {
+                if (isSuccess) {
+                    assertTrue(true);
+                }
+                else {
+                    fail();
+                }
+            }
+
+            @Override
+            public void failure(Throwable throwable) {
+                fail();
+            }
+        };
+
+        List<String> identifiers = new ArrayList<String>();
+        identifiers.add("mwessendorf2");
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .aliases(identifiers)
+                .build();
+
+        // send it out:
+        defaultJavaSender.send(unifiedMessage, callback);
+    }
+
 }
