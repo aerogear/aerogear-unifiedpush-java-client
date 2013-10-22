@@ -28,7 +28,7 @@ import java.util.Map;
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
  * The message format is very simple: A generic JSON map is used to sent messages to Android and iOS devices.
  * The applications on the devices will receive the JSON map and are responsible for performing a lookup to read values of the given keys.
- * See the {@link <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">Message Specification</a>} for more information.
+ * See the <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">Message Specification</a> for more information.
  * <p>
  * To construct a message use the {@link Builder} like this :
  * <pre>
