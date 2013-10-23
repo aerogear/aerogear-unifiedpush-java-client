@@ -59,11 +59,8 @@ public class SenderClient implements JavaSender {
         if (isEmpty(serverURL)) {
             throw new IllegalStateException("server can not be null");
         }
-        //  build the broadcast URL:
-        final StringBuilder sb = new StringBuilder();
-        sb.append(serverURL).append("rest/sender/");
 
-        return sb.toString();
+        return serverURL + "rest/sender/";
     }
 
     @Override
@@ -74,6 +71,16 @@ public class SenderClient implements JavaSender {
         String payload = transformJSON(selectedPayloadObject);
         // fire!
         submitPayload(buildUrl(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), callback);
+    }
+
+    @Override
+    public void send(UnifiedMessage unifiedMessage) {
+        final Map<String, Object> selectedPayloadObject = prepareMessage(unifiedMessage);
+        int statusCode;
+        // transform to JSONString:
+        String payload = transformJSON(selectedPayloadObject);
+        // fire!
+        submitPayload(buildUrl(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), null);
     }
 
     /**
@@ -134,7 +141,6 @@ public class SenderClient implements JavaSender {
 
             statusCode = httpURLConnection.getResponseCode();
             logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", statusCode));
-            logger.info("To: " + url);
 
             // if we got a redirect, let's extract the 'Location' header from the response
             // and submit the payload again
@@ -144,15 +150,16 @@ public class SenderClient implements JavaSender {
                 // execute the 'redirect'
                 this.submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback);
             } else {
-                if (isSuccess(statusCode)) {
-                    callback.success(statusCode);
+                if(callback != null){
+                    callback.onComplete(statusCode);
                 }
-                callback.complete(statusCode);
             }
 
         } catch (Exception e) {
             logger.severe("Send did not succeed: " + e.getMessage());
-            callback.failure(e);
+            if(callback != null){
+                callback.onError(e);
+            }
         } finally {
             // tear down
             if (httpURLConnection != null) {

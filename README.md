@@ -47,18 +47,13 @@ Create a callback
 ```
  MessageResponseCallback callback = new MessageResponseCallback() {
 
-           @Override
-            public void success(int statusCode) {
+            @Override
+            public void onComplete(int statusCode) {
               //do cool stuff
             }
 
             @Override
-            public void complete(int statusCode) {
-              //do cool stuff
-            }
-
-            @Override
-            public void failure(Throwable throwable) {
+            public void onError(Throwable throwable) {
               //bring out the bad news
             }
         };
