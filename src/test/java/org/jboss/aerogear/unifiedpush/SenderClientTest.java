@@ -47,18 +47,14 @@ public class SenderClientTest {
     public void sendSendWithCallback() {
 
         MessageResponseCallback callback = new MessageResponseCallback() {
+
             @Override
-            public void success(int statusCode) {
-                fail();
+            public void onComplete(int statusCode) {
+                assertTrue("handling status " + statusCode, statusCode==404);
             }
 
             @Override
-            public void complete(int statusCode) {
-                assertTrue("handling status " + statusCode, true);
-            }
-
-            @Override
-            public void failure(Throwable throwable) {
+            public void onError(Throwable throwable) {
                 fail();
             }
         };
@@ -82,18 +78,14 @@ public class SenderClientTest {
     public void sendSendWithCallbackAndException() {
         defaultJavaSender.setServerURL("invalidServer");
         MessageResponseCallback callback = new MessageResponseCallback() {
+
             @Override
-            public void success(int statusCode) {
+            public void onComplete(int statusCode) {
                 fail();
             }
 
             @Override
-            public void complete(int statusCode) {
-                fail();
-            }
-
-            @Override
-            public void failure(Throwable throwable) {
+            public void onError(Throwable throwable) {
                 assertTrue("handling status ", true);
             }
         };
@@ -120,25 +112,14 @@ public class SenderClientTest {
         PowerMockito.when(ValidationUtils.isSuccess(404)).thenReturn(true);
         defaultJavaSender.setServerURL("http://dummyserver.com/ag-push");
         MessageResponseCallback callback = new MessageResponseCallback() {
-            boolean isSuccess;
 
             @Override
-            public void success(int statusCode) {
-                isSuccess = true;
+            public void onComplete(int statusCode) {
+                assertTrue(ValidationUtils.isSuccess(statusCode));
             }
 
             @Override
-            public void complete(int statusCode) {
-                if (isSuccess) {
-                    assertTrue(true);
-                }
-                else {
-                    fail();
-                }
-            }
-
-            @Override
-            public void failure(Throwable throwable) {
+            public void onError(Throwable throwable) {
                 fail();
             }
         };
@@ -156,6 +137,28 @@ public class SenderClientTest {
 
         // send it out:
         defaultJavaSender.send(unifiedMessage, callback);
+    }
+
+    @Test
+    public void sendSendWithoutCallback() {
+        //let's mock the http status to simulate a 200 OK
+        PowerMockito.mockStatic(ValidationUtils.class);
+        PowerMockito.when(ValidationUtils.isSuccess(404)).thenReturn(true);
+        defaultJavaSender.setServerURL("http://dummyserver.com/ag-push");
+
+        List<String> identifiers = new ArrayList<String>();
+        identifiers.add("mwessendorf2");
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .aliases(identifiers)
+                .build();
+
+        // send it out:
+        defaultJavaSender.send(unifiedMessage);
     }
 
 }
