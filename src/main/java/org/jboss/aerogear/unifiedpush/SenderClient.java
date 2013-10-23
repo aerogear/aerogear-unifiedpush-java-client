@@ -75,12 +75,7 @@ public class SenderClient implements JavaSender {
 
     @Override
     public void send(UnifiedMessage unifiedMessage) {
-        final Map<String, Object> selectedPayloadObject = prepareMessage(unifiedMessage);
-        int statusCode;
-        // transform to JSONString:
-        String payload = transformJSON(selectedPayloadObject);
-        // fire!
-        submitPayload(buildUrl(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), null);
+       this.send(unifiedMessage, null);
     }
 
     /**
