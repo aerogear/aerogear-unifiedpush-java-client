@@ -232,7 +232,8 @@ public class UnifiedMessage {
         }
 
         /**
-         * Specify the Time To Live of the message, used by the APNs/GCM Push Networks
+         * Specify the Time To Live of the message, used by the APNs/GCM Push Networks.
+         * If the device is offline for a longer time than the ttl value, the supported Push Networks may not deliver the message to the client.
          *
          * @param seconds , the amount of seconds of the Time To Live
          * @return the current {@link Builder} instance
