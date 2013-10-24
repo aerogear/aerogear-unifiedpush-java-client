@@ -65,7 +65,7 @@ Send the message
 ``` defaultJavaSender.send(unifiedMessage, callback); ```
 
 
-You can also ommit the callback
+You can also omit the callback
 
 
 ``` defaultJavaSender.send(unifiedMessage); ```
