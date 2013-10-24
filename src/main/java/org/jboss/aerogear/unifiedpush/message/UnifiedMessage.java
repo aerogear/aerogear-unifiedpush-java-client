@@ -89,6 +89,7 @@ public class UnifiedMessage {
         private final String sound = "sound";
         private final String badge = "badge";
         private final String simplePush = "simple-push";
+        private final String ttl = "ttl";
 
         /**
          * Specifies which Push Application the message is for.
@@ -227,6 +228,17 @@ public class UnifiedMessage {
                 }
             }
             this.simplePushMap = entries;
+            return this;
+        }
+
+        /**
+         * Specify the Time To Live of the message, used by the APNs/GCM Push Networks
+         *
+         * @param seconds , the amount of seconds of the Time To Live
+         * @return the current {@link Builder} instance
+         */
+        public Builder timeToLive(int seconds) {
+            this.attributes.put(this.ttl,seconds);
             return this;
         }
 
