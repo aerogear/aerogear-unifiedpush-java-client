@@ -61,7 +61,15 @@ Create a callback
 
 Send the message
 
+
 ``` defaultJavaSender.send(unifiedMessage, callback); ```
+
+
+You can also ommit the callback
+
+
+``` defaultJavaSender.send(unifiedMessage); ```
+
 
 ## Known issues
 
