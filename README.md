@@ -42,9 +42,34 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
                 .build();
 ```
 
+Create a callback
+
+```
+ MessageResponseCallback callback = new MessageResponseCallback() {
+
+            @Override
+            public void onComplete(int statusCode) {
+              //do cool stuff
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+              //bring out the bad news
+            }
+        };
+```
+
 Send the message
 
+
+``` defaultJavaSender.send(unifiedMessage, callback); ```
+
+
+You can also omit the callback
+
+
 ``` defaultJavaSender.send(unifiedMessage); ```
+
 
 ## Known issues
 

@@ -17,15 +17,14 @@
 package org.jboss.aerogear.unifiedpush;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
-
+import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isSuccess;
 import net.iharder.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
@@ -56,58 +55,77 @@ public class SenderClient implements JavaSender {
      *
      * @return a StringBuilder containing the constructed URL
      */
-    protected StringBuilder buildUrl() {
+    protected String buildUrl() {
         if (isEmpty(serverURL)) {
             throw new IllegalStateException("server can not be null");
         }
 
-        //  build the broadcast URL:
-        final StringBuilder sb = new StringBuilder();
-        sb.append(serverURL).append("rest/sender/");
+        return serverURL + "rest/sender/";
+    }
 
-        return sb;
+    @Override
+    public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
+        final Map<String, Object> selectedPayloadObject = prepareMessage(unifiedMessage);
+        int statusCode;
+        // transform to JSONString:
+        String payload = transformJSON(selectedPayloadObject);
+        // fire!
+        submitPayload(buildUrl(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), callback);
     }
 
     @Override
     public void send(UnifiedMessage unifiedMessage) {
-        final StringBuilder sb = buildUrl();
-        // build the URL:
-        final Map<String, Object> selectedPayloadObject =
+       this.send(unifiedMessage, null);
+    }
+
+    /**
+     * Flatten the given {@link UnifiedMessage} into a {@link Map}
+     * @param {@link UnifiedMessage} to be flatten
+     * @return a {@link Map}
+     */
+    private Map<String, Object> prepareMessage(UnifiedMessage unifiedMessage) {
+
+        final Map<String, Object> payloadObject =
                 new LinkedHashMap<String, Object>();
 
         if (!isEmpty(unifiedMessage.getAliases())) {
-            selectedPayloadObject.put("alias", unifiedMessage.getAliases());
+            payloadObject.put("alias", unifiedMessage.getAliases());
         }
-        
+
         if (!isEmpty(unifiedMessage.getCategory())) {
-            selectedPayloadObject.put("category", unifiedMessage.getCategory());
+            payloadObject.put("category", unifiedMessage.getCategory());
         }
 
         if (!isEmpty(unifiedMessage.getDeviceType())) {
-            selectedPayloadObject.put("deviceType", unifiedMessage.getDeviceType());
+            payloadObject.put("deviceType", unifiedMessage.getDeviceType());
         }
 
         if (!isEmpty(unifiedMessage.getVariants())) {
-            selectedPayloadObject.put("variants", unifiedMessage.getVariants());
+            payloadObject.put("variants", unifiedMessage.getVariants());
         }
 
         if (!isEmpty(unifiedMessage.getSimplePushMap())) {
-            selectedPayloadObject.put("simple-push", unifiedMessage.getSimplePushMap());
+            payloadObject.put("simple-push", unifiedMessage.getSimplePushMap());
         }
-        
-        if (!isEmpty(unifiedMessage.getAttributes())) {
-            selectedPayloadObject.put("message", unifiedMessage.getAttributes());
-        }
-        
-        // transform to JSONString:
-        String payload = transformJSON(selectedPayloadObject);
 
-        // fire!
-        submitPayload(sb.toString(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret());
+        if (!isEmpty(unifiedMessage.getAttributes())) {
+            payloadObject.put("message", unifiedMessage.getAttributes());
+        }
+        return payloadObject;
     }
 
-    private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret) {
+    /**
+     * The actual method that does the real send and connection handling
+     *
+     * @param url
+     * @param jsonPayloadObject
+     * @param pushApplicationId
+     * @param masterSecret
+     * @param callback
+     */
+    private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret, MessageResponseCallback callback) {
         String credentials = pushApplicationId + ":" + masterSecret;
+        int statusCode = 0;
 
         HttpURLConnection httpURLConnection = null;
         try {
@@ -116,29 +134,33 @@ public class SenderClient implements JavaSender {
             // POST the payload to the UnifiedPush Server
             httpURLConnection = post(url, encoded, jsonPayloadObject);
 
-            int statusCode = httpURLConnection.getResponseCode();
+            statusCode = httpURLConnection.getResponseCode();
             logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", statusCode));
-			logger.info("To: " + url);
 
             // if we got a redirect, let's extract the 'Location' header from the response
             // and submit the payload again
             if (isRedirect(statusCode)) {
                 String redirectURL = httpURLConnection.getHeaderField("Location");
                 logger.info(String.format("Performing redirect to '%s'", redirectURL));
-
                 // execute the 'redirect'
-                this.submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret);
+                this.submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback);
+            } else {
+                if(callback != null){
+                    callback.onComplete(statusCode);
+                }
             }
 
-        } catch (MalformedURLException e) {
-            logger.severe("Invalid Server URL");
-        } catch (IOException e) {
-            logger.severe("IO Exception");
+        } catch (Exception e) {
+            logger.severe("Send did not succeed: " + e.getMessage());
+            if(callback != null){
+                callback.onError(e);
+            }
         } finally {
             // tear down
             if (httpURLConnection != null) {
                 httpURLConnection.disconnect();
             }
+
         }
     }
 
@@ -192,6 +214,9 @@ public class SenderClient implements JavaSender {
         return false;
     }
 
+    /**
+     * A simple utility to tranform an {@link Object} into a json {@link String}
+     */
     private String transformJSON(Object value) {
         ObjectMapper om = new ObjectMapper();
         String stringPayload = null;
