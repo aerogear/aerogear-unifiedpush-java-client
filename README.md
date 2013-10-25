@@ -1,6 +1,6 @@
 # aerogear-unifiedpush-java-client
 
-A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server). For more information, please visit the [Java Sender Tutorial](link:http://aerogear.org/docs/guides/GetStartedwithJavaSender/) for example usages.
+A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server). For more information, please visit the [Java Sender Tutorial](http://aerogear.org/docs/guides/GetStartedwithJavaSender/) for example usages.
 
 ## Getting started
 
