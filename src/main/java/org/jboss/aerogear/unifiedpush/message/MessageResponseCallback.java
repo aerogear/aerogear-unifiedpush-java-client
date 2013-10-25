@@ -25,16 +25,18 @@ public interface MessageResponseCallback {
 
     /**
      * Will be called whatever the response status code is. It's the developer
-     * responsability to implement the status code handling.
+     * responsibility to implement the status code handling. Please consult the
+     * <a href="http://aerogear.org/docs/specs/aerogear-push-rest/Sender/">server documentation</a>
+     * for a list of valid responses.
      *
-     * @param statusCode
+     * @param statusCode the status code as returned by the server.
      */
     void onComplete(int statusCode);
 
     /**
      * Will be called if an Exception occurs (i.e : {@link java.io.IOException} )
      *
-     * @param throwable
+     * @param throwable contains failure details.
      */
     void onError(Throwable throwable);
 

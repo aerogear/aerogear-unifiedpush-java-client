@@ -66,7 +66,6 @@ public class SenderClient implements JavaSender {
     @Override
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
         final Map<String, Object> selectedPayloadObject = prepareMessage(unifiedMessage);
-        int statusCode;
         // transform to JSONString:
         String payload = transformJSON(selectedPayloadObject);
         // fire!
@@ -135,7 +134,7 @@ public class SenderClient implements JavaSender {
             httpURLConnection = post(url, encoded, jsonPayloadObject);
 
             statusCode = httpURLConnection.getResponseCode();
-            logger.info(String.format("HTTP Response code form UnifiedPush Server: %s", statusCode));
+            logger.info(String.format("HTTP Response code from UnifiedPush Server: %s", statusCode));
 
             // if we got a redirect, let's extract the 'Location' header from the response
             // and submit the payload again
