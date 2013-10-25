@@ -31,14 +31,12 @@ Create a ```JavaSender```:
 Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
 
 ```
- List<String> identifiers = new ArrayList<String>();
- identifiers.add("john");
  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
-                .alert("Hello from Java Sender API, via JUnit")
+                .aliases(Arrays.asList("john", "maria"))
+                .alert("Hello from Java Sender API!")
                 .sound("default")
-                .aliases(identifiers)
                 .build();
 ```
 
