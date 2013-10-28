@@ -33,10 +33,12 @@ public class UnifiedMessageTest {
                 .alert("Hello from Java Sender API, via JUnit")
                 .sound("default")
                 .badge("1")
+                .timeToLive(3600)
                 .build();
         assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getAttributes().get("alert"));
         assertEquals("default", unifiedMessage.getAttributes().get("sound"));
         assertEquals(1, unifiedMessage.getAttributes().get("badge"));
+        assertEquals(3600, unifiedMessage.getAttributes().get("ttl"));
     }
 
     @Test
