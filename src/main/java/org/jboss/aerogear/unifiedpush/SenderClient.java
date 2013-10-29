@@ -103,12 +103,11 @@ public class SenderClient implements JavaSender {
             payloadObject.put("variants", unifiedMessage.getVariants());
         }
 
-        if (!isEmpty(unifiedMessage.getSimplePushMap())) {
-            payloadObject.put("simple-push", unifiedMessage.getSimplePushMap());
-        }
-
         if (!isEmpty(unifiedMessage.getAttributes())) {
             payloadObject.put("message", unifiedMessage.getAttributes());
+        }
+        if (!isEmpty(unifiedMessage.getSimplePush())) {
+            payloadObject.put("simple-push", unifiedMessage.getAttributes());
         }
         return payloadObject;
     }

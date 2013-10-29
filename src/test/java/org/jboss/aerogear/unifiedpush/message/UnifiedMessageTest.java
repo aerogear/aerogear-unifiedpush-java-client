@@ -76,22 +76,18 @@ public class UnifiedMessageTest {
     }
 
     @Test
-    public void simplePushSelectiveVersionMessageTest() {
-        Map<String, String> simplePush = new HashMap<String, String>();
-        simplePush.put("channel1", "version=1");
+    public void simplePushVersionMessageTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .simplePush(simplePush)
+                .simplePush("version=1")
                 .build();
-        assertEquals("version=1", unifiedMessage.getSimplePushMap().get("channel1"));
+        assertEquals("version=1", unifiedMessage.getSimplePush());
     }
 
     @Test
-    public void simplePushSelectiveWrongVersionFormatMessageTest() {
-        Map<String, String> simplePush = new HashMap<String, String>();
-        simplePush.put("channel1", "1");
+    public void simplePushWrongVersionFormatMessageTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .simplePush(simplePush)
+                .simplePush("1")
                 .build();
-        assertEquals("version=1", unifiedMessage.getSimplePushMap().get("channel1"));
+        assertEquals("version=1", unifiedMessage.getSimplePush());
     }
 }

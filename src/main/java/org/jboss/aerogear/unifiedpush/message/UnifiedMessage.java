@@ -62,7 +62,7 @@ public class UnifiedMessage {
 
     private List<String> deviceType;
 
-    private Map<String, String> simplePushMap;
+    private String simplePush;
 
     /**
      * A builder to provide a fluent API
@@ -75,6 +75,8 @@ public class UnifiedMessage {
 
         private String category;
 
+        private String simplePush;
+
         private List<String> deviceType = new ArrayList<String>();
 
         private List<String> variants = new ArrayList<String>();
@@ -83,12 +85,9 @@ public class UnifiedMessage {
 
         private Map<String, Object> attributes = new HashMap<String, Object>();
 
-        private Map<String, String> simplePushMap;
-
         private final String alert = "alert";
         private final String sound = "sound";
         private final String badge = "badge";
-        private final String simplePush = "simple-push";
         private final String ttl = "ttl";
 
         /**
@@ -216,20 +215,16 @@ public class UnifiedMessage {
         }
 
         /**
-         * Needed when doing a selective send to a SimplePush Network
+         * Needed when sending a message to a SimplePush Network
          *
-         * @param entries representing a key:value where key is an alias (category) of the channel and value some version (i.e "version=5")
+         * @param version to pass to the broadcast channel, i.e "version=5"
          * @return the current {@link Builder} instance
          */
-        public Builder simplePush(Map<String, String> entries) {
-            if (!isEmpty(entries)) {
-                for (Map.Entry<String, String> entry : entries.entrySet()) {
-                    entry.setValue(fixVersion(entry.getValue()));
-                }
-            }
-            this.simplePushMap = entries;
+        public Builder simplePush(String version) {
+            this.simplePush = fixVersion(version);
             return this;
         }
+
 
         /**
          * Specify the Time To Live of the message, used by the APNs/GCM Push Networks.
@@ -269,7 +264,7 @@ public class UnifiedMessage {
         this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
-        this.simplePushMap = builder.simplePushMap;
+        this.simplePush = builder.simplePush;
     }
 
     /**
@@ -337,11 +332,13 @@ public class UnifiedMessage {
         return deviceType;
     }
 
-    public Map<String, String> getSimplePushMap() {
-        return simplePushMap;
-    }
-
-    public void setSimplePushMap(Map<String, String> simplePushMap) {
-        this.simplePushMap = simplePushMap;
+    /**
+     * Get the key-value pair represented by a String and
+     * used by the Simple Push Networks.
+     *
+     * @return a String in the form of "version=5"
+     */
+    public String getSimplePush(){
+       return simplePush;
     }
 }
