@@ -17,8 +17,6 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
-import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
