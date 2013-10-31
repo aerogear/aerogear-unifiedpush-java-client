@@ -107,7 +107,7 @@ public class SenderClient implements JavaSender {
             payloadObject.put("message", unifiedMessage.getAttributes());
         }
         if (!isEmpty(unifiedMessage.getSimplePush())) {
-            payloadObject.put("simple-push", unifiedMessage.getAttributes());
+            payloadObject.put("simple-push", unifiedMessage.getSimplePush());
         }
         return payloadObject;
     }
