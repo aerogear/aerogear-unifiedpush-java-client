@@ -17,7 +17,6 @@
 package org.jboss.aerogear.unifiedpush;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
-import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isSuccess;
 import net.iharder.Base64;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
@@ -231,7 +230,7 @@ public class SenderClient implements JavaSender {
     }
 
     public void setServerURL(String serverURL) {
-        if (!serverURL.endsWith("/")) {
+        if (!isEmpty(serverURL) && !serverURL.endsWith("/")) {
             serverURL = serverURL.concat("/");
         }
         this.serverURL = serverURL;
