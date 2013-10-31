@@ -19,9 +19,7 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -43,7 +41,7 @@ public class UnifiedMessageTest {
 
     @Test
     public void simpleSelectiveMessageWithAliasesTest() {
-        List aliases = new ArrayList<String>();
+        List<String> aliases = new ArrayList<String>();
         aliases.add("mike");
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
@@ -54,7 +52,7 @@ public class UnifiedMessageTest {
 
     @Test
     public void simpleSelectiveMessageWithVariantsTest() {
-        List variants = new ArrayList<String>();
+        List<String> variants = new ArrayList<String>();
         variants.add("c3f0a94f-48de-4b77-a08e-68114460857e"); // e.g. HR Premium
         variants.add("444939cd-ae63-4ce1-96a4-de74b77e3737"); // e.g. HR Free
 
@@ -66,7 +64,7 @@ public class UnifiedMessageTest {
 
     @Test
     public void simpleSelectiveMessageWithDevicesTest() {
-        List devices = new ArrayList<String>();
+        List<String> devices = new ArrayList<String>();
         devices.add("iPad");
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
