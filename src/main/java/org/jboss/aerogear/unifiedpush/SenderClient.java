@@ -39,9 +39,6 @@ public class SenderClient implements JavaSender {
     private String serverURL;
 
     public SenderClient(String rootServerURL) {
-        if (isEmpty(rootServerURL)) {
-            throw new IllegalStateException("server can not be null");
-        }
         this.setServerURL(rootServerURL);
     }
 
@@ -230,7 +227,10 @@ public class SenderClient implements JavaSender {
     }
 
     public void setServerURL(String serverURL) {
-        if (!isEmpty(serverURL) && !serverURL.endsWith("/")) {
+        if (isEmpty(serverURL)) {
+            throw new IllegalStateException("server can not be null");
+        }
+        else if (!serverURL.endsWith("/")) {
             serverURL = serverURL.concat("/");
         }
         this.serverURL = serverURL;
