@@ -74,6 +74,18 @@ public class UnifiedMessageTest {
     }
 
     @Test
+    public void simpleSelectiveMessageWithCategoriesTest() {
+        List<String> categories = new ArrayList<String>();
+        categories.add("sports");
+        categories.add("world cup");
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .deviceType(categories)
+                .build();
+        assertEquals(2, unifiedMessage.getDeviceType().size());
+    }
+
+    @Test
     public void simplePushVersionMessageTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .simplePush("version=1")

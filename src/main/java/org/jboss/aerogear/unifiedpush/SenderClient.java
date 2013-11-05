@@ -87,8 +87,8 @@ public class SenderClient implements JavaSender {
             payloadObject.put("alias", unifiedMessage.getAliases());
         }
 
-        if (!isEmpty(unifiedMessage.getCategory())) {
-            payloadObject.put("category", unifiedMessage.getCategory());
+        if (!isEmpty(unifiedMessage.getCategories())) {
+            payloadObject.put("category", unifiedMessage.getCategories());
         }
 
         if (!isEmpty(unifiedMessage.getDeviceType())) {
