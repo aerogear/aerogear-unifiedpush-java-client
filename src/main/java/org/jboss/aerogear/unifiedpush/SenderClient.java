@@ -61,11 +61,11 @@ public class SenderClient implements JavaSender {
 
     @Override
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
-        final Map<String, Object> selectedPayloadObject = prepareMessage(unifiedMessage);
+        final Map<String, Object> payloadObject = prepareMessage(unifiedMessage);
         // transform to JSONString:
-        String payload = transformJSON(selectedPayloadObject);
+        String jsonString = toJSONString(payloadObject);
         // fire!
-        submitPayload(buildUrl(), payload, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), callback);
+        submitPayload(buildUrl(), jsonString, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), callback);
     }
 
     @Override
@@ -87,8 +87,8 @@ public class SenderClient implements JavaSender {
             payloadObject.put("alias", unifiedMessage.getAliases());
         }
 
-        if (!isEmpty(unifiedMessage.getCategory())) {
-            payloadObject.put("category", unifiedMessage.getCategory());
+        if (!isEmpty(unifiedMessage.getCategories())) {
+            payloadObject.put("categories", unifiedMessage.getCategories());
         }
 
         if (!isEmpty(unifiedMessage.getDeviceType())) {
@@ -209,9 +209,9 @@ public class SenderClient implements JavaSender {
     }
 
     /**
-     * A simple utility to tranform an {@link Object} into a json {@link String}
+     * A simple utility to transforms an {@link Object} into a json {@link String}
      */
-    private String transformJSON(Object value) {
+    private String toJSONString(Object value) {
         ObjectMapper om = new ObjectMapper();
         String stringPayload = null;
         try {

@@ -19,6 +19,8 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -71,6 +73,14 @@ public class UnifiedMessageTest {
                 .deviceType(devices)
                 .build();
         assertEquals(1, unifiedMessage.getDeviceType().size());
+    }
+
+    @Test
+    public void simpleSelectiveMessageWithCategoriesTest() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .categories("sports","world cup")
+                .build();
+        assertEquals(2, unifiedMessage.getCategories().size());
     }
 
     @Test

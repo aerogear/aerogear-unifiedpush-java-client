@@ -17,10 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
@@ -39,6 +36,7 @@ import java.util.Map;
  *       .sound("default")
  *       .variants(Arrays.asList("c3f0a94f-48de-4b77-a08e-68114460857e")) //e.g. HR_Premium
  *       .aliases(Arrays.asList("mike", "john"))
+ *       .categories(Arrays.asList("sport","world cup"))
  *       .deviceType(Arrays.asList("iPad","AndroidTablet"))
  *       .build();
  * }
@@ -56,7 +54,7 @@ public class UnifiedMessage {
 
     private Map<String, Object> attributes;
 
-    private String category;
+    private Set<String> categories;
 
     private List<String> deviceType;
 
@@ -71,7 +69,7 @@ public class UnifiedMessage {
 
         private String masterSecret;
 
-        private String category;
+        private Set<String> categories = new HashSet<String>();
 
         private String simplePush;
 
@@ -133,13 +131,24 @@ public class UnifiedMessage {
         }
 
         /**
-         * A category is a semantical tag.
+         * A list of categories. A Category is a semantical tag.
          *
-         * @param category a semantical tag
+         * @param  set of categories
          * @return the current {@link Builder} instance
          */
-        public Builder category(String category) {
-            this.category = category;
+        public Builder categories(Set categories) {
+            this.categories = categories;
+            return this;
+        }
+
+        /**
+         * A list of categories. A Category is a semantical tag.
+         *
+         * @param  a list of categories
+         * @return the current {@link Builder} instance
+         */
+        public Builder categories(String... categories) {
+            this.categories = new HashSet<String>(Arrays.asList(categories));
             return this;
         }
 
@@ -258,7 +267,7 @@ public class UnifiedMessage {
         this.attributes = builder.attributes;
         this.aliases = builder.aliases;
         this.variants = builder.variants;
-        this.category = builder.category;
+        this.categories = builder.categories;
         this.deviceType = builder.deviceType;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
@@ -313,12 +322,12 @@ public class UnifiedMessage {
     }
 
     /**
-     * Get a category, a semantical tag.
+     * Get a category list, a category is a semantical tag.
      *
-     * @return the category
+     * @return the category list
      */
-    public String getCategory() {
-        return category;
+    public Set getCategories() {
+        return categories;
     }
 
     /**
