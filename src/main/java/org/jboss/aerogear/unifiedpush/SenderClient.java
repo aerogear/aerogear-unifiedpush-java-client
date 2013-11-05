@@ -30,7 +30,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class SenderClient implements JavaSender {
+public class  SenderClient implements JavaSender {
 
     private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
 
@@ -88,7 +88,7 @@ public class SenderClient implements JavaSender {
         }
 
         if (!isEmpty(unifiedMessage.getCategories())) {
-            payloadObject.put("category", unifiedMessage.getCategories());
+            payloadObject.put("categories", unifiedMessage.getCategories());
         }
 
         if (!isEmpty(unifiedMessage.getDeviceType())) {
