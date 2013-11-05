@@ -17,10 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
@@ -57,7 +54,7 @@ public class UnifiedMessage {
 
     private Map<String, Object> attributes;
 
-    private List<String> categories;
+    private Set<String> categories;
 
     private List<String> deviceType;
 
@@ -72,7 +69,7 @@ public class UnifiedMessage {
 
         private String masterSecret;
 
-        private List<String> categories = new ArrayList<String>();
+        private Set<String> categories = new HashSet<String>();
 
         private String simplePush;
 
@@ -136,11 +133,22 @@ public class UnifiedMessage {
         /**
          * A list of categories. A Category is a semantical tag.
          *
-         * @param  list of categories
+         * @param  set of categories
          * @return the current {@link Builder} instance
          */
-        public Builder categories(List categories) {
+        public Builder categories(Set categories) {
             this.categories = categories;
+            return this;
+        }
+
+        /**
+         * A list of categories. A Category is a semantical tag.
+         *
+         * @param  a list of categories
+         * @return the current {@link Builder} instance
+         */
+        public Builder categories(String... categories) {
+            this.categories = new HashSet<String>(Arrays.asList(categories));
             return this;
         }
 
@@ -318,7 +326,7 @@ public class UnifiedMessage {
      *
      * @return the category list
      */
-    public List getCategories() {
+    public Set getCategories() {
         return categories;
     }
 

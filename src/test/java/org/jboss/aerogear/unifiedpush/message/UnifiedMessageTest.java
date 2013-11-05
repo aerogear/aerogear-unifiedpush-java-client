@@ -19,6 +19,8 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -75,14 +77,10 @@ public class UnifiedMessageTest {
 
     @Test
     public void simpleSelectiveMessageWithCategoriesTest() {
-        List<String> categories = new ArrayList<String>();
-        categories.add("sports");
-        categories.add("world cup");
-
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .deviceType(categories)
+                .categories("sports","world cup")
                 .build();
-        assertEquals(2, unifiedMessage.getDeviceType().size());
+        assertEquals(2, unifiedMessage.getCategories().size());
     }
 
     @Test
