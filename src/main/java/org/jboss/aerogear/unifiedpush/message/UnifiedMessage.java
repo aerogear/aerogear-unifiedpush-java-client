@@ -85,6 +85,7 @@ public class UnifiedMessage {
         private final String sound = "sound";
         private final String badge = "badge";
         private final String ttl = "ttl";
+        private final String contentAvailable = "content-available";
 
         /**
          * Specifies which Push Application the message is for.
@@ -218,6 +219,17 @@ public class UnifiedMessage {
          */
         public Builder badge(String badge) {
             this.attributes.put(this.badge, Integer.parseInt(badge));
+            return this;
+        }
+
+        /**
+         * An iOS specific argument to mark the payload as 'content-available'. The feature is
+         * needed when sending notifications to Newsstand applications and submitting silent iOS notifications (iOS7)
+         *
+         * @return the current {@link Builder} instance
+         */
+        public Builder contentAvailable() {
+            this.attributes.put(this.contentAvailable, true);
             return this;
         }
 

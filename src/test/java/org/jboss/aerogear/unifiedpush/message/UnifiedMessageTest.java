@@ -19,11 +19,15 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 public class UnifiedMessageTest {
 
@@ -78,7 +82,18 @@ public class UnifiedMessageTest {
     @Test
     public void simpleSelectiveMessageWithCategoriesTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .categories("sports","world cup")
+                .categories("sports", "world cup")
+                .build();
+        assertEquals(2, unifiedMessage.getCategories().size());
+    }
+
+    @Test
+    public void simpleSelectiveMessageWithCategoriesAsSetTest() {
+        final Set<String> categories = new HashSet<String>();
+        categories.add("sports");
+        categories.add("world cup");
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .categories(categories)
                 .build();
         assertEquals(2, unifiedMessage.getCategories().size());
     }
@@ -97,5 +112,50 @@ public class UnifiedMessageTest {
                 .simplePush("1")
                 .build();
         assertEquals("version=1", unifiedMessage.getSimplePush());
+    }
+
+    @Test
+    public void contentAvailable() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .contentAvailable()
+                .build();
+        assertTrue((Boolean) unifiedMessage.getAttributes().get("content-available"));
+    }
+
+    @Test
+    public void noContentAvailable() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .build();
+        assertNull(unifiedMessage.getAttributes().get("content-available"));
+    }
+
+    @Test
+    public void customAttributes() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .attribute("foo-key", "foo-value")
+                .attribute("bar-key", "bar-value")
+                .build();
+        assertEquals("foo-value", unifiedMessage.getAttributes().get("foo-key"));
+        assertEquals("bar-value", unifiedMessage.getAttributes().get("bar-key"));
+    }
+
+    @Test
+    public void customAttributesAsMap() {
+        final Map<String, Object> customAttributes = new HashMap<String, Object>();
+        customAttributes.put("foo-key", "foo-value");
+        customAttributes.put("bar-key", "bar-value");
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .attributes(customAttributes)
+                .build();
+        assertEquals("foo-value", unifiedMessage.getAttributes().get("foo-key"));
+        assertEquals("bar-value", unifiedMessage.getAttributes().get("bar-key"));
     }
 }
