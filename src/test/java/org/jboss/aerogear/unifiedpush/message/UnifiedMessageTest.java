@@ -19,11 +19,11 @@ package org.jboss.aerogear.unifiedpush.message;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 public class UnifiedMessageTest {
 
@@ -78,7 +78,7 @@ public class UnifiedMessageTest {
     @Test
     public void simpleSelectiveMessageWithCategoriesTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .categories("sports","world cup")
+                .categories("sports", "world cup")
                 .build();
         assertEquals(2, unifiedMessage.getCategories().size());
     }
@@ -98,4 +98,24 @@ public class UnifiedMessageTest {
                 .build();
         assertEquals("version=1", unifiedMessage.getSimplePush());
     }
+
+    @Test
+    public void contentAvailable() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .contentAvailable()
+                .build();
+        assertTrue((Boolean) unifiedMessage.getAttributes().get("content-available"));
+    }
+
+    @Test
+    public void noContentAvailable() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .alert("Hello from Java Sender API, via JUnit")
+                .sound("default")
+                .build();
+        assertNull(unifiedMessage.getAttributes().get("content-available"));
+    }
+
 }
