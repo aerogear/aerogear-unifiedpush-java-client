@@ -17,8 +17,9 @@
 package org.jboss.aerogear.unifiedpush;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.iharder.Base64;
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import java.io.IOException;
