@@ -55,14 +55,21 @@ public class SenderClient implements JavaSender {
 
     }
 
+    /**
+     * Only called by builder.
+     */
     private SenderClient(Builder builder) {
         this.setServerURL(builder.rootServerURL);
         this.proxyHost = builder.proxyHost;
         this.proxyPort = builder.proxyPort;
         this.proxyUser = builder.proxyUser;
         this.proxyPassword = builder.proxyPassword;
+        this.proxyType = builder.proxyType;
     }
 
+    /**
+     * Builder to build Client with more configuration.
+     */
     public static class Builder {
 
         private String rootServerURL;
@@ -266,7 +273,7 @@ public class SenderClient implements JavaSender {
         }
 
         if (proxyHost != null) {
-            Proxy proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
+            Proxy proxy = new Proxy(proxyType, new InetSocketAddress(proxyHost, proxyPort));
             conn = (HttpURLConnection) new URL(url).openConnection(proxy);
         } else {
             conn = (HttpURLConnection) new URL(url).openConnection();
@@ -312,5 +319,25 @@ public class SenderClient implements JavaSender {
             serverURL = serverURL.concat("/");
         }
         this.serverURL = serverURL;
+    }
+
+    public String getProxyHost() {
+        return proxyHost;
+    }
+
+    public int getProxyPort() {
+        return proxyPort;
+    }
+
+    public String getProxyUser() {
+        return proxyUser;
+    }
+
+    public String getProxyPassword() {
+        return proxyPassword;
+    }
+
+    public Proxy.Type getProxyType() {
+        return proxyType;
     }
 }
