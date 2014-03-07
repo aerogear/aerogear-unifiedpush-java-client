@@ -235,13 +235,13 @@ public class SenderClientTest {
                 .proxy("proxy", 8080)
                 .proxyType(Proxy.Type.HTTP)
                 .build();
-        
+
         assertEquals(client.getServerURL(), "http://aerogear.example.com/ag-push/");
         assertEquals(client.getProxyHost(), "proxy");
         assertEquals(client.getProxyPort(), 8080);
         assertEquals(client.getProxyType(), Proxy.Type.HTTP);
     }
-    
+
     public SenderClient getDefaultSenderClient() {
         return defaultSenderClient;
     }

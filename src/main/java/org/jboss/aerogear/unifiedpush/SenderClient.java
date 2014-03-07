@@ -181,8 +181,7 @@ public class SenderClient implements JavaSender {
      */
     private Map<String, Object> prepareMessage(UnifiedMessage unifiedMessage) {
 
-        final Map<String, Object> payloadObject
-                = new LinkedHashMap<String, Object>();
+        final Map<String, Object> payloadObject = new LinkedHashMap<String, Object>();
 
         if (!isEmpty(unifiedMessage.getAliases())) {
             payloadObject.put("alias", unifiedMessage.getAliases());

@@ -244,7 +244,6 @@ public class UnifiedMessage {
             return this;
         }
 
-
         /**
          * Specify the Time To Live of the message, used by the APNs/GCM Push Networks.
          * If the device is offline for a longer time than the ttl value, the supported Push Networks may not deliver the message to the client.
@@ -253,7 +252,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder timeToLive(int seconds) {
-            this.attributes.put(this.ttl,seconds);
+            this.attributes.put(this.ttl, seconds);
             return this;
         }
 
@@ -357,7 +356,7 @@ public class UnifiedMessage {
      *
      * @return a String in the form of "version=5"
      */
-    public String getSimplePush(){
-       return simplePush;
+    public String getSimplePush() {
+        return simplePush;
     }
 }
