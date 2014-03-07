@@ -27,6 +27,7 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -227,6 +228,20 @@ public class SenderClientTest {
         defaultSenderClient.send(unifiedMessage, callback);
     }
 
+    @Test
+    public void testClientBuilderProxySettings() {
+        SenderClient client = new SenderClient.Builder()
+                .rootServerURL("http://aerogear.example.com/ag-push")
+                .proxy("proxy", 8080)
+                .proxyType(Proxy.Type.HTTP)
+                .build();
+        
+        assertEquals(client.getServerURL(), "http://aerogear.example.com/ag-push/");
+        assertEquals(client.getProxyHost(), "proxy");
+        assertEquals(client.getProxyPort(), 8080);
+        assertEquals(client.getProxyType(), Proxy.Type.HTTP);
+    }
+    
     public SenderClient getDefaultSenderClient() {
         return defaultSenderClient;
     }
