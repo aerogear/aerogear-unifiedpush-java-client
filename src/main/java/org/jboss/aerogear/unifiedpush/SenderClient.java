@@ -79,32 +79,68 @@ public class SenderClient implements JavaSender {
         private String proxyPassword;
         private Proxy.Type proxyType = Proxy.Type.HTTP;
 
+        /**
+         * Set the root URL to connect.
+         *
+         * @param rootServerURL The root URL.
+         * @return the current {@link Builder} instance
+         */
         public Builder rootServerURL(String rootServerURL) {
             this.rootServerURL = rootServerURL;
             return this;
         }
 
+        /**
+         * Specify proxy that should be used to connect.
+         *
+         * @param proxyHost Hostname of proxy.
+         * @param proxyPort Port of proxy.
+         * @return the current {@link Builder} instance
+         */
         public Builder proxy(String proxyHost, int proxyPort) {
             this.proxyHost = proxyHost;
             this.proxyPort = proxyPort;
             return this;
         }
 
+        /**
+         * If proxy needs authentication, specify User.
+         *
+         * @param proxyUser Username for authentication.
+         * @return the current {@link Builder} instance
+         */
         public Builder proxyUser(String proxyUser) {
             this.proxyUser = proxyUser;
             return this;
         }
 
+        /**
+         * Sets password used with specified user.
+         *
+         * @param proxyPassword Password for user authentication.
+         * @return the current {@link Builder} instance
+         */
         public Builder proxyPassword(String proxyPassword) {
             this.proxyPassword = proxyPassword;
             return this;
         }
 
+        /**
+         * Configure type of proxy.
+         *
+         * @param proxyType Type of proxy as
+         * @return the current {@link Builder} instance
+         */
         public Builder proxyType(Proxy.Type proxyType) {
             this.proxyType = proxyType;
             return this;
         }
 
+        /**
+         * Build the {@link SenderClient}.
+         *
+         * @return the built up {@link SenderClient}
+         */
         public SenderClient build() {
             return new SenderClient(this);
         }
@@ -308,10 +344,18 @@ public class SenderClient implements JavaSender {
         return stringPayload;
     }
 
+    /**
+     * Get the used server URL.
+     * @return The Server that is used
+     */
     public String getServerURL() {
         return serverURL;
     }
 
+    /**
+     * Set the server URL that is used to send Messages.
+     * @param serverURL A server URL
+     */
     public void setServerURL(String serverURL) {
         if (isEmpty(serverURL)) {
             throw new IllegalStateException("server can not be null");
@@ -321,22 +365,42 @@ public class SenderClient implements JavaSender {
         this.serverURL = serverURL;
     }
 
+    /**
+     * Get the proxy Hostname that is configured.
+     * @return A proxy hostname
+     */
     public String getProxyHost() {
         return proxyHost;
     }
 
+    /**
+     * Get the proxy port.
+     * @return A proxy port
+     */
     public int getProxyPort() {
         return proxyPort;
     }
 
+    /**
+     * Get the specified proxy user.
+     * @return Proxy username
+     */
     public String getProxyUser() {
         return proxyUser;
     }
 
+    /**
+     * Get the password for proxy user.
+     * @return proxy user password
+     */
     public String getProxyPassword() {
         return proxyPassword;
     }
 
+    /**
+     * Get the proxy type that is used in proxy connection.
+     * @return A {@link Proxy.Type}
+     */
     public Proxy.Type getProxyType() {
         return proxyType;
     }
