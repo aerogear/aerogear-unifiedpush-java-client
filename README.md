@@ -26,6 +26,18 @@ Create a ```JavaSender```:
     JavaSender defaultJavaSender =
       new SenderClient("http://localhost:8080/ag-push");
 
+To connect via proxy:
+
+```
+JavaSender defaultJavaSender = new SenderClient.Builder()
+                .rootServerURL("http://localhost:8080/ag-push")
+                .proxy("proxy.example.com", 8080)
+                .proxyUser("proxyuser")
+                .proxyPassword("password")
+                .proxyType(Proxy.Type.HTTP)
+                .build();
+```
+
 ### Send a message
 
 Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
