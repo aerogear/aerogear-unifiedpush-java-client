@@ -12,11 +12,11 @@ Add the following dependencies to your ```pom.xml``` file:
              <version>0.6.0-SNAPSHOT</version>
         </dependency>
 
-        <!-- RestEasy's Jackson Plugin -->
+        <!-- Jackson2 -->
         <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson-provider</artifactId>
-            <version>2.3.2.Final</version>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.3.1</version>
         </dependency>
 
 ## Usage
