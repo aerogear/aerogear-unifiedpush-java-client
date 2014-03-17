@@ -26,7 +26,6 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +33,8 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
@@ -61,7 +62,7 @@ public class SenderClientTest {
 
     /* -- mocks -- */
     private SenderClient defaultSenderClient;
-    private HttpURLConnection connection;
+    private HttpsURLConnection connection;
 
     @Before
     public void setup() throws Exception {
@@ -69,7 +70,7 @@ public class SenderClientTest {
         OutputStream out = PowerMockito.mock(OutputStream.class);
         PowerMockito.doNothing().when(out).write(any(byte[].class));
         // mock connection
-        this.setConnection(PowerMockito.mock(HttpURLConnection.class));
+        this.setConnection(PowerMockito.mock(HttpsURLConnection.class));
         when(connection.getOutputStream()).thenReturn(out);
         // mock private getConnection method
         this.setDefaultSenderClient(PowerMockito.spy(new SenderClient("http://aerogear.example.com/ag-push")));
@@ -250,11 +251,11 @@ public class SenderClientTest {
         this.defaultSenderClient = defaultSenderClient;
     }
 
-    public HttpURLConnection getConnnection() {
+    public HttpsURLConnection getConnnection() {
         return connection;
     }
 
-    public void setConnection(HttpURLConnection con) {
+    public void setConnection(HttpsURLConnection con) {
         this.connection = con;
     }
 }
