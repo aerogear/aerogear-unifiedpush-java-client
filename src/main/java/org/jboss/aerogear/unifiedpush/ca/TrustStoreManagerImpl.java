@@ -19,17 +19,12 @@ package org.jboss.aerogear.unifiedpush.ca;
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
 
 import java.io.FileInputStream;
-import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 
 public class TrustStoreManagerImpl implements TrustStoreManager {
 
     @Override
-    public KeyStore loadTrustStore(String trustStorePath, String trustStoreType, String trustStorePassword)
-            throws KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException {
+    public KeyStore loadTrustStore(String trustStorePath, String trustStoreType, String trustStorePassword) throws Exception {
         if (isEmpty(trustStorePath)) {
             throw new IllegalArgumentException("Wrong TrustStore file path configuration");
         }
@@ -42,11 +37,8 @@ public class TrustStoreManagerImpl implements TrustStoreManager {
 
             return ks;
         } finally {
-            try {
-                if (fin != null) {
-                    fin.close();
-                }
-            } catch (Exception ignore) {
+            if (fin != null) {
+                fin.close();
             }
         }
     }

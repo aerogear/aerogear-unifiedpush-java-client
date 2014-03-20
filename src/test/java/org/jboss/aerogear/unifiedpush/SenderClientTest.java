@@ -26,7 +26,9 @@ import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.HttpURLConnection;
 import java.net.Proxy;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -36,17 +38,19 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.jboss.aerogear.unifiedpush.http.HttpClient;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(SenderClient.class)
+@PrepareForTest(HttpClient.class)
 public class SenderClientTest {
 
     /* -- testing data -- */
@@ -62,7 +66,10 @@ public class SenderClientTest {
 
     /* -- mocks -- */
     private SenderClient defaultSenderClient;
-    private HttpsURLConnection connection;
+    private SenderClient secureSenderClient;
+
+    private URLConnection connection;
+    private URLConnection secureConnection;
 
     @Before
     public void setup() throws Exception {
@@ -70,11 +77,16 @@ public class SenderClientTest {
         OutputStream out = PowerMockito.mock(OutputStream.class);
         PowerMockito.doNothing().when(out).write(any(byte[].class));
         // mock connection
-        this.setConnection(PowerMockito.mock(HttpsURLConnection.class));
+        this.setConnection(PowerMockito.mock(HttpURLConnection.class));
+        this.setSecureConnection(PowerMockito.mock(HttpsURLConnection.class));
         when(connection.getOutputStream()).thenReturn(out);
-        // mock private getConnection method
+        when(secureConnection.getOutputStream()).thenReturn(out);
+        // mock getConnection method
         this.setDefaultSenderClient(PowerMockito.spy(new SenderClient("http://aerogear.example.com/ag-push")));
-        PowerMockito.doReturn(connection).when(defaultSenderClient, "getConnection", anyString());
+        this.setSecureSenderClient(PowerMockito.spy(new SenderClient("https://aerogear.example.com/ag-push")));
+        PowerMockito.spy(HttpClient.class);
+        PowerMockito.doReturn(connection).when(HttpClient.class, "getConnection", Matchers.startsWith("http://"), any());
+        PowerMockito.doReturn(secureConnection).when(HttpClient.class, "getConnection", Matchers.startsWith("https://"), any());
     }
 
     @Test
@@ -82,7 +94,7 @@ public class SenderClientTest {
         // return 404
         int STATUS_NOT_FOUND = 404;
 
-        when(this.getConnnection().getResponseCode()).thenReturn(STATUS_NOT_FOUND);
+        when(((HttpURLConnection) this.getConnnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
@@ -121,9 +133,53 @@ public class SenderClientTest {
     }
 
     @Test
+    public void sendSendWithCallback404_SSL() throws IOException, InterruptedException {
+        // return 404
+        int STATUS_NOT_FOUND = 404;
+
+        when(((HttpsURLConnection) this.getSecureConnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
+        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            @Override
+            public void onComplete(int statusCode) {
+                returnedStatusList.add(statusCode);
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                onFailCalled.set(true);
+                latch.countDown();
+            }
+        };
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                            .pushApplicationId(PUSH_APPLICATION_ID)
+                            .masterSecret(MASTER_SECRET)
+                            .alert(ALERT_MSG)
+                            .sound(DEFAULT_SOUND)
+                            .aliases(IDENTIFIERS_LIST)
+                            .build();
+
+        secureSenderClient.send(unifiedMessage, callback);
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        // onError callback should not be called
+        assertFalse(onFailCalled.get());
+        assertNotNull(returnedStatusList);
+        assertTrue(returnedStatusList.size() == 1);
+        assertEquals(STATUS_NOT_FOUND, returnedStatusList.get(0).intValue());
+    }
+
+    @Test
     public void sendSendWithCallbackAndException() throws Exception {
         // throw IOException when posting
-        PowerMockito.doThrow(new IOException()).when(defaultSenderClient, "post", anyString(), anyString(), anyString());
+        PowerMockito.doThrow(new IOException()).when(HttpClient.class, "post", anyString(), anyString(), anyString(), any(),
+                any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean onFailCalled = new AtomicBoolean(false);
@@ -144,14 +200,54 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                        .pushApplicationId(PUSH_APPLICATION_ID)
-                        .masterSecret(MASTER_SECRET)
-                        .alert(ALERT_MSG)
-                        .sound(DEFAULT_SOUND)
-                        .aliases(IDENTIFIERS_LIST)
-                        .build();
+                            .pushApplicationId(PUSH_APPLICATION_ID)
+                            .masterSecret(MASTER_SECRET)
+                            .alert(ALERT_MSG)
+                            .sound(DEFAULT_SOUND)
+                            .aliases(IDENTIFIERS_LIST)
+                            .build();
 
         defaultSenderClient.send(unifiedMessage, callback);
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        assertTrue(onFailCalled.get());
+        assertEquals(IOException.class, exceptionReference.get().getClass());
+
+    }
+
+    @Test
+    public void sendSendWithCallbackAndException_SSL() throws Exception {
+        // throw IOException when posting
+        PowerMockito.doThrow(new IOException()).when(HttpClient.class, "post", anyString(), anyString(), anyString(), any(),
+                any(), any());
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final AtomicReference<Throwable> exceptionReference = new AtomicReference<Throwable>();
+
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            @Override
+            public void onComplete(int statusCode) {
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                onFailCalled.set(true);
+                exceptionReference.set(throwable);
+                latch.countDown();
+            }
+        };
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                            .pushApplicationId(PUSH_APPLICATION_ID)
+                            .masterSecret(MASTER_SECRET)
+                            .alert(ALERT_MSG)
+                            .sound(DEFAULT_SOUND)
+                            .aliases(IDENTIFIERS_LIST)
+                            .build();
+
+        secureSenderClient.send(unifiedMessage, callback);
 
         latch.await(1000, TimeUnit.MILLISECONDS);
         assertTrue(onFailCalled.get());
@@ -164,7 +260,7 @@ public class SenderClientTest {
         // return 200
         int STATUS_OK = 200;
 
-        when(this.getConnnection().getResponseCode()).thenReturn(STATUS_OK);
+        when(((HttpURLConnection) this.getConnnection()).getResponseCode()).thenReturn(STATUS_OK);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
@@ -193,6 +289,49 @@ public class SenderClientTest {
                             .build();
 
         defaultSenderClient.send(unifiedMessage, callback);
+
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        // onError callback should not be called
+        assertFalse(onFailCalled.get());
+        assertNotNull(returnedStatusList);
+        assertTrue(returnedStatusList.size() == 1);
+        assertEquals(STATUS_OK, returnedStatusList.get(0).intValue());
+    }
+
+    @Test
+    public void sendSendWithCallback200_SSL() throws IOException, InterruptedException {
+        // return 200
+        int STATUS_OK = 200;
+
+        when(((HttpsURLConnection) this.getSecureConnection()).getResponseCode()).thenReturn(STATUS_OK);
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
+        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            @Override
+            public void onComplete(int statusCode) {
+                returnedStatusList.add(statusCode);
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                onFailCalled.set(true);
+                latch.countDown();
+            }
+        };
+
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                            .pushApplicationId(PUSH_APPLICATION_ID)
+                            .masterSecret(MASTER_SECRET)
+                            .alert(ALERT_MSG)
+                            .sound(DEFAULT_SOUND)
+                            .aliases(IDENTIFIERS_LIST)
+                            .build();
+
+        secureSenderClient.send(unifiedMessage, callback);
 
         latch.await(1000, TimeUnit.MILLISECONDS);
         // onError callback should not be called
@@ -232,15 +371,28 @@ public class SenderClientTest {
     @Test
     public void testClientBuilderProxySettings() {
         SenderClient client = new SenderClient.Builder()
-                .rootServerURL("http://aerogear.example.com/ag-push")
-                .proxy("proxy", 8080)
-                .proxyType(Proxy.Type.HTTP)
-                .build();
+                        .rootServerURL("http://aerogear.example.com/ag-push")
+                        .proxy("proxy", 8080)
+                        .proxyType(Proxy.Type.HTTP)
+                        .build();
 
         assertEquals(client.getServerURL(), "http://aerogear.example.com/ag-push/");
-        assertEquals(client.getProxyHost(), "proxy");
-        assertEquals(client.getProxyPort(), 8080);
-        assertEquals(client.getProxyType(), Proxy.Type.HTTP);
+        assertEquals(client.getProxy().getProxyHost(), "proxy");
+        assertEquals(client.getProxy().getProxyPort(), 8080);
+        assertEquals(client.getProxy().getProxyType(), Proxy.Type.HTTP);
+    }
+
+    @Test
+    public void testClientBuildertrustStoreSettings() {
+        SenderClient client = new SenderClient.Builder()
+                        .rootServerURL("https://aerogear.example.com/ag-push")
+                        .customTrustStore("../test.truststore", null, "aerogear")
+                        .build();
+
+        assertEquals(client.getServerURL(), "https://aerogear.example.com/ag-push/");
+        assertEquals(client.getCustomTrustStore().getTrustStorePath(), "../test.truststore");
+        assertEquals(client.getCustomTrustStore().getTrustStoreType(), null);
+        assertEquals(client.getCustomTrustStore().getTrustStorePassword(), "aerogear");
     }
 
     public SenderClient getDefaultSenderClient() {
@@ -251,11 +403,27 @@ public class SenderClientTest {
         this.defaultSenderClient = defaultSenderClient;
     }
 
-    public HttpsURLConnection getConnnection() {
+    public URLConnection getConnnection() {
         return connection;
     }
 
-    public void setConnection(HttpsURLConnection con) {
+    public void setConnection(URLConnection con) {
         this.connection = con;
+    }
+
+    public SenderClient getSecureSenderClient() {
+        return secureSenderClient;
+    }
+
+    public void setSecureSenderClient(SenderClient secureSenderClient) {
+        this.secureSenderClient = secureSenderClient;
+    }
+
+    public URLConnection getSecureConnection() {
+        return secureConnection;
+    }
+
+    public void setSecureConnection(URLConnection secureConnection) {
+        this.secureConnection = secureConnection;
     }
 }

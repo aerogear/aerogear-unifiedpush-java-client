@@ -16,12 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush.ca;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.CertificateException;
 
 public interface TrustStoreManager {
 
@@ -31,12 +26,7 @@ public interface TrustStoreManager {
      * @param trustStorePath The trustStore's path.
      * @param trustStoreType The trustStore's type.
      * @param trustStorePassword The trustStore's password.
-     * @throws CertificateException
-     * @throws KeyStoreException
-     * @throws FileNotFoundException
-     * @throws IOException
-     * @throws NoSuchAlgorithmException
+     * @throws Exception
      */
-    KeyStore loadTrustStore(String trustStorePath, String trustStoreType, String trustStorePassword) throws FileNotFoundException,
- KeyStoreException, CertificateException, NoSuchAlgorithmException, IOException;
+    KeyStore loadTrustStore(String trustStorePath, String trustStoreType, String trustStorePassword) throws Exception;
 }
