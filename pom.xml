@@ -31,7 +31,7 @@
 
     <properties>
         <junit.version>4.8</junit.version>
-        <net.iharder.version>2.3.8</net.iharder.version>
+        <iharder.version>2.3.8</iharder.version>
         <resteasy.version>2.3.2.Final</resteasy.version>
         <powermock.version>1.5.1</powermock.version>
     </properties>
@@ -64,7 +64,7 @@
         <dependency>
             <groupId>net.iharder</groupId>
             <artifactId>base64</artifactId>
-            <version>${net.iharder.version}</version>
+            <version>${iharder.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jboss.resteasy</groupId>
