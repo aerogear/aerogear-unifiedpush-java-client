@@ -87,6 +87,9 @@ On Java7 you might see a ```SSLProtocolException: handshake alert: unrecognized_
 
 * JBoss' ```standalone.xml``` configuration file:
 ```
+...
+</extensions>
+
 <system-properties>
    <property name="jsse.enableSNIExtension" value="false"/>
 </system-properties>
