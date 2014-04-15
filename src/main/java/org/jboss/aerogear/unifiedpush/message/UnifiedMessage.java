@@ -60,6 +60,8 @@ public class UnifiedMessage {
 
     private String simplePush;
 
+    private Integer timeToLive;
+
     /**
      * A builder to provide a fluent API
      */
@@ -73,6 +75,8 @@ public class UnifiedMessage {
 
         private String simplePush;
 
+        private Integer timeTolive;
+
         private List<String> deviceType = new ArrayList<String>();
 
         private List<String> variants = new ArrayList<String>();
@@ -84,7 +88,6 @@ public class UnifiedMessage {
         private final String alert = "alert";
         private final String sound = "sound";
         private final String badge = "badge";
-        private final String ttl = "ttl";
         private final String contentAvailable = "content-available";
 
         /**
@@ -252,7 +255,7 @@ public class UnifiedMessage {
          * @return the current {@link Builder} instance
          */
         public Builder timeToLive(int seconds) {
-            this.attributes.put(this.ttl, seconds);
+            this.timeTolive = seconds;
             return this;
         }
 
@@ -283,6 +286,7 @@ public class UnifiedMessage {
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
         this.simplePush = builder.simplePush;
+        this.timeToLive = builder.timeTolive;
     }
 
     /**
@@ -359,4 +363,11 @@ public class UnifiedMessage {
     public String getSimplePush() {
         return simplePush;
     }
+
+    /**
+     * Get the Time To Live of the message, used by the APNs/GCM Push Networks
+     *
+     * @return the Time To Live of the message, used by the APNs/GCM Push Networks
+     */
+    public Integer getTimeToLive() { return timeToLive;}
 }
