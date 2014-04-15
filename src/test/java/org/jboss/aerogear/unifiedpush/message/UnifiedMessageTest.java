@@ -42,7 +42,7 @@ public class UnifiedMessageTest {
         assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getAttributes().get("alert"));
         assertEquals("default", unifiedMessage.getAttributes().get("sound"));
         assertEquals(1, unifiedMessage.getAttributes().get("badge"));
-        assertEquals(3600, unifiedMessage.getAttributes().get("ttl"));
+        assertEquals(3600, unifiedMessage.getTimeToLive().intValue());
     }
 
     @Test

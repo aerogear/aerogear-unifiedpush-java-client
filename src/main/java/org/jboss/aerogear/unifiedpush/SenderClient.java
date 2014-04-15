@@ -220,6 +220,9 @@ public class SenderClient implements JavaSender {
         if (!isEmpty(unifiedMessage.getSimplePush())) {
             payloadObject.put("simple-push", unifiedMessage.getSimplePush());
         }
+        if(unifiedMessage.getTimeToLive() != null) {
+            payloadObject.put("ttl", unifiedMessage.getTimeToLive().intValue());
+        }
         return payloadObject;
     }
 
