@@ -137,7 +137,7 @@ public class UnifiedMessage {
          * @param  set of categories
          * @return the current {@link Builder} instance
          */
-        public Builder categories(Set categories) {
+        public Builder categories(Set<String> categories) {
             this.categories = categories;
             return this;
         }
@@ -337,7 +337,7 @@ public class UnifiedMessage {
      *
      * @return the category list
      */
-    public Set getCategories() {
+    public Set<String> getCategories() {
         return categories;
     }
 
