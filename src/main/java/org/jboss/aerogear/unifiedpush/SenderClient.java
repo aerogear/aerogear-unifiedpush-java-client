@@ -18,17 +18,16 @@ package org.jboss.aerogear.unifiedpush;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
 import net.iharder.Base64;
+
 import org.codehaus.jackson.map.ObjectMapper;
+import org.jboss.aerogear.unifiedpush.http.HttpClient;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.Authenticator;
+import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
+import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
+
 import java.net.HttpURLConnection;
-import java.net.InetSocketAddress;
-import java.net.PasswordAuthentication;
 import java.net.Proxy;
-import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,11 +40,8 @@ public class SenderClient implements JavaSender {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
     private String serverURL;
-    private String proxyHost;
-    private int proxyPort;
-    private String proxyUser;
-    private String proxyPassword;
-    private Proxy.Type proxyType;
+    private ProxyConfig proxy;
+    private TrustStoreConfig customTrustStore;
 
     public SenderClient(String rootServerURL) {
         this.setServerURL(rootServerURL);
@@ -60,11 +56,8 @@ public class SenderClient implements JavaSender {
      */
     private SenderClient(Builder builder) {
         this.setServerURL(builder.rootServerURL);
-        this.proxyHost = builder.proxyHost;
-        this.proxyPort = builder.proxyPort;
-        this.proxyUser = builder.proxyUser;
-        this.proxyPassword = builder.proxyPassword;
-        this.proxyType = builder.proxyType;
+        this.proxy = builder.proxy;
+        this.customTrustStore = builder.customTrustStore;
     }
 
     /**
@@ -73,15 +66,12 @@ public class SenderClient implements JavaSender {
     public static class Builder {
 
         private String rootServerURL;
-        private String proxyHost;
-        private int proxyPort;
-        private String proxyUser;
-        private String proxyPassword;
-        private Proxy.Type proxyType = Proxy.Type.HTTP;
+        private ProxyConfig proxy;
+        private TrustStoreConfig customTrustStore;
 
         /**
          * Set the root URL to connect.
-         *
+         * 
          * @param rootServerURL The root URL.
          * @return the current {@link Builder} instance
          */
@@ -91,54 +81,79 @@ public class SenderClient implements JavaSender {
         }
 
         /**
+         * Set a custom trustStore.
+         * 
+         * @param trustStorePath The trustStore file path.
+         * @param trustStoreType The trustStore type. If null the default type iss used.
+         * @param trustStorePassword The trustStore password.
+         * @return the current {@link Builder} instance
+         */
+        public Builder customTrustStore(String trustStorePath, String trustStoreType, String trustStorePassword) {
+            this.customTrustStore = new TrustStoreConfig(trustStorePath, trustStoreType, trustStorePassword);
+            return this;
+        }
+
+        /**
          * Specify proxy that should be used to connect.
-         *
+         * 
          * @param proxyHost Hostname of proxy.
          * @param proxyPort Port of proxy.
          * @return the current {@link Builder} instance
          */
         public Builder proxy(String proxyHost, int proxyPort) {
-            this.proxyHost = proxyHost;
-            this.proxyPort = proxyPort;
+            if (this.proxy == null) {
+                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            }
+            this.proxy.setProxyHost(proxyHost);
+            this.proxy.setProxyPort(proxyPort);
             return this;
         }
 
         /**
          * If proxy needs authentication, specify User.
-         *
+         * 
          * @param proxyUser Username for authentication.
          * @return the current {@link Builder} instance
          */
         public Builder proxyUser(String proxyUser) {
-            this.proxyUser = proxyUser;
+            if (this.proxy == null) {
+                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            }
+            this.proxy.setProxyUser(proxyUser);
             return this;
         }
 
         /**
          * Sets password used with specified user.
-         *
+         * 
          * @param proxyPassword Password for user authentication.
          * @return the current {@link Builder} instance
          */
         public Builder proxyPassword(String proxyPassword) {
-            this.proxyPassword = proxyPassword;
+            if (this.proxy == null) {
+                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            }
+            this.proxy.setProxyPassword(proxyPassword);
             return this;
         }
 
         /**
          * Configure type of proxy.
-         *
+         * 
          * @param proxyType Type of proxy as
          * @return the current {@link Builder} instance
          */
         public Builder proxyType(Proxy.Type proxyType) {
-            this.proxyType = proxyType;
+            if (this.proxy == null) {
+                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            }
+            this.proxy.setProxyType(proxyType);
             return this;
         }
 
         /**
          * Build the {@link SenderClient}.
-         *
+         * 
          * @return the built up {@link SenderClient}
          */
         public SenderClient build() {
@@ -148,15 +163,15 @@ public class SenderClient implements JavaSender {
 
     /**
      * Construct the URL fired against the Unified Push Server
-     *
+     * 
      * @return a StringBuilder containing the constructed URL
      */
     protected String buildUrl() {
-        if (isEmpty(serverURL)) {
+        if (isEmpty(this.getServerURL())) {
             throw new IllegalStateException("server can not be null");
         }
 
-        return serverURL + "rest/sender/";
+        return this.getServerURL() + "rest/sender/";
     }
 
     @Override
@@ -175,7 +190,7 @@ public class SenderClient implements JavaSender {
 
     /**
      * Flatten the given {@link UnifiedMessage} into a {@link Map}
-     *
+     * 
      * @param {@link UnifiedMessage} to be flatten
      * @return a {@link Map}
      */
@@ -210,14 +225,15 @@ public class SenderClient implements JavaSender {
 
     /**
      * The actual method that does the real send and connection handling
-     *
+     * 
      * @param url
      * @param jsonPayloadObject
      * @param pushApplicationId
      * @param masterSecret
      * @param callback
      */
-    private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret, MessageResponseCallback callback) {
+    private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
+            MessageResponseCallback callback) {
         String credentials = pushApplicationId + ":" + masterSecret;
         int statusCode = 0;
 
@@ -226,7 +242,8 @@ public class SenderClient implements JavaSender {
             String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
 
             // POST the payload to the UnifiedPush Server
-            httpURLConnection = post(url, encoded, jsonPayloadObject);
+            httpURLConnection = (HttpURLConnection) HttpClient.post(url, encoded, jsonPayloadObject, UTF_8, this.proxy,
+                    this.customTrustStore);
 
             statusCode = httpURLConnection.getResponseCode();
             logger.info(String.format("HTTP Response code from UnifiedPush Server: %s", statusCode));
@@ -259,78 +276,18 @@ public class SenderClient implements JavaSender {
     }
 
     /**
-     * Returns HttpURLConnection that 'posts' the given JSON to the given
-     * UnifiedPush Server URL.
-     */
-    private HttpURLConnection post(String url, String encodedCredentials, String jsonPayloadObject) throws IOException {
-
-        if (url == null || encodedCredentials == null || jsonPayloadObject == null) {
-            throw new IllegalArgumentException("arguments cannot be null");
-        }
-
-        byte[] bytes = jsonPayloadObject.getBytes(UTF_8);
-        HttpURLConnection conn = getConnection(url);
-        conn.setDoOutput(true);
-        conn.setUseCaches(false);
-        conn.setFixedLengthStreamingMode(bytes.length);
-        conn.setRequestProperty("Authorization", "Basic " + encodedCredentials);
-        conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Accept", "application/json");
-        conn.setRequestMethod("POST");
-        OutputStream out = null;
-        try {
-            out = conn.getOutputStream();
-            out.write(bytes);
-        } finally {
-            // in case something blows up, while writing
-            // the payload, we wanna close the stream:
-            if (out != null) {
-                out.close();
-            }
-        }
-        return conn;
-    }
-
-    /**
-     * Convenience method to open/establish a HttpURLConnection.
-     */
-    private HttpURLConnection getConnection(String url) throws IOException {
-        HttpURLConnection conn = null;
-
-        if (proxyUser != null) {
-            Authenticator.setDefault(new Authenticator() {
-                @Override
-                protected PasswordAuthentication getPasswordAuthentication() {
-                    return new PasswordAuthentication(proxyUser, proxyPassword.toCharArray());
-                }
-
-            });
-        }
-
-        if (proxyHost != null) {
-            Proxy proxy = new Proxy(proxyType, new InetSocketAddress(proxyHost, proxyPort));
-            conn = (HttpURLConnection) new URL(url).openConnection(proxy);
-        } else {
-            conn = (HttpURLConnection) new URL(url).openConnection();
-        }
-
-        return conn;
-    }
-
-    /**
-     * checks if the given status code is a redirect (301, 302 or 303 response
-     * status code)
+     * checks if the given status code is a redirect (301, 302 or 303 response status code)
      */
     private boolean isRedirect(int statusCode) {
-        if (statusCode == HttpURLConnection.HTTP_MOVED_PERM || statusCode == HttpURLConnection.HTTP_MOVED_TEMP || statusCode == HttpURLConnection.HTTP_SEE_OTHER) {
+        if (statusCode == HttpURLConnection.HTTP_MOVED_PERM || statusCode == HttpURLConnection.HTTP_MOVED_TEMP
+                || statusCode == HttpURLConnection.HTTP_SEE_OTHER) {
             return true;
         }
         return false;
     }
 
     /**
-     * A simple utility to transforms an {@link Object} into a json
-     * {@link String}
+     * A simple utility to transforms an {@link Object} into a json {@link String}
      */
     private String toJSONString(Object value) {
         ObjectMapper om = new ObjectMapper();
@@ -345,6 +302,7 @@ public class SenderClient implements JavaSender {
 
     /**
      * Get the used server URL.
+     * 
      * @return The Server that is used
      */
     public String getServerURL() {
@@ -352,7 +310,26 @@ public class SenderClient implements JavaSender {
     }
 
     /**
+     * Get the proxy cofniguration.
+     * 
+     * @return {@link ProxyConfig}
+     */
+    public ProxyConfig getProxy() {
+        return proxy;
+    }
+
+    /**
+     * Get the custom trustStore configuration;
+     * 
+     * @return {@link TrustStoreConfig}
+     */
+    public TrustStoreConfig getCustomTrustStore() {
+        return customTrustStore;
+    }
+
+    /**
      * Set the server URL that is used to send Messages.
+     * 
      * @param serverURL A server URL
      */
     public void setServerURL(String serverURL) {
@@ -362,45 +339,5 @@ public class SenderClient implements JavaSender {
             serverURL = serverURL.concat("/");
         }
         this.serverURL = serverURL;
-    }
-
-    /**
-     * Get the proxy Hostname that is configured.
-     * @return A proxy hostname
-     */
-    public String getProxyHost() {
-        return proxyHost;
-    }
-
-    /**
-     * Get the proxy port.
-     * @return A proxy port
-     */
-    public int getProxyPort() {
-        return proxyPort;
-    }
-
-    /**
-     * Get the specified proxy user.
-     * @return Proxy username
-     */
-    public String getProxyUser() {
-        return proxyUser;
-    }
-
-    /**
-     * Get the password for proxy user.
-     * @return proxy user password
-     */
-    public String getProxyPassword() {
-        return proxyPassword;
-    }
-
-    /**
-     * Get the proxy type that is used in proxy connection.
-     * @return A {@link Proxy.Type}
-     */
-    public Proxy.Type getProxyType() {
-        return proxyType;
     }
 }

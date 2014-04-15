@@ -38,6 +38,15 @@ JavaSender defaultJavaSender = new SenderClient.Builder()
                 .build();
 ```
 
+To use a custom TrustStore:
+
+```
+JavaSender defaultJavaSender = new SenderClient.Builder()
+                .rootServerURL("https://localhost:8080/ag-push")
+                .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
+                .build();
+```
+
 ### Send a message
 
 Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
