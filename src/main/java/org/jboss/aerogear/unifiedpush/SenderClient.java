@@ -17,9 +17,10 @@
 package org.jboss.aerogear.unifiedpush;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.iharder.Base64;
 
-import org.codehaus.jackson.map.ObjectMapper;
 import org.jboss.aerogear.unifiedpush.http.HttpClient;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
@@ -38,6 +39,7 @@ public class SenderClient implements JavaSender {
     private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
+    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private String serverURL;
     private ProxyConfig proxy;
@@ -293,10 +295,9 @@ public class SenderClient implements JavaSender {
      * A simple utility to transforms an {@link Object} into a json {@link String}
      */
     private String toJSONString(Object value) {
-        ObjectMapper om = new ObjectMapper();
         String stringPayload = null;
         try {
-            stringPayload = om.writeValueAsString(value);
+            stringPayload = OBJECT_MAPPER.writeValueAsString(value);
         } catch (Exception e) {
             throw new IllegalStateException("Failed to encode JSON payload");
         }
