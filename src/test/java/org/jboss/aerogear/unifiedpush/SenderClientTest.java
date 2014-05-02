@@ -19,6 +19,7 @@ package org.jboss.aerogear.unifiedpush;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
@@ -77,24 +78,24 @@ public class SenderClientTest {
         OutputStream out = PowerMockito.mock(OutputStream.class);
         PowerMockito.doNothing().when(out).write(any(byte[].class));
         // mock connection
-        this.setConnection(PowerMockito.mock(HttpURLConnection.class));
-        this.setSecureConnection(PowerMockito.mock(HttpsURLConnection.class));
+        setConnection(PowerMockito.mock(HttpURLConnection.class));
+        setSecureConnection(PowerMockito.mock(HttpsURLConnection.class));
         when(connection.getOutputStream()).thenReturn(out);
         when(secureConnection.getOutputStream()).thenReturn(out);
         // mock getConnection method
-        this.setDefaultSenderClient(PowerMockito.spy(new SenderClient("http://aerogear.example.com/ag-push")));
-        this.setSecureSenderClient(PowerMockito.spy(new SenderClient("https://aerogear.example.com/ag-push")));
+        setDefaultSenderClient(PowerMockito.spy(SenderClient.withRootServerURL("http://aerogear.example.com/ag-push").build()));
+        setSecureSenderClient(PowerMockito.spy(SenderClient.withRootServerURL("https://aerogear.example.com/ag-push").build()));
         PowerMockito.spy(HttpClient.class);
         PowerMockito.doReturn(connection).when(HttpClient.class, "getConnection", Matchers.startsWith("http://"), any());
         PowerMockito.doReturn(secureConnection).when(HttpClient.class, "getConnection", Matchers.startsWith("https://"), any());
     }
 
     @Test
-    public void sendSendWithCallback404() throws IOException, InterruptedException {
+    public void sendSendWithCallback404() throws Exception {
         // return 404
         int STATUS_NOT_FOUND = 404;
 
-        when(((HttpURLConnection) this.getConnnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
+        when(((HttpURLConnection) getConnnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
@@ -128,16 +129,16 @@ public class SenderClientTest {
         // onError callback should not be called
         assertFalse(onFailCalled.get());
         assertNotNull(returnedStatusList);
-        assertTrue(returnedStatusList.size() == 1);
+        assertEquals(1, returnedStatusList.size());
         assertEquals(STATUS_NOT_FOUND, returnedStatusList.get(0).intValue());
     }
 
     @Test
-    public void sendSendWithCallback404_SSL() throws IOException, InterruptedException {
+    public void sendSendWithCallback404_SSL() throws Exception {
         // return 404
         int STATUS_NOT_FOUND = 404;
 
-        when(((HttpsURLConnection) this.getSecureConnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
+        when(((HttpURLConnection) getSecureConnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
@@ -171,7 +172,7 @@ public class SenderClientTest {
         // onError callback should not be called
         assertFalse(onFailCalled.get());
         assertNotNull(returnedStatusList);
-        assertTrue(returnedStatusList.size() == 1);
+        assertEquals(1, returnedStatusList.size());
         assertEquals(STATUS_NOT_FOUND, returnedStatusList.get(0).intValue());
     }
 
@@ -256,11 +257,11 @@ public class SenderClientTest {
     }
 
     @Test
-    public void sendSendWithCallback200() throws IOException, InterruptedException {
+    public void sendSendWithCallback200() throws Exception {
         // return 200
         int STATUS_OK = 200;
 
-        when(((HttpURLConnection) this.getConnnection()).getResponseCode()).thenReturn(STATUS_OK);
+        when(((HttpURLConnection) getConnnection()).getResponseCode()).thenReturn(STATUS_OK);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
@@ -294,16 +295,16 @@ public class SenderClientTest {
         // onError callback should not be called
         assertFalse(onFailCalled.get());
         assertNotNull(returnedStatusList);
-        assertTrue(returnedStatusList.size() == 1);
+        assertEquals(1, returnedStatusList.size());
         assertEquals(STATUS_OK, returnedStatusList.get(0).intValue());
     }
 
     @Test
-    public void sendSendWithCallback200_SSL() throws IOException, InterruptedException {
+    public void sendSendWithCallback200_SSL() throws Exception {
         // return 200
         int STATUS_OK = 200;
 
-        when(((HttpsURLConnection) this.getSecureConnection()).getResponseCode()).thenReturn(STATUS_OK);
+        when(((HttpURLConnection) getSecureConnection()).getResponseCode()).thenReturn(STATUS_OK);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
@@ -337,62 +338,38 @@ public class SenderClientTest {
         // onError callback should not be called
         assertFalse(onFailCalled.get());
         assertNotNull(returnedStatusList);
-        assertTrue(returnedStatusList.size() == 1);
+        assertEquals(1, returnedStatusList.size());
         assertEquals(STATUS_OK, returnedStatusList.get(0).intValue());
     }
 
     @Test(expected = IllegalStateException.class)
-    public void emptyServerURL() throws IOException, InterruptedException {
-        defaultSenderClient.setServerURL(null);
-
-        MessageResponseCallback callback = new MessageResponseCallback() {
-            @Override
-            public void onComplete(int statusCode) {
-                // empty body by intention
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                // empty body by intention
-            }
-        };
-
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                            .pushApplicationId(PUSH_APPLICATION_ID)
-                            .masterSecret(MASTER_SECRET)
-                            .alert(ALERT_MSG)
-                            .sound(DEFAULT_SOUND)
-                            .aliases(IDENTIFIERS_LIST)
-                            .build();
-
-        defaultSenderClient.send(unifiedMessage, callback);
+    public void emptyServerURL() throws Exception {
+        SenderClient.withRootServerURL(null).build();
     }
 
     @Test
     public void testClientBuilderProxySettings() {
-        SenderClient client = new SenderClient.Builder()
-                        .rootServerURL("http://aerogear.example.com/ag-push")
+        SenderClient client = SenderClient.withRootServerURL("http://aerogear.example.com/ag-push")
                         .proxy("proxy", 8080)
                         .proxyType(Proxy.Type.HTTP)
                         .build();
 
-        assertEquals(client.getServerURL(), "http://aerogear.example.com/ag-push/");
-        assertEquals(client.getProxy().getProxyHost(), "proxy");
-        assertEquals(client.getProxy().getProxyPort(), 8080);
-        assertEquals(client.getProxy().getProxyType(), Proxy.Type.HTTP);
+        assertEquals("http://aerogear.example.com/ag-push/", client.getServerURL());
+        assertEquals("proxy", client.getProxy().getProxyHost());
+        assertEquals(8080, client.getProxy().getProxyPort());
+        assertEquals(Proxy.Type.HTTP, client.getProxy().getProxyType());
     }
 
     @Test
     public void testClientBuildertrustStoreSettings() {
-        SenderClient client = new SenderClient.Builder()
-                        .rootServerURL("https://aerogear.example.com/ag-push")
+        SenderClient client = SenderClient.withRootServerURL("https://aerogear.example.com/ag-push")
                         .customTrustStore("../test.truststore", null, "aerogear")
                         .build();
 
-        assertEquals(client.getServerURL(), "https://aerogear.example.com/ag-push/");
-        assertEquals(client.getCustomTrustStore().getTrustStorePath(), "../test.truststore");
-        assertEquals(client.getCustomTrustStore().getTrustStoreType(), null);
-        assertEquals(client.getCustomTrustStore().getTrustStorePassword(), "aerogear");
+        assertEquals("https://aerogear.example.com/ag-push/", client.getServerURL());
+        assertEquals("../test.truststore", client.getCustomTrustStore().getTrustStorePath());
+        assertNull(client.getCustomTrustStore().getTrustStoreType());
+        assertEquals("aerogear", client.getCustomTrustStore().getTrustStorePassword());
     }
 
     public SenderClient getDefaultSenderClient() {
@@ -408,7 +385,7 @@ public class SenderClientTest {
     }
 
     public void setConnection(URLConnection con) {
-        this.connection = con;
+        connection = con;
     }
 
     public SenderClient getSecureSenderClient() {

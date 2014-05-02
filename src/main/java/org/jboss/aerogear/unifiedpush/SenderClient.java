@@ -41,25 +41,21 @@ public class SenderClient implements JavaSender {
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    private String serverURL;
-    private ProxyConfig proxy;
-    private TrustStoreConfig customTrustStore;
-
-    public SenderClient(String rootServerURL) {
-        this.setServerURL(rootServerURL);
-    }
-
-    public SenderClient() {
-
-    }
+    private final String serverURL;
+    private final ProxyConfig proxy;
+    private final TrustStoreConfig customTrustStore;
 
     /**
      * Only called by builder.
      */
     private SenderClient(Builder builder) {
-        this.setServerURL(builder.rootServerURL);
-        this.proxy = builder.proxy;
-        this.customTrustStore = builder.customTrustStore;
+        serverURL = builder.rootServerURL;
+        proxy = builder.proxy;
+        customTrustStore = builder.customTrustStore;
+    }
+
+    public static Builder withRootServerURL(String rootServerURL) {
+        return new Builder(rootServerURL);
     }
 
     /**
@@ -67,19 +63,15 @@ public class SenderClient implements JavaSender {
      */
     public static class Builder {
 
-        private String rootServerURL;
+        private final String rootServerURL;
         private ProxyConfig proxy;
         private TrustStoreConfig customTrustStore;
 
-        /**
-         * Set the root URL to connect.
-         * 
-         * @param rootServerURL The root URL.
-         * @return the current {@link Builder} instance
-         */
-        public Builder rootServerURL(String rootServerURL) {
-            this.rootServerURL = rootServerURL;
-            return this;
+        public Builder(String rootServerURL) {
+            if (isEmpty(rootServerURL)) {
+                throw new IllegalStateException("server can not be null");
+            }
+            this.rootServerURL = !rootServerURL.endsWith("/") ? rootServerURL + '/' : rootServerURL;
         }
 
         /**
@@ -91,7 +83,7 @@ public class SenderClient implements JavaSender {
          * @return the current {@link Builder} instance
          */
         public Builder customTrustStore(String trustStorePath, String trustStoreType, String trustStorePassword) {
-            this.customTrustStore = new TrustStoreConfig(trustStorePath, trustStoreType, trustStorePassword);
+            customTrustStore = new TrustStoreConfig(trustStorePath, trustStoreType, trustStorePassword);
             return this;
         }
 
@@ -103,11 +95,11 @@ public class SenderClient implements JavaSender {
          * @return the current {@link Builder} instance
          */
         public Builder proxy(String proxyHost, int proxyPort) {
-            if (this.proxy == null) {
-                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            if (proxy == null) {
+                proxy = new ProxyConfig(Proxy.Type.HTTP);
             }
-            this.proxy.setProxyHost(proxyHost);
-            this.proxy.setProxyPort(proxyPort);
+            proxy.setProxyHost(proxyHost);
+            proxy.setProxyPort(proxyPort);
             return this;
         }
 
@@ -118,10 +110,10 @@ public class SenderClient implements JavaSender {
          * @return the current {@link Builder} instance
          */
         public Builder proxyUser(String proxyUser) {
-            if (this.proxy == null) {
-                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            if (proxy == null) {
+                proxy = new ProxyConfig(Proxy.Type.HTTP);
             }
-            this.proxy.setProxyUser(proxyUser);
+            proxy.setProxyUser(proxyUser);
             return this;
         }
 
@@ -132,10 +124,10 @@ public class SenderClient implements JavaSender {
          * @return the current {@link Builder} instance
          */
         public Builder proxyPassword(String proxyPassword) {
-            if (this.proxy == null) {
-                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            if (proxy == null) {
+                proxy = new ProxyConfig(Proxy.Type.HTTP);
             }
-            this.proxy.setProxyPassword(proxyPassword);
+            proxy.setProxyPassword(proxyPassword);
             return this;
         }
 
@@ -146,10 +138,10 @@ public class SenderClient implements JavaSender {
          * @return the current {@link Builder} instance
          */
         public Builder proxyType(Proxy.Type proxyType) {
-            if (this.proxy == null) {
-                this.proxy = new ProxyConfig(Proxy.Type.HTTP);
+            if (proxy == null) {
+                proxy = new ProxyConfig(Proxy.Type.HTTP);
             }
-            this.proxy.setProxyType(proxyType);
+            proxy.setProxyType(proxyType);
             return this;
         }
 
@@ -169,11 +161,11 @@ public class SenderClient implements JavaSender {
      * @return a StringBuilder containing the constructed URL
      */
     protected String buildUrl() {
-        if (isEmpty(this.getServerURL())) {
+        if (isEmpty(getServerURL())) {
             throw new IllegalStateException("server can not be null");
         }
 
-        return this.getServerURL() + "rest/sender/";
+        return getServerURL() + "rest/sender/";
     }
 
     @Override
@@ -187,16 +179,16 @@ public class SenderClient implements JavaSender {
 
     @Override
     public void send(UnifiedMessage unifiedMessage) {
-        this.send(unifiedMessage, null);
+        send(unifiedMessage, null);
     }
 
     /**
      * Flatten the given {@link UnifiedMessage} into a {@link Map}
      * 
-     * @param {@link UnifiedMessage} to be flatten
-     * @return a {@link Map}
+     * @param unifiedMessage the {@link UnifiedMessage} to be flattened.
+     * @return {@code Map} the flattened UnifiedMessage.
      */
-    private Map<String, Object> prepareMessage(UnifiedMessage unifiedMessage) {
+    private static Map<String, Object> prepareMessage(UnifiedMessage unifiedMessage) {
 
         final Map<String, Object> payloadObject = new LinkedHashMap<String, Object>();
 
@@ -223,7 +215,7 @@ public class SenderClient implements JavaSender {
             payloadObject.put("simple-push", unifiedMessage.getSimplePush());
         }
         if(unifiedMessage.getTimeToLive() != null) {
-            payloadObject.put("ttl", unifiedMessage.getTimeToLive().intValue());
+            payloadObject.put("ttl", unifiedMessage.getTimeToLive());
         }
         return payloadObject;
     }
@@ -231,24 +223,24 @@ public class SenderClient implements JavaSender {
     /**
      * The actual method that does the real send and connection handling
      * 
-     * @param url
-     * @param jsonPayloadObject
-     * @param pushApplicationId
-     * @param masterSecret
-     * @param callback
+     * @param url the URL to use for the HTTP POST request.
+     * @param jsonPayloadObject the JSON payload of the POST request
+     * @param pushApplicationId the registered applications identifier.
+     * @param masterSecret the master secret for the push server.
+     * @param callback the {@link MessageResponseCallback} that will be called once the POST request completes.
      */
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
             MessageResponseCallback callback) {
-        String credentials = pushApplicationId + ":" + masterSecret;
-        int statusCode = 0;
+        String credentials = pushApplicationId + ':' + masterSecret;
+        int statusCode;
 
         HttpURLConnection httpURLConnection = null;
         try {
             String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
 
             // POST the payload to the UnifiedPush Server
-            httpURLConnection = (HttpURLConnection) HttpClient.post(url, encoded, jsonPayloadObject, UTF_8, this.proxy,
-                    this.customTrustStore);
+            httpURLConnection = (HttpURLConnection) HttpClient.post(url, encoded, jsonPayloadObject, UTF_8, proxy,
+                    customTrustStore);
 
             statusCode = httpURLConnection.getResponseCode();
             logger.info(String.format("HTTP Response code from UnifiedPush Server: %s", statusCode));
@@ -259,7 +251,7 @@ public class SenderClient implements JavaSender {
                 String redirectURL = httpURLConnection.getHeaderField("Location");
                 logger.info(String.format("Performing redirect to '%s'", redirectURL));
                 // execute the 'redirect'
-                this.submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback);
+                submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback);
             } else {
                 if (callback != null) {
                     callback.onComplete(statusCode);
@@ -283,25 +275,21 @@ public class SenderClient implements JavaSender {
     /**
      * checks if the given status code is a redirect (301, 302 or 303 response status code)
      */
-    private boolean isRedirect(int statusCode) {
-        if (statusCode == HttpURLConnection.HTTP_MOVED_PERM || statusCode == HttpURLConnection.HTTP_MOVED_TEMP
-                || statusCode == HttpURLConnection.HTTP_SEE_OTHER) {
-            return true;
-        }
-        return false;
+    private static boolean isRedirect(int statusCode) {
+        return statusCode == HttpURLConnection.HTTP_MOVED_PERM ||
+                statusCode == HttpURLConnection.HTTP_MOVED_TEMP ||
+                statusCode == HttpURLConnection.HTTP_SEE_OTHER;
     }
 
     /**
      * A simple utility to transforms an {@link Object} into a json {@link String}
      */
-    private String toJSONString(Object value) {
-        String stringPayload = null;
+    private static String toJSONString(Object value) {
         try {
-            stringPayload = OBJECT_MAPPER.writeValueAsString(value);
+            return OBJECT_MAPPER.writeValueAsString(value);
         } catch (Exception e) {
-            throw new IllegalStateException("Failed to encode JSON payload");
+            throw new IllegalStateException("Failed to encode JSON payload", e);
         }
-        return stringPayload;
     }
 
     /**
@@ -309,6 +297,7 @@ public class SenderClient implements JavaSender {
      * 
      * @return The Server that is used
      */
+    @Override
     public String getServerURL() {
         return serverURL;
     }
@@ -331,17 +320,4 @@ public class SenderClient implements JavaSender {
         return customTrustStore;
     }
 
-    /**
-     * Set the server URL that is used to send Messages.
-     * 
-     * @param serverURL A server URL
-     */
-    public void setServerURL(String serverURL) {
-        if (isEmpty(serverURL)) {
-            throw new IllegalStateException("server can not be null");
-        } else if (!serverURL.endsWith("/")) {
-            serverURL = serverURL.concat("/");
-        }
-        this.serverURL = serverURL;
-    }
 }

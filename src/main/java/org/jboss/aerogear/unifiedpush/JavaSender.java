@@ -44,11 +44,4 @@ public interface JavaSender {
      */
     String getServerURL();
 
-    /**
-     * Set the new server URL
-     *
-     * @param serverURL the new server url the sender will bind to.
-     */
-    void setServerURL(String serverURL);
-
 }
