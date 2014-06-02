@@ -80,6 +80,9 @@ public class HttpClient {
         conn.setRequestProperty("Authorization", "Basic " + encodedCredentials);
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Accept", "application/json");
+
+        // custom header, for UPS
+        conn.setRequestProperty("aerogear-sender", "AeroGear Java Sender");
         ((HttpURLConnection) conn).setRequestMethod("POST");
         OutputStream out = null;
         try {
