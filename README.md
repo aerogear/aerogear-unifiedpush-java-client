@@ -9,14 +9,7 @@ Add the following dependencies to your ```pom.xml``` file:
         <dependency>
              <groupId>org.jboss.aerogear</groupId>
              <artifactId>unifiedpush-java-client</artifactId>
-             <version>0.6.0-SNAPSHOT</version>
-        </dependency>
-
-        <!-- RestEasy's Jackson Plugin -->
-        <dependency>
-            <groupId>org.jboss.resteasy</groupId>
-            <artifactId>resteasy-jackson-provider</artifactId>
-            <version>2.3.2.Final</version>
+             <version>0.7.0-SNAPSHOT</version>
         </dependency>
 
 ## Usage
