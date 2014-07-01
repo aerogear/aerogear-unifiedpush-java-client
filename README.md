@@ -17,7 +17,7 @@ Add the following dependencies to your ```pom.xml``` file:
 Create a ```JavaSender```:
 
     JavaSender defaultJavaSender =
-      new SenderClient("http://localhost:8080/ag-push");
+      new SenderClient.Builder("http://localhost:8080/ag-push").build();
 
 To connect via proxy:
 
