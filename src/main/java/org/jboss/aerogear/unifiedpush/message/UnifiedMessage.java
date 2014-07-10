@@ -239,11 +239,11 @@ public class UnifiedMessage {
 
         /**
          * An iOS specific argument to pass an Action Category for interaction notifications ( iOS8)
-         * @param actionIdentifier , the identifier of the action category for the interactive notification
+         * @param actionCategory , the identifier of the action category for the interactive notification
          * @return the current {@link Builder} instance
          */
-        public Builder actionCategory(String actionIdentifier) {
-            this.attributes.put(this.actionCategory, actionIdentifier);
+        public Builder actionCategory(String actionCategory) {
+            this.attributes.put(this.actionCategory, actionCategory);
             return this;
         }
 
