@@ -89,6 +89,7 @@ public class UnifiedMessage {
         private final String sound = "sound";
         private final String badge = "badge";
         private final String contentAvailable = "content-available";
+        private final String actionCategory = "action-category";
 
         /**
          * Specifies which Push Application the message is for.
@@ -233,6 +234,16 @@ public class UnifiedMessage {
          */
         public Builder contentAvailable() {
             this.attributes.put(this.contentAvailable, true);
+            return this;
+        }
+
+        /**
+         * An iOS specific argument to pass an Action Category for interaction notifications ( iOS8)
+         * @param actionIdentifier , the identifier of the action category for the interactive notification
+         * @return the current {@link Builder} instance
+         */
+        public Builder actionCategory(String actionIdentifier) {
+            this.attributes.put(this.actionCategory, actionIdentifier);
             return this;
         }
 

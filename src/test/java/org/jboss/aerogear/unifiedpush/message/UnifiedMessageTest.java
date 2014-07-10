@@ -134,6 +134,15 @@ public class UnifiedMessageTest {
     }
 
     @Test
+    public void actionCategoryTest() {
+        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+                .actionCategory("myInteractiveNotification")
+                .sound("default")
+                .build();
+        assertEquals("myInteractiveNotification", unifiedMessage.getAttributes().get("action-category"));
+    }
+
+    @Test
     public void customAttributes() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .alert("Hello from Java Sender API, via JUnit")
