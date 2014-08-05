@@ -90,6 +90,7 @@ public class UnifiedMessage {
         private final String badge = "badge";
         private final String contentAvailable = "content-available";
         private final String actionCategory = "action-category";
+        private final String title = "title";
 
         /**
          * Specifies which Push Application the message is for.
@@ -244,6 +245,17 @@ public class UnifiedMessage {
          */
         public Builder actionCategory(String actionCategory) {
             this.attributes.put(this.actionCategory, actionCategory);
+            return this;
+        }
+        
+        /**
+         * Sets the value of the title attribute in the notification panel (Android specific)
+         *
+         * @param title
+         * @return the current {@link Builder} instance
+         */
+        public Builder title(String title) {
+            this.attributes.put(this.title, title);
             return this;
         }
 
