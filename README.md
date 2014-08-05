@@ -50,7 +50,10 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .aliases(Arrays.asList("john", "maria"))
                 .alert("Hello from Java Sender API!")
-                .sound("default")
+                .sound("default") 
+                .badge("1") // iOS specific
+                .attribute("some_key", "some_value") // optional attributes specific to your app
+                .attribute("title", "Cool Title") // optional cordova Android specific attribute (default is appName)
                 .build();
 ```
 
