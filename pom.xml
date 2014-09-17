@@ -21,7 +21,7 @@
     <artifactId>unifiedpush-java-client</artifactId>
     <packaging>jar</packaging>
     <version>1.0.1-SNAPSHOT</version>
-    <name>unifiedpush-java-client</name>
+    <name>AeroGear Java Client Library</name>
 
     <parent>
         <groupId>org.jboss.aerogear</groupId>
