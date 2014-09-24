@@ -22,8 +22,7 @@ Create a ```JavaSender```:
 To connect via proxy:
 
 ```
-JavaSender defaultJavaSender = new SenderClient.Builder()
-                .rootServerURL("http://localhost:8080/ag-push")
+JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
                 .proxy("proxy.example.com", 8080)
                 .proxyUser("proxyuser")
                 .proxyPassword("password")
@@ -34,8 +33,7 @@ JavaSender defaultJavaSender = new SenderClient.Builder()
 To use a custom TrustStore:
 
 ```
-JavaSender defaultJavaSender = new SenderClient.Builder()
-                .rootServerURL("https://localhost:8080/ag-push")
+JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
                 .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
                 .build();
 ```
