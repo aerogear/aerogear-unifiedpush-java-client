@@ -26,7 +26,7 @@ public interface MessageResponseCallback {
     /**
      * Will be called whatever the response status code is. It's the developer
      * responsibility to implement the status code handling. Please consult the
-     * <a href="http://aerogear.org/docs/specs/aerogear-push-rest/Sender/">server documentation</a>
+     * <a href="http://aerogear.org/docs/specs/aerogear-unifiedpush-rest/sender/index.html/">server documentation</a>
      * for a list of valid responses.
      *
      * @param statusCode the status code as returned by the server.
