@@ -150,7 +150,7 @@ public class UnifiedMessageTest {
 
     @Test
     public void customAttributesAsMap() {
-        final Map<String, Object> customAttributes = new HashMap<String, Object>();
+        final Map<String, String> customAttributes = new HashMap<String, String>();
         customAttributes.put("foo-key", "foo-value");
         customAttributes.put("bar-key", "bar-value");
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()

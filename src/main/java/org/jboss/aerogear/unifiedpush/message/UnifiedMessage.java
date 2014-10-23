@@ -318,7 +318,7 @@ public class UnifiedMessage {
             return this;
         }
 
-        public MessageBuilder customProperties(Map<String, Object> fullPayLoad) {
+        public MessageBuilder customProperties(Map<String, String> fullPayLoad) {
             this.payloadAttributes = fullPayLoad;
             return this;
         }
