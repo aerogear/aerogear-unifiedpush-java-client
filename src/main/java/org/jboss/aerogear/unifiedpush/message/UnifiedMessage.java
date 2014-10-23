@@ -313,12 +313,12 @@ public class UnifiedMessage {
             return this;
         }
 
-        public MessageBuilder payload(String key, String value) {
+        public MessageBuilder customProperty(String key, String value) {
             this.payloadAttributes.put(key, value);
             return this;
         }
 
-        public MessageBuilder fullPayload(Map<String, Object> fullPayLoad) {
+        public MessageBuilder customProperties(Map<String, Object> fullPayLoad) {
             this.payloadAttributes = fullPayLoad;
             return this;
         }
