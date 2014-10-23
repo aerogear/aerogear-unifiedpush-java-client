@@ -53,7 +53,7 @@ public class UnifiedMessageTest {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .criteria().aliases(aliases).build()
                 .build();
-        assertEquals(1, ((List) unifiedMessage.getCriteria().getAttributes().get("aliases")).size());
+        assertEquals(1, ((List) unifiedMessage.getCriteria().getAttributes().get("alias")).size());
     }
 
     @Test
