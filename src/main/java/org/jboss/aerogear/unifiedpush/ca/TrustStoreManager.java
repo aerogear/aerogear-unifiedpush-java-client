@@ -22,7 +22,7 @@ public interface TrustStoreManager {
 
     /**
      * Loads the TrustStore file given its path, type and password.
-     *
+     * 
      * @param trustStorePath The trustStore's path.
      * @param trustStoreType The trustStore's type.
      * @param trustStorePassword The trustStore's password.

@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush.message;
 
 /**
  * A simple Callback interface used when sending {@link UnifiedMessage}
- *
+ * 
  */
 public interface MessageResponseCallback {
 
@@ -28,14 +28,14 @@ public interface MessageResponseCallback {
      * responsibility to implement the status code handling. Please consult the
      * <a href="http://aerogear.org/docs/specs/aerogear-unifiedpush-rest/sender/index.html/">server documentation</a>
      * for a list of valid responses.
-     *
+     * 
      * @param statusCode the status code as returned by the server.
      */
     void onComplete(int statusCode);
 
     /**
      * Will be called if an Exception occurs (i.e : {@link java.io.IOException} )
-     *
+     * 
      * @param throwable contains failure details.
      */
     void onError(Throwable throwable);

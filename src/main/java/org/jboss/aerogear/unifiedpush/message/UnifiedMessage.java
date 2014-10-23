@@ -26,19 +26,25 @@ import java.util.*;
  * See the <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">Message Specification</a> for more information.
  * <p>
  * To construct a message use the {@link Builder} like this :
+ * 
  * <pre>
- * {@code
- * // Sending an UnifiedMessage
- *  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
- *       .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
- *       .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
- *       .alert("Hello")
- *       .sound("default")
- *       .variants(Arrays.asList("c3f0a94f-48de-4b77-a08e-68114460857e")) //e.g. HR_Premium
- *       .aliases(Arrays.asList("mike", "john"))
- *       .categories(Arrays.asList("sport","world cup"))
- *       .deviceType(Arrays.asList("iPad","AndroidTablet"))
- *       .build();
+ * {
+ *     &#064;code
+ *     // Sending an UnifiedMessage
+ *     UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
+ *             .pushApplicationId(&quot;c7fc6525-5506-4ca9-9cf1-55cc261ddb9c&quot;)
+ *             .masterSecret(&quot;8b2f43a9-23c8-44fe-bee9-d6b0af9e316b&quot;)
+ *             .message()
+ *              .alert(&quot;Hello&quot;)
+ *              .sound(&quot;default&quot;)
+ *              .build()
+ *             .criteria()
+ *              .variants(Arrays.asList(&quot;c3f0a94f-48de-4b77-a08e-68114460857e&quot;)) // e.g. HR_Premium
+ *              .aliases(Arrays.asList(&quot;mike&quot;, &quot;john&quot;))
+ *              .categories(Arrays.asList(&quot;sport&quot;, &quot;world cup&quot;))
+ *              .deviceType(Arrays.asList(&quot;iPad&quot;, &quot;AndroidTablet&quot;))
+ *              .build()
+ *             .build();
  * }
  * </pre>
  */
@@ -48,19 +54,11 @@ public class UnifiedMessage {
 
     private String masterSecret;
 
-    private List<String> variants;
+    private MessageBuilder message;
 
-    private List<String> aliases;
+    private CriteriaBuilder criteria;
 
-    private Map<String, Object> attributes;
-
-    private Set<String> categories;
-
-    private List<String> deviceType;
-
-    private String simplePush;
-
-    private Integer timeToLive;
+    private ConfigBuilder config;
 
     /**
      * A builder to provide a fluent API
@@ -71,29 +69,21 @@ public class UnifiedMessage {
 
         private String masterSecret;
 
-        private Set<String> categories = new HashSet<String>();
+        private Map messageMap;
 
-        private String simplePush;
+        private Map criteriaMap;
 
-        private Integer timeTolive;
+        private Map configMap;
 
-        private List<String> deviceType = new ArrayList<String>();
+        private MessageBuilder messageBuilder;
 
-        private List<String> variants = new ArrayList<String>();
+        private CriteriaBuilder criteriaBuilder;
 
-        private List<String> aliases = new ArrayList<String>();
-
-        private Map<String, Object> attributes = new HashMap<String, Object>();
-
-        private final String alert = "alert";
-        private final String sound = "sound";
-        private final String badge = "badge";
-        private final String contentAvailable = "content-available";
-        private final String actionCategory = "action-category";
+        private ConfigBuilder configBuilder;
 
         /**
          * Specifies which Push Application the message is for.
-         *
+         * 
          * @param pushApplicationId The pushApplicationID
          * @return the current {@link Builder} instance
          */
@@ -104,7 +94,7 @@ public class UnifiedMessage {
 
         /**
          * Set the masterSecret used to authenticate against the Push Server.
-         *
+         * 
          * @param masterSecret The masterSecret
          * @return the current {@link Builder} instance
          */
@@ -114,91 +104,155 @@ public class UnifiedMessage {
         }
 
         /**
-         * Sets a list of "identifiers", like username or email address.
-         *
-         * @param aliases a list of "identifiers", like username or email address
-         * @return the current {@link Builder} instance
+         * 
+         * Returns the criteria builder
+         * 
+         * @return the current {@Link CriteriaBuilder} instance
          */
-        public Builder aliases(List<String> aliases) {
-            this.aliases = aliases;
+        public CriteriaBuilder criteria() {
+            if (criteriaBuilder == null) {
+                criteriaBuilder = new CriteriaBuilder(this);
+            }
+            return criteriaBuilder;
+        }
+
+        /**
+         * 
+         * Returns the message builder
+         * 
+         * @return the current {@Link MessageBuilder} instance
+         */
+        public MessageBuilder message() {
+            if (messageBuilder == null) {
+                messageBuilder = new MessageBuilder(this);
+            }
+            return messageBuilder;
+        }
+
+        /**
+         * 
+         * Returns the config builder
+         * 
+         * @return the current {@Link ConfigBuilder} instance
+         */
+        public ConfigBuilder config() {
+            if (configBuilder == null) {
+                configBuilder = new ConfigBuilder(this);
+            }
+            return configBuilder;
+        }
+
+        public UnifiedMessage build() {
+            return new UnifiedMessage(this);
+        }
+
+    }
+
+    public static class CriteriaBuilder {
+
+        public CriteriaBuilder(Builder builder) {
+            this.builder = builder;
+        }
+
+        private final Builder builder;
+
+        private final String aliases = "alias";
+        private final String variants = "variants";
+        private final String categories = "categories";
+        private final String deviceType = "deviceType";
+
+        private Map attributes = new HashMap<String, Object>();
+
+        /**
+         * Sets a list of "identifiers", like username or email address.
+         * 
+         * @param aliases a list of "identifiers", like username or email address
+         * @return the current {@link CriteriaBuilder} instance
+         */
+        public CriteriaBuilder aliases(List<String> aliases) {
+            attributes.put(this.aliases, aliases);
             return this;
         }
 
         /**
          * A filter for notifying only specific mobile variants of the Push Application.
-         *
+         * 
          * @param variants a list of mobile variants ids
-         * @return the current {@link Builder} instance
+         * @return the current {@link CriteriaBuilder} instance
          */
-        public Builder variants(List<String> variants) {
-            this.variants = variants;
+        public CriteriaBuilder variants(List<String> variants) {
+            attributes.put(this.variants, variants);
             return this;
         }
 
         /**
          * A list of categories. A Category is a semantical tag.
-         *
-         * @param  set of categories
-         * @return the current {@link Builder} instance
+         * 
+         * @param set of categories
+         * @return the current {@link CriteriaBuilder} instance
          */
-        public Builder categories(Set<String> categories) {
-            this.categories = categories;
+        public CriteriaBuilder categories(Set<String> categories) {
+            attributes.put(this.categories, categories);
             return this;
         }
 
         /**
          * A list of categories. A Category is a semantical tag.
-         *
-         * @param  a list of categories
-         * @return the current {@link Builder} instance
+         * 
+         * @param a list of categories
+         * @return the current {@link CriteriaBuilder} instance
          */
-        public Builder categories(String... categories) {
-            this.categories = new HashSet<String>(Arrays.asList(categories));
+        public CriteriaBuilder categories(String... categories) {
+            attributes.put(this.categories, new HashSet<String>(Arrays.asList(categories)));
             return this;
         }
 
         /**
          * A filter for notifying only users running a certain device.
-         *
+         * 
          * @param deviceType a list of devices i.e ["iPad","iPhone"]
          * @return the current {@link Builder} instance
          */
-        public Builder deviceType(List<String> deviceType) {
-            this.deviceType = deviceType;
+        public CriteriaBuilder deviceType(List<String> deviceType) {
+            attributes.put(this.deviceType, deviceType);
             return this;
         }
 
-        /**
-         * A map containing various key-value pairs, that represent application
-         * specific values. The mobile application is asked to look for those keys.
-         *
-         * @param attributes map containing several key-value pairs
-         * @return the current {@link Builder} instance
-         */
-        public Builder attributes(Map<String, Object> attributes) {
-            this.attributes = attributes;
-            return this;
+        public Builder build() {
+            return builder;
         }
 
-        /**
-         * Adds an application specific value for the given key.
-         *
-         * @param key of an application specific entry
-         * @param value of an application specific entry
-         * @return the current {@link Builder} instance
-         */
-        public Builder attribute(String key, String value) {
-            this.attributes.put(key, value);
-            return this;
+        public Map getAttributes() {
+            return attributes;
         }
+    }
+
+    public static class MessageBuilder {
+
+        public MessageBuilder(Builder builder) {
+            this.builder = builder;
+        }
+
+        private final Builder builder;
+        private final String alert = "alert";
+        private final String sound = "sound";
+        private final String badge = "badge";
+        private final String contentAvailable = "content-available";
+        private final String actionCategory = "action-category";
+        private final String payload = "payload";
+        private final String simplePush = "simple-push";
+
+        private Map attributes = new HashMap<String, Object>();
+
+        private Map payloadAttributes = new HashMap<String, Object>();
 
         /**
          * Triggers a dialog, displaying the value.
-         *
+         * 
          * @param message that will be displayed on the alert UI element
-         * @return the current {@link Builder} instance
+         * @return the current {@link MessageBuilder} instance
          */
-        public Builder alert(String message) {
+        public MessageBuilder alert(String message) {
             this.attributes.put(alert, message);
             return this;
         }
@@ -206,22 +260,22 @@ public class UnifiedMessage {
         /**
          * Plays a given sound - On iOS no API needs to be invoked to play the sound file.
          * However on other platforms custom API call may be required.
-         *
+         * 
          * @param sound i.e name of the sound file
-         * @return the current {@link Builder} instance
+         * @return the current {@link MessageBuilder} instance
          */
-        public Builder sound(String sound) {
+        public MessageBuilder sound(String sound) {
             this.attributes.put(this.sound, sound);
             return this;
         }
 
         /**
          * Sets the value of the badge icon - no iOS API needs to be invoked by the app developer.
-         *
+         * 
          * @param badge i.e file name of the icon
-         * @return the current {@link Builder} instance
+         * @return the current {@link MessageBuilder} instance
          */
-        public Builder badge(String badge) {
+        public MessageBuilder badge(String badge) {
             this.attributes.put(this.badge, Integer.parseInt(badge));
             return this;
         }
@@ -229,49 +283,44 @@ public class UnifiedMessage {
         /**
          * An iOS specific argument to mark the payload as 'content-available'. The feature is
          * needed when sending notifications to Newsstand applications and submitting silent iOS notifications (iOS7)
-         *
-         * @return the current {@link Builder} instance
+         * 
+         * @return the current {@link MessageBuilder} instance
          */
-        public Builder contentAvailable() {
+        public MessageBuilder contentAvailable() {
             this.attributes.put(this.contentAvailable, true);
             return this;
         }
 
         /**
          * An iOS specific argument to pass an Action Category for interaction notifications ( iOS8)
+         * 
          * @param actionCategory , the identifier of the action category for the interactive notification
-         * @return the current {@link Builder} instance
+         * @return the current {@link MessageBuilder} instance
          */
-        public Builder actionCategory(String actionCategory) {
+        public MessageBuilder actionCategory(String actionCategory) {
             this.attributes.put(this.actionCategory, actionCategory);
             return this;
         }
 
         /**
          * Needed when sending a message to a SimplePush Network
-         *
+         * 
          * @param version to pass to the broadcast channel, i.e "version=5"
-         * @return the current {@link Builder} instance
+         * @return the current {@link MessageBuilder} instance
          */
-        public Builder simplePush(String version) {
-            this.simplePush = fixVersion(version);
+        public MessageBuilder simplePush(String version) {
+            this.attributes.put(this.simplePush, fixVersion(version));
             return this;
         }
 
-        /**
-         * Specify the Time To Live of the message, used by the APNs/GCM Push Networks.
-         * If the device is offline for a longer time than the ttl value, the supported Push Networks may not deliver the message to the client.
-         *
-         * @param seconds , the amount of seconds of the Time To Live
-         * @return the current {@link Builder} instance
-         */
-        public Builder timeToLive(int seconds) {
-            this.timeTolive = seconds;
+        public MessageBuilder payload(String key, String value) {
+            this.payloadAttributes.put(key, value);
             return this;
         }
 
-        public UnifiedMessage build() {
-            return new UnifiedMessage(this);
+        public MessageBuilder fullPayload(Map<String, Object> fullPayLoad) {
+            this.payloadAttributes = fullPayLoad;
+            return this;
         }
 
         private String fixVersion(String version) {
@@ -281,28 +330,66 @@ public class UnifiedMessage {
             return version;
         }
 
+        public Builder build() {
+            return builder;
+        }
+
+        public Map getAttributes() {
+            attributes.put(this.payload, payloadAttributes);
+            return attributes;
+        }
+
+    }
+
+    public static class ConfigBuilder {
+
+        private final Builder builder;
+
+        private Map attributes = new HashMap<String, Object>();
+
+        private final String timeToLive = "ttl";
+
+        public ConfigBuilder(Builder builder) {
+            this.builder = builder;
+        }
+
+        /**
+         * Specify the Time To Live of the message, used by the APNs/GCM Push Networks.
+         * If the device is offline for a longer time than the ttl value, the supported Push Networks may not deliver the message to the client.
+         * 
+         * @param seconds , the amount of seconds of the Time To Live
+         * @return the current {@link ConfigBuilder} instance
+         */
+        public ConfigBuilder timeToLive(int seconds) {
+            attributes.put(this.timeToLive, seconds);
+            return this;
+        }
+
+        public Map getAttributes() {
+            return attributes;
+        }
+
+        public Builder build() {
+            return builder;
+        }
     }
 
     /**
      * private constructor as UnifiedMessage can only be created through the Builder.
-     *
+     * 
      * @param builder The builder object that would be used to construct the UnifiedMessage
      */
     private UnifiedMessage(Builder builder) {
-        this.attributes = builder.attributes;
-        this.aliases = builder.aliases;
-        this.variants = builder.variants;
-        this.categories = builder.categories;
-        this.deviceType = builder.deviceType;
+        this.criteria = builder.criteriaBuilder;
+        this.config = builder.configBuilder;
+        this.message = builder.messageBuilder;
         this.pushApplicationId = builder.pushApplicationId;
         this.masterSecret = builder.masterSecret;
-        this.simplePush = builder.simplePush;
-        this.timeToLive = builder.timeTolive;
     }
 
     /**
      * Get the push Application Id.
-     *
+     * 
      * @return the push Application Id
      */
     public String getPushApplicationId() {
@@ -311,74 +398,23 @@ public class UnifiedMessage {
 
     /**
      * Get the masterSecret used to authenticate against the Push Server.
-     *
+     * 
      * @return the master Secret
      */
     public String getMasterSecret() {
         return masterSecret;
     }
 
-    /**
-     * Get a list of "identifiers", like username or email address.
-     *
-     * @return a list of "identifiers", like username or email address
-     */
-    public List<String> getAliases() {
-        return aliases;
+    public MessageBuilder getMessage() {
+        return message;
     }
 
-    /**
-     * Get A filter for notifying only specific mobile variants of the Push Application.
-     *
-     * @return A filter for notifying only specific mobile variants of the Push Application
-     */
-    public List<String> getVariants() {
-        return variants;
+    public CriteriaBuilder getCriteria() {
+        return criteria;
+
     }
 
-    /**
-     * Get a map containing various key-value pairs, that represent application
-     * specific values. The mobile application is asked to look for those keys.
-     *
-     * @return A map containing various key-value pairs, that represent application
-     *         specific values. The mobile application is asked to look for those keys
-     */
-    public Map<String, Object> getAttributes() {
-        return attributes;
+    public ConfigBuilder getConfig() {
+        return config;
     }
-
-    /**
-     * Get a category list, a category is a semantical tag.
-     *
-     * @return the category list
-     */
-    public Set<String> getCategories() {
-        return categories;
-    }
-
-    /**
-     * Get a filter for notifying only users running a certain device.
-     *
-     * @return a filter for notifying only users running a certain device
-     */
-    public List<String> getDeviceType() {
-        return deviceType;
-    }
-
-    /**
-     * Get the key-value pair represented by a String and
-     * used by the Simple Push Networks.
-     *
-     * @return a String in the form of "version=5"
-     */
-    public String getSimplePush() {
-        return simplePush;
-    }
-
-    /**
-     * Get the Time To Live of the message, used by the APNs/GCM Push Networks
-     *
-     * @return the Time To Live of the message, used by the APNs/GCM Push Networks
-     */
-    public Integer getTimeToLive() { return timeToLive;}
 }
