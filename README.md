@@ -53,8 +53,8 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
                   .alert("Hello from Java Sender API!")
                   .sound("default")
                   .badge("1") // iOS specific
-                  .customProperty("some_key", "some_value") // optional attributes specific to your app
-                  .customProperty("title", "Cool Title") // optional cordova Android specific attribute (default is appName)
+                  .userData("some_key", "some_value") // optional attributes specific to your app
+                  .userData("title", "Cool Title") // optional cordova Android specific attribute (default is appName)
                   .build()
                 .build();
 ```

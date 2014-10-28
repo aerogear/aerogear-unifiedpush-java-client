@@ -239,12 +239,12 @@ public class UnifiedMessage {
         private final String badge = "badge";
         private final String contentAvailable = "content-available";
         private final String actionCategory = "action-category";
-        private final String payload = "payload";
+        private final String userData = "user-data";
         private final String simplePush = "simple-push";
 
         private Map attributes = new HashMap<String, Object>();
 
-        private Map payloadAttributes = new HashMap<String, Object>();
+        private Map userDataAttributes = new HashMap<String, Object>();
 
         /**
          * Triggers a dialog, displaying the value.
@@ -313,13 +313,27 @@ public class UnifiedMessage {
             return this;
         }
 
-        public MessageBuilder customProperty(String key, String value) {
-            this.payloadAttributes.put(key, value);
+        /**
+         * Adds an custom value for the given key. This is used to pass user data to
+         * the UnifiedPush Server
+         *
+         * @param key of an user data entry
+         * @param value of an user data entry
+         * @return  the current {@link MessageBuilder} instance
+         */
+        public MessageBuilder userData(String key, String value) {
+            this.userDataAttributes.put(key, value);
             return this;
         }
 
-        public MessageBuilder customProperties(Map<String, String> fullPayLoad) {
-            this.payloadAttributes = fullPayLoad;
+        /**
+         * Adds a map containing custom key/value entries. This is used to pass user data to
+         * the UnifiedPush Server
+         * @param userDataMap containing custom key/value entries
+         * @return the current {@link MessageBuilder} instance
+         */
+        public MessageBuilder userData(Map<String, Object> userDataMap) {
+            this.userDataAttributes = userDataMap;
             return this;
         }
 
@@ -335,7 +349,7 @@ public class UnifiedMessage {
         }
 
         public Map getAttributes() {
-            attributes.put(this.payload, payloadAttributes);
+            attributes.put(this.userData, userDataAttributes);
             return attributes;
         }
 

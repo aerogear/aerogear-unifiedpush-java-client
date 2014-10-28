@@ -141,22 +141,22 @@ public class UnifiedMessageTest {
     @Test
     public void customAttributes() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().customProperty("foo-key", "foo-value")
-                .customProperty("bar-key", "bar-value").build()
+                .message().userData("foo-key", "foo-value")
+                .userData("bar-key", "bar-value").build()
                 .build();
-        assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getAttributes().get("payload")).get("foo-key"));
-        assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getAttributes().get("payload")).get("bar-key"));
+        assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("foo-key"));
+        assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("bar-key"));
     }
 
     @Test
     public void customAttributesAsMap() {
-        final Map<String, String> customAttributes = new HashMap<String, String>();
+        final Map<String, Object> customAttributes = new HashMap<String, Object>();
         customAttributes.put("foo-key", "foo-value");
         customAttributes.put("bar-key", "bar-value");
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().customProperties(customAttributes).build()
+                .message().userData(customAttributes).build()
                 .build();
-        assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getAttributes().get("payload")).get("foo-key"));
-        assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getAttributes().get("payload")).get("bar-key"));
+        assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("foo-key"));
+        assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("bar-key"));
     }
 }
