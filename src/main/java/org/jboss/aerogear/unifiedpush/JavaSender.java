@@ -24,7 +24,7 @@ public interface JavaSender {
     /**
      * Sends the given payload to installations of the referenced PushApplication.
      * We also pass a {@link MessageResponseCallback} to handle the message
-     *
+     * 
      * @param unifiedMessage the {@link UnifiedMessage} to send.
      * @param callback the {@link MessageResponseCallback}.
      */
@@ -32,14 +32,14 @@ public interface JavaSender {
 
     /**
      * Sends the given payload to installations of the referenced PushApplication.
-     *
+     * 
      * @param unifiedMessage The {@link UnifiedMessage} to send.
      */
     void send(UnifiedMessage unifiedMessage);
 
     /**
      * Returns the current configured server URL
-     *
+     * 
      * @return the current configured server URL.
      */
     String getServerURL();

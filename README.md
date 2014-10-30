@@ -9,7 +9,7 @@ Add the following dependencies to your ```pom.xml``` file:
         <dependency>
              <groupId>org.jboss.aerogear</groupId>
              <artifactId>unifiedpush-java-client</artifactId>
-             <version>1.0.0</version>
+             <version>1.1.0</version>
         </dependency>
 
 ## Usage
@@ -46,12 +46,16 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
-                .aliases(Arrays.asList("john", "maria"))
-                .alert("Hello from Java Sender API!")
-                .sound("default") 
-                .badge("1") // iOS specific
-                .attribute("some_key", "some_value") // optional attributes specific to your app
-                .attribute("title", "Cool Title") // optional cordova Android specific attribute (default is appName)
+                .criteria()
+                  .aliases(Arrays.asList("john", "maria"))
+                  .build()
+                .message()
+                  .alert("Hello from Java Sender API!")
+                  .sound("default")
+                  .badge("1") // iOS specific
+                  .userData("some_key", "some_value") // optional attributes specific to your app
+                  .userData("title", "Cool Title") // optional cordova Android specific attribute (default is appName)
+                  .build()
                 .build();
 ```
 

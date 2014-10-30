@@ -60,10 +60,12 @@ public final class ValidationUtils {
 
     /**
      * Checks if the given http status code is in the 2xx range
+     * 
      * @param statusCode the int containing the status code
      * @return true if in the range otherwise false
      */
     public static boolean isSuccess(int statusCode) {
         return statusCode != 0 && (statusCode >= 200 && statusCode < 300);
     }
+
 }

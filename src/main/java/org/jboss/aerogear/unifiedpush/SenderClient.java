@@ -192,31 +192,18 @@ public class SenderClient implements JavaSender {
 
         final Map<String, Object> payloadObject = new LinkedHashMap<String, Object>();
 
-        if (!isEmpty(unifiedMessage.getAliases())) {
-            payloadObject.put("alias", unifiedMessage.getAliases());
+        if (unifiedMessage.getCriteria() != null) {
+            payloadObject.put("criteria", unifiedMessage.getCriteria().getAttributes());
         }
 
-        if (!isEmpty(unifiedMessage.getCategories())) {
-            payloadObject.put("categories", unifiedMessage.getCategories());
+        if (unifiedMessage.getMessage() != null) {
+            payloadObject.put("message", unifiedMessage.getMessage().getAttributes());
         }
 
-        if (!isEmpty(unifiedMessage.getDeviceType())) {
-            payloadObject.put("deviceType", unifiedMessage.getDeviceType());
+        if (unifiedMessage.getConfig() != null) {
+            payloadObject.put("config", unifiedMessage.getConfig().getAttributes());
         }
 
-        if (!isEmpty(unifiedMessage.getVariants())) {
-            payloadObject.put("variants", unifiedMessage.getVariants());
-        }
-
-        if (!isEmpty(unifiedMessage.getAttributes())) {
-            payloadObject.put("message", unifiedMessage.getAttributes());
-        }
-        if (!isEmpty(unifiedMessage.getSimplePush())) {
-            payloadObject.put("simple-push", unifiedMessage.getSimplePush());
-        }
-        if(unifiedMessage.getTimeToLive() != null) {
-            payloadObject.put("ttl", unifiedMessage.getTimeToLive());
-        }
         return payloadObject;
     }
 

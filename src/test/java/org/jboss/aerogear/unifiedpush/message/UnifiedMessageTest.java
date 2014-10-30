@@ -34,15 +34,15 @@ public class UnifiedMessageTest {
     @Test
     public void specialKeysTests() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .alert("Hello from Java Sender API, via JUnit")
+                .message().alert("Hello from Java Sender API, via JUnit")
                 .sound("default")
-                .badge("1")
-                .timeToLive(3600)
+                .badge("1").build()
+                .config().timeToLive(3600).build()
                 .build();
-        assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getAttributes().get("alert"));
-        assertEquals("default", unifiedMessage.getAttributes().get("sound"));
-        assertEquals(1, unifiedMessage.getAttributes().get("badge"));
-        assertEquals(3600, unifiedMessage.getTimeToLive().intValue());
+        assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getMessage().getAttributes().get("alert"));
+        assertEquals("default", unifiedMessage.getMessage().getAttributes().get("sound"));
+        assertEquals(1, unifiedMessage.getMessage().getAttributes().get("badge"));
+        assertEquals(3600, unifiedMessage.getConfig().getAttributes().get("ttl"));
     }
 
     @Test
@@ -51,9 +51,9 @@ public class UnifiedMessageTest {
         aliases.add("mike");
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .aliases(aliases)
+                .criteria().aliases(aliases).build()
                 .build();
-        assertEquals(1, unifiedMessage.getAliases().size());
+        assertEquals(1, ((List) unifiedMessage.getCriteria().getAttributes().get("alias")).size());
     }
 
     @Test
@@ -63,9 +63,9 @@ public class UnifiedMessageTest {
         variants.add("444939cd-ae63-4ce1-96a4-de74b77e3737"); // e.g. HR Free
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .variants(variants)
+                .criteria().variants(variants).build()
                 .build();
-        assertEquals(2, unifiedMessage.getVariants().size());
+        assertEquals(2, ((List) unifiedMessage.getCriteria().getAttributes().get("variants")).size());
     }
 
     @Test
@@ -74,17 +74,17 @@ public class UnifiedMessageTest {
         devices.add("iPad");
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .deviceType(devices)
+                .criteria().deviceType(devices).build()
                 .build();
-        assertEquals(1, unifiedMessage.getDeviceType().size());
+        assertEquals(1, ((List) unifiedMessage.getCriteria().getAttributes().get("deviceType")).size());
     }
 
     @Test
     public void simpleSelectiveMessageWithCategoriesTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .categories("sports", "world cup")
+                .criteria().categories("sports", "world cup").build()
                 .build();
-        assertEquals(2, unifiedMessage.getCategories().size());
+        assertEquals(2, ((Set) unifiedMessage.getCriteria().getAttributes().get("categories")).size());
     }
 
     @Test
@@ -93,65 +93,59 @@ public class UnifiedMessageTest {
         categories.add("sports");
         categories.add("world cup");
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .categories(categories)
+                .criteria().categories(categories).build()
                 .build();
-        assertEquals(2, unifiedMessage.getCategories().size());
+        assertEquals(2, ((Set) unifiedMessage.getCriteria().getAttributes().get("categories")).size());
     }
 
     @Test
     public void simplePushVersionMessageTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .simplePush("version=1")
+                .message().simplePush("version=1").build()
                 .build();
-        assertEquals("version=1", unifiedMessage.getSimplePush());
+        assertEquals("version=1", unifiedMessage.getMessage().getAttributes().get("simple-push"));
     }
 
     @Test
     public void simplePushWrongVersionFormatMessageTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .simplePush("1")
+                .message().simplePush("1").build()
                 .build();
-        assertEquals("version=1", unifiedMessage.getSimplePush());
+        assertEquals("version=1", unifiedMessage.getMessage().getAttributes().get("simple-push"));
     }
 
     @Test
     public void contentAvailable() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
-                .contentAvailable()
+                .message().contentAvailable().build()
                 .build();
-        assertTrue((Boolean) unifiedMessage.getAttributes().get("content-available"));
+        assertTrue((Boolean) unifiedMessage.getMessage().getAttributes().get("content-available"));
     }
 
     @Test
     public void noContentAvailable() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
+                .message().build()
                 .build();
-        assertNull(unifiedMessage.getAttributes().get("content-available"));
+        assertNull(unifiedMessage.getMessage().getAttributes().get("content-available"));
     }
 
     @Test
     public void actionCategoryTest() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .actionCategory("myInteractiveNotification")
-                .sound("default")
+                .message().actionCategory("myInteractiveNotification").build()
                 .build();
-        assertEquals("myInteractiveNotification", unifiedMessage.getAttributes().get("action-category"));
+        assertEquals("myInteractiveNotification", unifiedMessage.getMessage().getAttributes().get("action-category"));
     }
 
     @Test
     public void customAttributes() {
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
-                .attribute("foo-key", "foo-value")
-                .attribute("bar-key", "bar-value")
+                .message().userData("foo-key", "foo-value")
+                .userData("bar-key", "bar-value").build()
                 .build();
-        assertEquals("foo-value", unifiedMessage.getAttributes().get("foo-key"));
-        assertEquals("bar-value", unifiedMessage.getAttributes().get("bar-key"));
+        assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("foo-key"));
+        assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("bar-key"));
     }
 
     @Test
@@ -160,11 +154,9 @@ public class UnifiedMessageTest {
         customAttributes.put("foo-key", "foo-value");
         customAttributes.put("bar-key", "bar-value");
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .alert("Hello from Java Sender API, via JUnit")
-                .sound("default")
-                .attributes(customAttributes)
+                .message().userData(customAttributes).build()
                 .build();
-        assertEquals("foo-value", unifiedMessage.getAttributes().get("foo-key"));
-        assertEquals("bar-value", unifiedMessage.getAttributes().get("bar-key"));
+        assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("foo-key"));
+        assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getAttributes().get("user-data")).get("bar-key"));
     }
 }
