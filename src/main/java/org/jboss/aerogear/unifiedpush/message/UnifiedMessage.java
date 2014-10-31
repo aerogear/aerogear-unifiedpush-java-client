@@ -69,12 +69,6 @@ public class UnifiedMessage {
 
         private String masterSecret;
 
-        private Map messageMap;
-
-        private Map criteriaMap;
-
-        private Map configMap;
-
         private MessageBuilder messageBuilder;
 
         private CriteriaBuilder criteriaBuilder;
@@ -107,7 +101,7 @@ public class UnifiedMessage {
          * 
          * Returns the criteria builder
          * 
-         * @return the current {@Link CriteriaBuilder} instance
+         * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder criteria() {
             if (criteriaBuilder == null) {
@@ -120,7 +114,7 @@ public class UnifiedMessage {
          * 
          * Returns the message builder
          * 
-         * @return the current {@Link MessageBuilder} instance
+         * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder message() {
             if (messageBuilder == null) {
@@ -133,7 +127,7 @@ public class UnifiedMessage {
          * 
          * Returns the config builder
          * 
-         * @return the current {@Link ConfigBuilder} instance
+         * @return the current {@link ConfigBuilder} instance
          */
         public ConfigBuilder config() {
             if (configBuilder == null) {
@@ -161,7 +155,7 @@ public class UnifiedMessage {
         private final String categories = "categories";
         private final String deviceType = "deviceType";
 
-        private Map attributes = new HashMap<String, Object>();
+        private Map<String, Object> attributes = new HashMap<String, Object>();
 
         /**
          * Sets a list of "identifiers", like username or email address.
@@ -188,7 +182,7 @@ public class UnifiedMessage {
         /**
          * A list of categories. A Category is a semantical tag.
          * 
-         * @param set of categories
+         * @param categories a set of categories
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder categories(Set<String> categories) {
@@ -199,7 +193,7 @@ public class UnifiedMessage {
         /**
          * A list of categories. A Category is a semantical tag.
          * 
-         * @param a list of categories
+         * @param categories a list of categories
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder categories(String... categories) {
@@ -242,9 +236,9 @@ public class UnifiedMessage {
         private final String userData = "user-data";
         private final String simplePush = "simple-push";
 
-        private Map attributes = new HashMap<String, Object>();
+        private Map<String, Object> attributes = new HashMap<String, Object>();
 
-        private Map userDataAttributes = new HashMap<String, Object>();
+        private Map<String, Object> userDataAttributes = new HashMap<String, Object>();
 
         /**
          * Triggers a dialog, displaying the value.
@@ -359,7 +353,7 @@ public class UnifiedMessage {
 
         private final Builder builder;
 
-        private Map attributes = new HashMap<String, Object>();
+        private Map<String, Object> attributes = new HashMap<String, Object>();
 
         private final String timeToLive = "ttl";
 
