@@ -44,12 +44,17 @@ public class SenderClient implements JavaSender {
     private final String serverURL;
     private final ProxyConfig proxy;
     private final TrustStoreConfig customTrustStore;
+    private final String pushApplicationId;
+    private final String masterSecret;
+
 
     /**
      * Only called by builder.
      */
     private SenderClient(Builder builder) {
         serverURL = builder.rootServerURL;
+        pushApplicationId = builder.pushApplicationId;
+        masterSecret = builder.masterSecret;
         proxy = builder.proxy;
         customTrustStore = builder.customTrustStore;
     }
@@ -64,6 +69,8 @@ public class SenderClient implements JavaSender {
     public static class Builder {
 
         private final String rootServerURL;
+        private String pushApplicationId;
+        private String masterSecret;
         private ProxyConfig proxy;
         private TrustStoreConfig customTrustStore;
 
@@ -72,6 +79,28 @@ public class SenderClient implements JavaSender {
                 throw new IllegalStateException("server can not be null");
             }
             this.rootServerURL = !rootServerURL.endsWith("/") ? rootServerURL + '/' : rootServerURL;
+        }
+
+        /**
+         * Specifies which Push Application the sender will be using.
+         *
+         * @param pushApplicationId The pushApplicationID
+         * @return the current {@link Builder} instance
+         */
+        public Builder pushApplicationId(String pushApplicationId) {
+            this.pushApplicationId = pushApplicationId;
+            return this;
+        }
+
+        /**
+         * Set the masterSecret used to authenticate against the Push Server.
+         *
+         * @param masterSecret The masterSecret
+         * @return the current {@link Builder} instance
+         */
+        public Builder masterSecret(String masterSecret){
+            this.masterSecret = masterSecret;
+            return this;
         }
 
         /**
@@ -174,7 +203,7 @@ public class SenderClient implements JavaSender {
         // transform to JSONString:
         String jsonString = toJSONString(payloadObject);
         // fire!
-        submitPayload(buildUrl(), jsonString, unifiedMessage.getPushApplicationId(), unifiedMessage.getMasterSecret(), callback);
+        submitPayload(buildUrl(), jsonString, pushApplicationId, masterSecret, callback);
     }
 
     @Override
@@ -305,6 +334,24 @@ public class SenderClient implements JavaSender {
      */
     public TrustStoreConfig getCustomTrustStore() {
         return customTrustStore;
+    }
+
+    /**
+     * Get the used pushApplicationId.
+     *
+     * @return pushApplicationId that is used
+     */
+    public String getPushApplicationId() {
+        return pushApplicationId;
+    }
+
+    /**
+     * Get the used masterSecret.
+     *
+     * @return masterSecret that is used
+     */
+    public String getMasterSecret() {
+        return masterSecret;
     }
 
 }
