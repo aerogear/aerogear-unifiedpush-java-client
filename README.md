@@ -51,17 +51,14 @@ JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/a
 Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
 
 ```
- UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .criteria()
-                  .aliases(Arrays.asList("john", "maria"))
-                  .build()
+ UnifiedMessage unifiedMessage = UnifiedMessage.withCriteria()
+                .aliases("john", "maria")
                 .message()
                   .alert("Hello from Java Sender API!")
                   .sound("default")
                   .badge("1") // iOS specific
                   .userData("some_key", "some_value") // optional attributes specific to your app
                   .userData("title", "Cool Title") // optional cordova Android specific attribute (default is appName)
-                  .build()
                 .build();
 ```
 
