@@ -59,10 +59,6 @@ public class UnifiedMessage {
      */
     public static class Builder {
 
-        private String pushApplicationId;
-
-        private String masterSecret;
-
         private MessageBuilder messageBuilder;
 
         private CriteriaBuilder criteriaBuilder;
