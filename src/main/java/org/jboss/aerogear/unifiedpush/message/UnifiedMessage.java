@@ -54,15 +54,30 @@ public class UnifiedMessage {
 
     private ConfigBuilder config;
 
+    public static MessageBuilder withMessage() {
+        return new Builder().message();
+    }
+
+    public static CriteriaBuilder withCriteria() {
+        return new Builder().criteria();
+    }
+
+    public static ConfigBuilder withConfig() {
+        return new Builder().config();
+    }
+
     /**
      * A builder to provide a fluent API
+     *
+     * @deprecated Please use one of the static methods in {@link UnifiedMessage}
+     * @see UnifiedMessage#withMessage()
+     * @see UnifiedMessage#withCriteria()
+     * @see UnifiedMessage#withConfig()
      */
     public static class Builder {
 
         private MessageBuilder messageBuilder;
-
         private CriteriaBuilder criteriaBuilder;
-
         private ConfigBuilder configBuilder;
 
         /**
@@ -180,8 +195,22 @@ public class UnifiedMessage {
             return this;
         }
 
-        public Builder build() {
-            return builder;
+        public MessageBuilder message() {
+            if (builder.messageBuilder == null) {
+                builder.messageBuilder = new MessageBuilder(builder);
+            }
+            return builder.messageBuilder;
+        }
+
+        public ConfigBuilder config() {
+            if (builder.configBuilder == null) {
+                builder.configBuilder = new ConfigBuilder(builder);
+            }
+            return builder.configBuilder;
+        }
+
+        public UnifiedMessage build() {
+            return builder.build();
         }
 
         public Map getAttributes() {
@@ -299,6 +328,20 @@ public class UnifiedMessage {
             return this;
         }
 
+        public CriteriaBuilder criteria() {
+            if (builder.criteriaBuilder == null) {
+                builder.criteriaBuilder = new CriteriaBuilder(builder);
+            }
+            return builder.criteriaBuilder;
+        }
+
+        public ConfigBuilder config() {
+            if (builder.configBuilder == null) {
+                builder.configBuilder = new ConfigBuilder(builder);
+            }
+            return builder.configBuilder;
+        }
+
         private String fixVersion(String version) {
             if (version != null && !version.startsWith("version=")) {
                 version = "version=" + version;
@@ -306,8 +349,8 @@ public class UnifiedMessage {
             return version;
         }
 
-        public Builder build() {
-            return builder;
+        public UnifiedMessage build() {
+            return builder.build();
         }
 
         public Map getAttributes() {
@@ -345,9 +388,25 @@ public class UnifiedMessage {
             return attributes;
         }
 
-        public Builder build() {
-            return builder;
+        public MessageBuilder message() {
+            if (builder.messageBuilder == null) {
+                builder.messageBuilder = new MessageBuilder(builder);
+
+            }
+            return builder.messageBuilder;
         }
+
+        public CriteriaBuilder criteria() {
+            if (builder.criteriaBuilder == null) {
+                builder.criteriaBuilder = new CriteriaBuilder(builder);
+            }
+            return builder.criteriaBuilder;
+        }
+
+        public UnifiedMessage build() {
+            return builder.build();
+        }
+
     }
 
     /**
