@@ -16,13 +16,19 @@ Add the following dependencies to your ```pom.xml``` file:
 
 Create a ```JavaSender```:
 
-    JavaSender defaultJavaSender =
-      new SenderClient.Builder("http://localhost:8080/ag-push").build();
+```
+JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+                .build();
+```
 
 To connect via proxy:
 
 ```
 JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .proxy("proxy.example.com", 8080)
                 .proxyUser("proxyuser")
                 .proxyPassword("password")
@@ -34,6 +40,8 @@ To use a custom TrustStore:
 
 ```
 JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
+                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
+                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
                 .build();
 ```
@@ -44,8 +52,6 @@ Construct a ``` UnifiedMessage ``` using the ``` Builder ``` :
 
 ```
  UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .criteria()
                   .aliases(Arrays.asList("john", "maria"))
                   .build()

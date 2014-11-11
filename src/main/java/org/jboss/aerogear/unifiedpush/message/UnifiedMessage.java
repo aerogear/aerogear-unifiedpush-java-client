@@ -32,8 +32,6 @@ import java.util.*;
  *     &#064;code
  *     // Sending an UnifiedMessage
  *     UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
- *             .pushApplicationId(&quot;c7fc6525-5506-4ca9-9cf1-55cc261ddb9c&quot;)
- *             .masterSecret(&quot;8b2f43a9-23c8-44fe-bee9-d6b0af9e316b&quot;)
  *             .message()
  *              .alert(&quot;Hello&quot;)
  *              .sound(&quot;default&quot;)
@@ -50,10 +48,6 @@ import java.util.*;
  */
 public class UnifiedMessage {
 
-    private String pushApplicationId;
-
-    private String masterSecret;
-
     private MessageBuilder message;
 
     private CriteriaBuilder criteria;
@@ -65,37 +59,11 @@ public class UnifiedMessage {
      */
     public static class Builder {
 
-        private String pushApplicationId;
-
-        private String masterSecret;
-
         private MessageBuilder messageBuilder;
 
         private CriteriaBuilder criteriaBuilder;
 
         private ConfigBuilder configBuilder;
-
-        /**
-         * Specifies which Push Application the message is for.
-         * 
-         * @param pushApplicationId The pushApplicationID
-         * @return the current {@link Builder} instance
-         */
-        public Builder pushApplicationId(String pushApplicationId) {
-            this.pushApplicationId = pushApplicationId;
-            return this;
-        }
-
-        /**
-         * Set the masterSecret used to authenticate against the Push Server.
-         * 
-         * @param masterSecret The masterSecret
-         * @return the current {@link Builder} instance
-         */
-        public Builder masterSecret(String masterSecret) {
-            this.masterSecret = masterSecret;
-            return this;
-        }
 
         /**
          * 
@@ -391,26 +359,6 @@ public class UnifiedMessage {
         this.criteria = builder.criteriaBuilder;
         this.config = builder.configBuilder;
         this.message = builder.messageBuilder;
-        this.pushApplicationId = builder.pushApplicationId;
-        this.masterSecret = builder.masterSecret;
-    }
-
-    /**
-     * Get the push Application Id.
-     * 
-     * @return the push Application Id
-     */
-    public String getPushApplicationId() {
-        return pushApplicationId;
-    }
-
-    /**
-     * Get the masterSecret used to authenticate against the Push Server.
-     * 
-     * @return the master Secret
-     */
-    public String getMasterSecret() {
-        return masterSecret;
     }
 
     public MessageBuilder getMessage() {

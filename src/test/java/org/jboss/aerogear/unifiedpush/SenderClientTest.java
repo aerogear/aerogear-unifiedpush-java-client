@@ -116,8 +116,6 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId(PUSH_APPLICATION_ID)
-                .masterSecret(MASTER_SECRET)
                 .message().alert(ALERT_MSG)
                 .sound(DEFAULT_SOUND).build()
                 .criteria().aliases(IDENTIFIERS_LIST).build()
@@ -159,8 +157,6 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId(PUSH_APPLICATION_ID)
-                .masterSecret(MASTER_SECRET)
                 .message().alert(ALERT_MSG)
                 .sound(DEFAULT_SOUND).build()
                 .criteria().aliases(IDENTIFIERS_LIST).build()
@@ -201,8 +197,6 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId(PUSH_APPLICATION_ID)
-                .masterSecret(MASTER_SECRET)
                 .message().alert(ALERT_MSG)
                 .sound(DEFAULT_SOUND).build()
                 .criteria().aliases(IDENTIFIERS_LIST).build()
@@ -241,8 +235,6 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId(PUSH_APPLICATION_ID)
-                .masterSecret(MASTER_SECRET)
                 .message().alert(ALERT_MSG)
                 .sound(DEFAULT_SOUND).build()
                 .criteria().aliases(IDENTIFIERS_LIST).build()
@@ -282,8 +274,6 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId(PUSH_APPLICATION_ID)
-                .masterSecret(MASTER_SECRET)
                 .message().alert(ALERT_MSG)
                 .sound(DEFAULT_SOUND).build()
                 .criteria().aliases(IDENTIFIERS_LIST).build()
@@ -325,8 +315,6 @@ public class SenderClientTest {
         };
 
         UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .pushApplicationId(PUSH_APPLICATION_ID)
-                .masterSecret(MASTER_SECRET)
                 .message().alert(ALERT_MSG)
                 .sound(DEFAULT_SOUND).build()
                 .criteria().aliases(IDENTIFIERS_LIST).build()
@@ -370,6 +358,18 @@ public class SenderClientTest {
         assertEquals("../test.truststore", client.getCustomTrustStore().getTrustStorePath());
         assertNull(client.getCustomTrustStore().getTrustStoreType());
         assertEquals("aerogear", client.getCustomTrustStore().getTrustStorePassword());
+    }
+
+    @Test
+    public void testClientBuilderPushAppIdAndMasterSecret() {
+        SenderClient client = SenderClient.withRootServerURL("https://aerogear.example.com/ag-push")
+                .pushApplicationId(PUSH_APPLICATION_ID)
+                .masterSecret(MASTER_SECRET)
+                .build();
+
+        assertEquals("https://aerogear.example.com/ag-push/", client.getServerURL());
+        assertEquals(PUSH_APPLICATION_ID, client.getPushApplicationId());
+        assertEquals(MASTER_SECRET, client.getMasterSecret());
     }
 
     public SenderClient getDefaultSenderClient() {
