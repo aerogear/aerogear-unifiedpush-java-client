@@ -48,23 +48,16 @@ public class UnifiedMessageTest {
 
     @Test
     public void simpleSelectiveMessageWithAliasesTest() {
-        List<String> aliases = new ArrayList<String>();
-        aliases.add("mike");
-
         UnifiedMessage unifiedMessage = UnifiedMessage.withCriteria()
-                .aliases(aliases)
+                .aliases("mike")
                 .build();
         assertEquals(1, ((List) unifiedMessage.getCriteria().getAttributes().get("alias")).size());
     }
 
     @Test
     public void simpleSelectiveMessageWithVariantsTest() {
-        List<String> variants = new ArrayList<String>();
-        variants.add("c3f0a94f-48de-4b77-a08e-68114460857e"); // e.g. HR Premium
-        variants.add("444939cd-ae63-4ce1-96a4-de74b77e3737"); // e.g. HR Free
-
         UnifiedMessage unifiedMessage = UnifiedMessage.withCriteria()
-                .variants(variants)
+                .variants("c3f0a94f-48de-4b77-a08e-68114460857e", "444939cd-ae63-4ce1-96a4-de74b77e3737")
                 .build();
         assertEquals(2, ((List) unifiedMessage.getCriteria().getAttributes().get("variants")).size());
     }
