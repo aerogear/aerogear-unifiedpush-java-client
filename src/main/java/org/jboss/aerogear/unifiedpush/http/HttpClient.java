@@ -47,7 +47,7 @@ public class HttpClient {
      * @param charset
      * @param proxy
      * @param customTrustStore
-     * @return
+     * @return {@link URLConnection}
      * @throws Exception
      */
     public static URLConnection post(String url, String encodedCredentials, String jsonPayloadObject, Charset charset,
