@@ -115,10 +115,10 @@ public class SenderClientTest {
             }
         };
 
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().alert(ALERT_MSG)
-                .sound(DEFAULT_SOUND).build()
-                .criteria().aliases(IDENTIFIERS_LIST).build()
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
         defaultSenderClient.send(unifiedMessage, callback);
@@ -156,10 +156,10 @@ public class SenderClientTest {
             }
         };
 
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().alert(ALERT_MSG)
-                .sound(DEFAULT_SOUND).build()
-                .criteria().aliases(IDENTIFIERS_LIST).build()
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
         secureSenderClient.send(unifiedMessage, callback);
@@ -196,10 +196,10 @@ public class SenderClientTest {
             }
         };
 
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().alert(ALERT_MSG)
-                .sound(DEFAULT_SOUND).build()
-                .criteria().aliases(IDENTIFIERS_LIST).build()
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
         defaultSenderClient.send(unifiedMessage, callback);
@@ -234,10 +234,10 @@ public class SenderClientTest {
             }
         };
 
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().alert(ALERT_MSG)
-                .sound(DEFAULT_SOUND).build()
-                .criteria().aliases(IDENTIFIERS_LIST).build()
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
         secureSenderClient.send(unifiedMessage, callback);
@@ -273,10 +273,10 @@ public class SenderClientTest {
             }
         };
 
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().alert(ALERT_MSG)
-                .sound(DEFAULT_SOUND).build()
-                .criteria().aliases(IDENTIFIERS_LIST).build()
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
         defaultSenderClient.send(unifiedMessage, callback);
@@ -314,10 +314,10 @@ public class SenderClientTest {
             }
         };
 
-        UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
-                .message().alert(ALERT_MSG)
-                .sound(DEFAULT_SOUND).build()
-                .criteria().aliases(IDENTIFIERS_LIST).build()
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
         secureSenderClient.send(unifiedMessage, callback);

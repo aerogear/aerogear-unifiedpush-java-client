@@ -21,48 +21,56 @@ import java.util.*;
 
 /**
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
- * The message format is very simple: A generic JSON map is used to sent messages to Android and iOS devices.
+ * The message format is very simple: A generic JSON map is used to send messages to Android and iOS devices.
  * The applications on the devices will receive the JSON map and are responsible for performing a lookup to read values of the given keys.
  * See the <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">Message Specification</a> for more information.
  * <p>
- * To construct a message use the {@link Builder} like this :
+ * To construct a message use the {@link #withMessage()} like this :
  * 
  * <pre>
- * {
- *     &#064;code
- *     // Sending an UnifiedMessage
- *     UnifiedMessage unifiedMessage = new UnifiedMessage.Builder()
- *             .message()
- *              .alert(&quot;Hello&quot;)
- *              .sound(&quot;default&quot;)
- *              .build()
+ * {@code
+ *     UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+ *             .alert("Hello")
+ *             .sound("default")
  *             .criteria()
- *              .variants(Arrays.asList(&quot;c3f0a94f-48de-4b77-a08e-68114460857e&quot;)) // e.g. HR_Premium
- *              .aliases(Arrays.asList(&quot;mike&quot;, &quot;john&quot;))
- *              .categories(Arrays.asList(&quot;sport&quot;, &quot;world cup&quot;))
- *              .deviceType(Arrays.asList(&quot;iPad&quot;, &quot;AndroidTablet&quot;))
- *              .build()
+ *                  .variants("c3f0a94f-48de-4b77-a08e-68114460857e") // e.g. HR_Premium
+ *                  .aliases("mike", "john")
+ *                  .categories("sport", "world cup")
+ *                  .deviceType("iPad", "AndroidTablet")
  *             .build();
  * }
  * </pre>
  */
 public class UnifiedMessage {
 
-    private MessageBuilder message;
+    private final MessageBuilder message;
+    private final CriteriaBuilder criteria;
+    private final ConfigBuilder config;
 
-    private CriteriaBuilder criteria;
+    public static MessageBuilder withMessage() {
+        return new Builder().message();
+    }
 
-    private ConfigBuilder config;
+    public static CriteriaBuilder withCriteria() {
+        return new Builder().criteria();
+    }
+
+    public static ConfigBuilder withConfig() {
+        return new Builder().config();
+    }
 
     /**
      * A builder to provide a fluent API
+     *
+     * @deprecated Please use one of the static methods in {@link UnifiedMessage}
+     * @see UnifiedMessage#withMessage()
+     * @see UnifiedMessage#withCriteria()
+     * @see UnifiedMessage#withConfig()
      */
     public static class Builder {
 
         private MessageBuilder messageBuilder;
-
         private CriteriaBuilder criteriaBuilder;
-
         private ConfigBuilder configBuilder;
 
         /**
@@ -118,12 +126,12 @@ public class UnifiedMessage {
 
         private final Builder builder;
 
-        private final String aliases = "alias";
-        private final String variants = "variants";
-        private final String categories = "categories";
-        private final String deviceType = "deviceType";
+        private static final String ALIASES = "alias";
+        private static final String VARIANTS = "variants";
+        private static final String CATEGORIES = "categories";
+        private static final String DEVICE_TYPE = "deviceType";
 
-        private Map<String, Object> attributes = new HashMap<String, Object>();
+        private final Map<String, Object> attributes = new HashMap<String, Object>();
 
         /**
          * Sets a list of "identifiers", like username or email address.
@@ -132,8 +140,18 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder aliases(List<String> aliases) {
-            attributes.put(this.aliases, aliases);
+            attributes.put(ALIASES, aliases);
             return this;
+        }
+
+        /**
+         * Sets a list of "identifiers", like username or email address.
+         *
+         * @param aliases a list of "identifiers", like username or email address
+         * @return the current {@link CriteriaBuilder} instance
+         */
+        public CriteriaBuilder aliases(String... aliases) {
+            return aliases(new ArrayList<String>(Arrays.asList(aliases)));
         }
 
         /**
@@ -143,8 +161,18 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder variants(List<String> variants) {
-            attributes.put(this.variants, variants);
+            attributes.put(VARIANTS, variants);
             return this;
+        }
+
+        /**
+         * A filter for notifying only specific mobile variants of the Push Application.
+         *
+         * @param variants a list of mobile variants ids
+         * @return the current {@link CriteriaBuilder} instance
+         */
+        public CriteriaBuilder variants(String... variants) {
+            return variants(new ArrayList<String>(Arrays.asList(variants)));
         }
 
         /**
@@ -154,7 +182,7 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder categories(Set<String> categories) {
-            attributes.put(this.categories, categories);
+            attributes.put(CATEGORIES, categories);
             return this;
         }
 
@@ -165,26 +193,49 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder categories(String... categories) {
-            attributes.put(this.categories, new HashSet<String>(Arrays.asList(categories)));
-            return this;
+            return categories(new HashSet<String>(Arrays.asList(categories)));
         }
 
         /**
          * A filter for notifying only users running a certain device.
          * 
          * @param deviceType a list of devices i.e ["iPad","iPhone"]
-         * @return the current {@link Builder} instance
+         * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder deviceType(List<String> deviceType) {
-            attributes.put(this.deviceType, deviceType);
+            attributes.put(DEVICE_TYPE, deviceType);
             return this;
         }
 
-        public Builder build() {
-            return builder;
+        /**
+         * A filter for notifying only users running a certain device.
+         *
+         * @param deviceType a list of devices i.e ["iPad","iPhone"]
+         * @return the current {@link CriteriaBuilder} instance
+         */
+        public CriteriaBuilder deviceType(String... deviceType) {
+            return deviceType(new ArrayList<String>(Arrays.asList(deviceType)));
         }
 
-        public Map getAttributes() {
+        public MessageBuilder message() {
+            if (builder.messageBuilder == null) {
+                builder.messageBuilder = new MessageBuilder(builder);
+            }
+            return builder.messageBuilder;
+        }
+
+        public ConfigBuilder config() {
+            if (builder.configBuilder == null) {
+                builder.configBuilder = new ConfigBuilder(builder);
+            }
+            return builder.configBuilder;
+        }
+
+        public UnifiedMessage build() {
+            return builder.build();
+        }
+
+        public Map<String, Object> getAttributes() {
             return attributes;
         }
     }
@@ -196,15 +247,15 @@ public class UnifiedMessage {
         }
 
         private final Builder builder;
-        private final String alert = "alert";
-        private final String sound = "sound";
-        private final String badge = "badge";
-        private final String contentAvailable = "content-available";
-        private final String actionCategory = "action-category";
-        private final String userData = "user-data";
-        private final String simplePush = "simple-push";
+        private static final String ALERT = "alert";
+        private static final String SOUND = "sound";
+        private static final String BADGE = "badge";
+        private static final String CONTENT_AVAILABLE = "content-available";
+        private static final String ACTION_CATEGORY = "action-category";
+        private static final String USER_DATA = "user-data";
+        private static final String SIMPLE_PUSH = "simple-push";
 
-        private Map<String, Object> attributes = new HashMap<String, Object>();
+        private final Map<String, Object> attributes = new HashMap<String, Object>();
 
         private Map<String, Object> userDataAttributes = new HashMap<String, Object>();
 
@@ -215,7 +266,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder alert(String message) {
-            this.attributes.put(alert, message);
+            attributes.put(ALERT, message);
             return this;
         }
 
@@ -227,7 +278,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder sound(String sound) {
-            this.attributes.put(this.sound, sound);
+            attributes.put(SOUND, sound);
             return this;
         }
 
@@ -238,7 +289,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder badge(String badge) {
-            this.attributes.put(this.badge, Integer.parseInt(badge));
+            attributes.put(BADGE, Integer.parseInt(badge));
             return this;
         }
 
@@ -249,7 +300,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder contentAvailable() {
-            this.attributes.put(this.contentAvailable, true);
+            attributes.put(CONTENT_AVAILABLE, true);
             return this;
         }
 
@@ -260,7 +311,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder actionCategory(String actionCategory) {
-            this.attributes.put(this.actionCategory, actionCategory);
+            attributes.put(ACTION_CATEGORY, actionCategory);
             return this;
         }
 
@@ -271,7 +322,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder simplePush(String version) {
-            this.attributes.put(this.simplePush, fixVersion(version));
+            attributes.put(SIMPLE_PUSH, fixVersion(version));
             return this;
         }
 
@@ -284,7 +335,7 @@ public class UnifiedMessage {
          * @return  the current {@link MessageBuilder} instance
          */
         public MessageBuilder userData(String key, String value) {
-            this.userDataAttributes.put(key, value);
+            userDataAttributes.put(key, value);
             return this;
         }
 
@@ -295,23 +346,37 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder userData(Map<String, Object> userDataMap) {
-            this.userDataAttributes = userDataMap;
+            userDataAttributes = userDataMap;
             return this;
         }
 
-        private String fixVersion(String version) {
+        public CriteriaBuilder criteria() {
+            if (builder.criteriaBuilder == null) {
+                builder.criteriaBuilder = new CriteriaBuilder(builder);
+            }
+            return builder.criteriaBuilder;
+        }
+
+        public ConfigBuilder config() {
+            if (builder.configBuilder == null) {
+                builder.configBuilder = new ConfigBuilder(builder);
+            }
+            return builder.configBuilder;
+        }
+
+        private static String fixVersion(String version) {
             if (version != null && !version.startsWith("version=")) {
                 version = "version=" + version;
             }
             return version;
         }
 
-        public Builder build() {
-            return builder;
+        public UnifiedMessage build() {
+            return builder.build();
         }
 
-        public Map getAttributes() {
-            attributes.put(this.userData, userDataAttributes);
+        public Map<String, Object> getAttributes() {
+            attributes.put(USER_DATA, userDataAttributes);
             return attributes;
         }
 
@@ -320,10 +385,8 @@ public class UnifiedMessage {
     public static class ConfigBuilder {
 
         private final Builder builder;
-
-        private Map<String, Object> attributes = new HashMap<String, Object>();
-
-        private final String timeToLive = "ttl";
+        private final Map<String, Object> attributes = new HashMap<String, Object>();
+        private static final String TTL = "ttl";
 
         public ConfigBuilder(Builder builder) {
             this.builder = builder;
@@ -337,17 +400,33 @@ public class UnifiedMessage {
          * @return the current {@link ConfigBuilder} instance
          */
         public ConfigBuilder timeToLive(int seconds) {
-            attributes.put(this.timeToLive, seconds);
+            attributes.put(TTL, seconds);
             return this;
         }
 
-        public Map getAttributes() {
+        public Map<String, Object> getAttributes() {
             return attributes;
         }
 
-        public Builder build() {
-            return builder;
+        public MessageBuilder message() {
+            if (builder.messageBuilder == null) {
+                builder.messageBuilder = new MessageBuilder(builder);
+
+            }
+            return builder.messageBuilder;
         }
+
+        public CriteriaBuilder criteria() {
+            if (builder.criteriaBuilder == null) {
+                builder.criteriaBuilder = new CriteriaBuilder(builder);
+            }
+            return builder.criteriaBuilder;
+        }
+
+        public UnifiedMessage build() {
+            return builder.build();
+        }
+
     }
 
     /**
@@ -356,9 +435,9 @@ public class UnifiedMessage {
      * @param builder The builder object that would be used to construct the UnifiedMessage
      */
     private UnifiedMessage(Builder builder) {
-        this.criteria = builder.criteriaBuilder;
-        this.config = builder.configBuilder;
-        this.message = builder.messageBuilder;
+        criteria = builder.criteriaBuilder;
+        config = builder.configBuilder;
+        message = builder.messageBuilder;
     }
 
     public MessageBuilder getMessage() {
