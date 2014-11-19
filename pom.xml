@@ -45,18 +45,9 @@
         <tag>HEAD</tag>
     </scm>
 
-    <developers>
-        <developer>
-            <id>aerogear</id>
-            <name>AeroGear Team</name>
-            <email>aerogear-dev@lists.jboss.org</email>
-        </developer>
-    </developers>
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <aerogear.bom.version>0.2.9</aerogear.bom.version>
-
     </properties>
 
     <dependencyManagement>
