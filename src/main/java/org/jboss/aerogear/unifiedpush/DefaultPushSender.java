@@ -16,11 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush;
 
-import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import net.iharder.Base64;
-
 import org.jboss.aerogear.unifiedpush.http.HttpClient;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
@@ -30,8 +26,6 @@ import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.nio.charset.Charset;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public class DefaultPushSender implements PushSender {
@@ -39,7 +33,6 @@ public class DefaultPushSender implements PushSender {
     private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
-    private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
     private final String serverURL;
     private final ProxyConfig proxy;
@@ -199,9 +192,7 @@ public class DefaultPushSender implements PushSender {
 
     @Override
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
-        final Map<String, Object> payloadObject = prepareMessage(unifiedMessage);
-        // transform to JSONString:
-        String jsonString = toJSONString(payloadObject);
+        String jsonString = unifiedMessage.getObject().toJsonString();
         // fire!
         submitPayload(buildUrl(), jsonString, pushApplicationId, masterSecret, callback);
     }
@@ -209,31 +200,6 @@ public class DefaultPushSender implements PushSender {
     @Override
     public void send(UnifiedMessage unifiedMessage) {
         send(unifiedMessage, null);
-    }
-
-    /**
-     * Flatten the given {@link UnifiedMessage} into a {@link Map}
-     * 
-     * @param unifiedMessage the {@link UnifiedMessage} to be flattened.
-     * @return {@code Map} the flattened UnifiedMessage.
-     */
-    private static Map<String, Object> prepareMessage(UnifiedMessage unifiedMessage) {
-
-        final Map<String, Object> payloadObject = new LinkedHashMap<String, Object>();
-
-        if (unifiedMessage.getCriteria() != null) {
-            payloadObject.put("criteria", unifiedMessage.getCriteria().getAttributes());
-        }
-
-        if (unifiedMessage.getMessage() != null) {
-            payloadObject.put("message", unifiedMessage.getMessage().getAttributes());
-        }
-
-        if (unifiedMessage.getConfig() != null) {
-            payloadObject.put("config", unifiedMessage.getConfig().getAttributes());
-        }
-
-        return payloadObject;
     }
 
     /**
@@ -298,16 +264,10 @@ public class DefaultPushSender implements PushSender {
     }
 
     /**
-     * A simple utility to transforms an {@link Object} into a json {@link String}
+     * Get the used server URL.
+     * 
+     * @return The Server that is used
      */
-    private static String toJSONString(Object value) {
-        try {
-            return OBJECT_MAPPER.writeValueAsString(value);
-        } catch (Exception e) {
-            throw new IllegalStateException("Failed to encode JSON payload", e);
-        }
-    }
-
     @Override
     public String getServerURL() {
         return serverURL;
