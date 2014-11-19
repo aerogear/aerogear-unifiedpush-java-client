@@ -17,7 +17,12 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
@@ -43,6 +48,7 @@ import java.util.*;
  */
 public class UnifiedMessage {
 
+    private final UnifiedPushMessage unifiedPushMessage = new UnifiedPushMessage();
     private final MessageBuilder message;
     private final CriteriaBuilder criteria;
     private final ConfigBuilder config;
@@ -125,13 +131,7 @@ public class UnifiedMessage {
         }
 
         private final Builder builder;
-
-        private static final String ALIASES = "alias";
-        private static final String VARIANTS = "variants";
-        private static final String CATEGORIES = "categories";
-        private static final String DEVICE_TYPE = "deviceType";
-
-        private final Map<String, Object> attributes = new HashMap<String, Object>();
+        private final Criteria criteria = new Criteria();
 
         /**
          * Sets a list of "identifiers", like username or email address.
@@ -140,7 +140,7 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder aliases(List<String> aliases) {
-            attributes.put(ALIASES, aliases);
+            criteria.setAliases(aliases);
             return this;
         }
 
@@ -161,7 +161,7 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder variants(List<String> variants) {
-            attributes.put(VARIANTS, variants);
+            criteria.setVariants(variants);
             return this;
         }
 
@@ -182,7 +182,7 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder categories(Set<String> categories) {
-            attributes.put(CATEGORIES, categories);
+            criteria.setCategories(new ArrayList<String>(categories));
             return this;
         }
 
@@ -203,7 +203,7 @@ public class UnifiedMessage {
          * @return the current {@link CriteriaBuilder} instance
          */
         public CriteriaBuilder deviceType(List<String> deviceType) {
-            attributes.put(DEVICE_TYPE, deviceType);
+            criteria.setDeviceTypes(deviceType);
             return this;
         }
 
@@ -235,8 +235,8 @@ public class UnifiedMessage {
             return builder.build();
         }
 
-        public Map<String, Object> getAttributes() {
-            return attributes;
+        public Criteria getObject() {
+            return criteria;
         }
     }
 
@@ -247,17 +247,7 @@ public class UnifiedMessage {
         }
 
         private final Builder builder;
-        private static final String ALERT = "alert";
-        private static final String SOUND = "sound";
-        private static final String BADGE = "badge";
-        private static final String CONTENT_AVAILABLE = "content-available";
-        private static final String ACTION_CATEGORY = "action-category";
-        private static final String USER_DATA = "user-data";
-        private static final String SIMPLE_PUSH = "simple-push";
-
-        private final Map<String, Object> attributes = new HashMap<String, Object>();
-
-        private Map<String, Object> userDataAttributes = new HashMap<String, Object>();
+        private final Message message = new Message();
 
         /**
          * Triggers a dialog, displaying the value.
@@ -266,7 +256,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder alert(String message) {
-            attributes.put(ALERT, message);
+            this.message.setAlert(message);
             return this;
         }
 
@@ -278,7 +268,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder sound(String sound) {
-            attributes.put(SOUND, sound);
+            message.setSound(sound);
             return this;
         }
 
@@ -289,7 +279,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder badge(String badge) {
-            attributes.put(BADGE, Integer.parseInt(badge));
+            message.setBadge(Integer.valueOf(badge));
             return this;
         }
 
@@ -300,7 +290,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder contentAvailable() {
-            attributes.put(CONTENT_AVAILABLE, true);
+            message.setContentAvailable(true);
             return this;
         }
 
@@ -311,7 +301,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder actionCategory(String actionCategory) {
-            attributes.put(ACTION_CATEGORY, actionCategory);
+            message.setActionCategory(actionCategory);
             return this;
         }
 
@@ -322,7 +312,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder simplePush(String version) {
-            attributes.put(SIMPLE_PUSH, fixVersion(version));
+            message.setSimplePush(fixVersion(version));
             return this;
         }
 
@@ -335,7 +325,7 @@ public class UnifiedMessage {
          * @return  the current {@link MessageBuilder} instance
          */
         public MessageBuilder userData(String key, String value) {
-            userDataAttributes.put(key, value);
+            message.getUserData().put(key, value);
             return this;
         }
 
@@ -346,7 +336,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder userData(Map<String, Object> userDataMap) {
-            userDataAttributes = userDataMap;
+            message.setUserData(userDataMap);
             return this;
         }
 
@@ -375,9 +365,8 @@ public class UnifiedMessage {
             return builder.build();
         }
 
-        public Map<String, Object> getAttributes() {
-            attributes.put(USER_DATA, userDataAttributes);
-            return attributes;
+        protected Message getObject() {
+            return message;
         }
 
     }
@@ -385,8 +374,7 @@ public class UnifiedMessage {
     public static class ConfigBuilder {
 
         private final Builder builder;
-        private final Map<String, Object> attributes = new HashMap<String, Object>();
-        private static final String TTL = "ttl";
+        private final Config config = new Config();
 
         public ConfigBuilder(Builder builder) {
             this.builder = builder;
@@ -400,12 +388,12 @@ public class UnifiedMessage {
          * @return the current {@link ConfigBuilder} instance
          */
         public ConfigBuilder timeToLive(int seconds) {
-            attributes.put(TTL, seconds);
+            config.setTimeToLive(seconds);
             return this;
         }
 
-        public Map<String, Object> getAttributes() {
-            return attributes;
+        protected Config getObject() {
+            return config;
         }
 
         public MessageBuilder message() {
@@ -451,5 +439,18 @@ public class UnifiedMessage {
 
     public ConfigBuilder getConfig() {
         return config;
+    }
+
+    public UnifiedPushMessage getObject() {
+        if (message != null) {
+            unifiedPushMessage.setMessage(message.getObject());
+        }
+        if (config != null) {
+            unifiedPushMessage.setConfig(config.getObject());
+        }
+        if (criteria != null) {
+            unifiedPushMessage.setCriteria(criteria.getObject());
+        }
+        return unifiedPushMessage;
     }
 }
