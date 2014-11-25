@@ -19,7 +19,7 @@ package org.jboss.aerogear.unifiedpush;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 
-public interface JavaSender {
+public interface PushSender {
 
     /**
      * Sends the given payload to installations of the referenced PushApplication.
