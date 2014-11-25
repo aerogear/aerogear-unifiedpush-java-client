@@ -37,21 +37,17 @@ public class DefaultPushSender implements PushSender {
     private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
-
-    private final String serverURL;
+    
+    private final PushConfiguration pushConfiguration;
     private final ProxyConfig proxy;
     private final TrustStoreConfig customTrustStore;
-    private final String pushApplicationId;
-    private final String masterSecret;
 
 
     /**
      * Only called by builder.
      */
     private DefaultPushSender(Builder builder) {
-        serverURL = builder.rootServerURL;
-        pushApplicationId = builder.pushApplicationId;
-        masterSecret = builder.masterSecret;
+        pushConfiguration = builder.pushConfiguration;
         proxy = builder.proxy;
         customTrustStore = builder.customTrustStore;
     }
@@ -69,23 +65,21 @@ public class DefaultPushSender implements PushSender {
      */
     public static class Builder {
 
-        private final String rootServerURL;
-        private String pushApplicationId;
-        private String masterSecret;
+        private PushConfiguration pushConfiguration;
         private ProxyConfig proxy;
         private TrustStoreConfig customTrustStore;
 
+
         public Builder(String rootServerURL) {
+            pushConfiguration = new PushConfiguration();
             if (isEmpty(rootServerURL)) {
                 throw new IllegalStateException("server can not be null");
             }
-            this.rootServerURL = !rootServerURL.endsWith("/") ? rootServerURL + '/' : rootServerURL;
+            pushConfiguration.setServerUrl(!rootServerURL.endsWith("/") ? rootServerURL + '/' : rootServerURL);
         }
 
         public Builder(PushConfiguration pushConfiguration) {
-            this.rootServerURL = pushConfiguration.getServerUrl();
-            this.masterSecret = pushConfiguration.getMasterSecret();
-            this.pushApplicationId = pushConfiguration.getPushApplicationId();
+          this.pushConfiguration = pushConfiguration;
         }
 
 
@@ -96,7 +90,7 @@ public class DefaultPushSender implements PushSender {
          * @return the current {@link Builder} instance
          */
         public Builder pushApplicationId(String pushApplicationId) {
-            this.pushApplicationId = pushApplicationId;
+            pushConfiguration.setPushApplicationId(pushApplicationId);
             return this;
         }
 
@@ -107,7 +101,7 @@ public class DefaultPushSender implements PushSender {
          * @return the current {@link Builder} instance
          */
         public Builder masterSecret(String masterSecret){
-            this.masterSecret = masterSecret;
+            pushConfiguration.setMasterSecret(masterSecret);
             return this;
         }
 
@@ -209,7 +203,7 @@ public class DefaultPushSender implements PushSender {
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
         String jsonString = unifiedMessage.getObject().toJsonString();
         // fire!
-        submitPayload(buildUrl(), jsonString, pushApplicationId, masterSecret, callback);
+        submitPayload(buildUrl(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback);
     }
 
     @Override
@@ -285,7 +279,7 @@ public class DefaultPushSender implements PushSender {
      */
     @Override
     public String getServerURL() {
-        return serverURL;
+        return pushConfiguration.getServerUrl();
     }
 
     @Override
@@ -300,12 +294,12 @@ public class DefaultPushSender implements PushSender {
 
     @Override
     public String getPushApplicationId() {
-        return pushApplicationId;
+        return pushConfiguration.getPushApplicationId();
     }
 
     @Override
     public String getMasterSecret() {
-        return masterSecret;
+        return pushConfiguration.getMasterSecret();
     }
 
 }
