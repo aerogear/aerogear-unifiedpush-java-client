@@ -21,7 +21,7 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
 import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
 
-public interface JavaSender {
+public interface PushSender {
 
     /**
      * Sends the given payload to installations of the referenced PushApplication.
