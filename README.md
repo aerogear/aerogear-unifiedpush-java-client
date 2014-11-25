@@ -17,7 +17,7 @@ Add the following dependencies to your ```pom.xml``` file:
 Create a ```JavaSender```:
 
 ```
-JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
+PushSender defaultPushSender = new DefaultPushSender.Builder("http://localhost:8080/ag-push")
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .build();
@@ -26,7 +26,7 @@ JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/a
 To connect via proxy:
 
 ```
-JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
+PushSender defaultPushSender = new DefaultPushSender.Builder("http://localhost:8080/ag-push")
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .proxy("proxy.example.com", 8080)
@@ -39,7 +39,7 @@ JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/a
 To use a custom TrustStore:
 
 ```
-JavaSender defaultJavaSender = new SenderClient.Builder("http://localhost:8080/ag-push")
+PushSender defaultPushSender = new DefaultPushSender.Builder("http://localhost:8080/ag-push")
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
@@ -82,13 +82,13 @@ Create a callback
 Send the message
 
 
-``` defaultJavaSender.send(unifiedMessage, callback); ```
+``` defaultPushSender.send(unifiedMessage, callback); ```
 
 
 You can also omit the callback
 
 
-``` defaultJavaSender.send(unifiedMessage); ```
+``` defaultPushSender.send(unifiedMessage); ```
 
 
 ## Known issues

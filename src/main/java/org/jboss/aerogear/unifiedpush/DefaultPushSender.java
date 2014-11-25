@@ -34,9 +34,9 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class SenderClient implements JavaSender {
+public class DefaultPushSender implements PushSender {
 
-    private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
+    private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -51,7 +51,7 @@ public class SenderClient implements JavaSender {
     /**
      * Only called by builder.
      */
-    private SenderClient(Builder builder) {
+    private DefaultPushSender(Builder builder) {
         serverURL = builder.rootServerURL;
         pushApplicationId = builder.pushApplicationId;
         masterSecret = builder.masterSecret;
@@ -175,12 +175,12 @@ public class SenderClient implements JavaSender {
         }
 
         /**
-         * Build the {@link SenderClient}.
+         * Build the {@link DefaultPushSender}.
          * 
-         * @return the built up {@link SenderClient}
+         * @return the built up {@link DefaultPushSender}
          */
-        public SenderClient build() {
-            return new SenderClient(this);
+        public DefaultPushSender build() {
+            return new DefaultPushSender(this);
         }
     }
 
