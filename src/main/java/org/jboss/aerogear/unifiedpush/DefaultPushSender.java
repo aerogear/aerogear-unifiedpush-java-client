@@ -22,6 +22,7 @@ import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
 import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
+import org.jboss.aerogear.unifiedpush.utils.PushConfiguration;
 
 import java.net.HttpURLConnection;
 import java.net.Proxy;
@@ -59,6 +60,10 @@ public class DefaultPushSender implements PushSender {
         return new Builder(rootServerURL);
     }
 
+    public static Builder withConfig(String location) {
+        return new Builder(PushConfiguration.read(location));
+    }
+
     /**
      * Builder to build Client with more configuration.
      */
@@ -76,6 +81,13 @@ public class DefaultPushSender implements PushSender {
             }
             this.rootServerURL = !rootServerURL.endsWith("/") ? rootServerURL + '/' : rootServerURL;
         }
+
+        public Builder(PushConfiguration pushConfiguration) {
+            this.rootServerURL = pushConfiguration.getServerUrl();
+            this.masterSecret = pushConfiguration.getMasterSecret();
+            this.pushApplicationId = pushConfiguration.getPushApplicationId();
+        }
+
 
         /**
          * Specifies which Push Application the sender will be using.

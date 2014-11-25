@@ -17,33 +17,56 @@ Add the following dependencies to your ```pom.xml``` file:
 Create a ```JavaSender```:
 
 ```
-PushSender defaultPushSender = new DefaultPushSender.Builder("http://localhost:8080/ag-push")
+
+PushSender defaultPushSender = new DefaultPushSender.withRootServerURL("http://localhost:8080/ag-push")
                 .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
                 .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
                 .build();
 ```
 
+You can also use an external config file :
+
+```
+
+//pushConfig.json
+{
+  "serverUrl": "http://aerogear.example.com/ag-push",
+  "pushApplicationId": "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c",
+  "masterSecret": "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b"}
+}
+
+```
+
+And then :
+
+```
+
+PushSender defaultPushSender = new DefaultPushSender.withConfig("pushConfig.json").build();
+
+```
+
+
 To connect via proxy:
 
 ```
-PushSender defaultPushSender = new DefaultPushSender.Builder("http://localhost:8080/ag-push")
-                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+
+PushSender defaultPushSender = new DefaultPushSender.withConfig("pushConfig.json")
                 .proxy("proxy.example.com", 8080)
                 .proxyUser("proxyuser")
                 .proxyPassword("password")
                 .proxyType(Proxy.Type.HTTP)
                 .build();
+
 ```
 
 To use a custom TrustStore:
 
 ```
-PushSender defaultPushSender = new DefaultPushSender.Builder("http://localhost:8080/ag-push")
-                .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-                .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+
+PushSender defaultPushSender = new DefaultPushSender.withConfig("pushConfig.json")
                 .customTrustStore("setup/aerogear.truststore", "jks", "aerogear")
                 .build();
+                
 ```
 
 ### Send a message
