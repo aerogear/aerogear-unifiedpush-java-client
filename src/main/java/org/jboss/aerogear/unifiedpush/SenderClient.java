@@ -308,48 +308,27 @@ public class SenderClient implements JavaSender {
         }
     }
 
-    /**
-     * Get the used server URL.
-     * 
-     * @return The Server that is used
-     */
     @Override
     public String getServerURL() {
         return serverURL;
     }
 
-    /**
-     * Get the proxy cofniguration.
-     * 
-     * @return {@link ProxyConfig}
-     */
+    @Override
     public ProxyConfig getProxy() {
         return proxy;
     }
 
-    /**
-     * Get the custom trustStore configuration;
-     * 
-     * @return {@link TrustStoreConfig}
-     */
+    @Override
     public TrustStoreConfig getCustomTrustStore() {
         return customTrustStore;
     }
 
-    /**
-     * Get the used pushApplicationId.
-     *
-     * @return pushApplicationId that is used
-     */
+    @Override
     public String getPushApplicationId() {
         return pushApplicationId;
     }
 
-    /**
-     * Get the used masterSecret.
-     *
-     * @return masterSecret that is used
-     */
+    @Override
     public String getMasterSecret() {
         return masterSecret;
     }
