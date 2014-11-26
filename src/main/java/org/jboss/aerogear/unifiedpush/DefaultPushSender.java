@@ -28,6 +28,8 @@ import java.net.Proxy;
 import java.nio.charset.Charset;
 import java.util.logging.Logger;
 
+import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
+
 public class DefaultPushSender implements PushSender {
 
     private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
