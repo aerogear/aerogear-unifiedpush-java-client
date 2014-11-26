@@ -19,10 +19,13 @@ package org.jboss.aerogear.unifiedpush.utils;
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.logging.Logger;
 
 public class PushConfiguration {
 
+    private static final Logger logger = Logger.getLogger(PushConfiguration.class.getName());
     private String serverUrl;
     private String pushApplicationId;
     private String masterSecret;
@@ -55,9 +58,27 @@ public class PushConfiguration {
     }
 
     public static PushConfiguration read(String location) {
-        BufferedReader bufferedReader = new BufferedReader(
-                new InputStreamReader(PushConfiguration.class.getClassLoader().getResourceAsStream(location)));
-        Gson gson = new Gson();
-        return gson.fromJson(bufferedReader, PushConfiguration.class);
+        BufferedReader bufferedReader = null;
+        PushConfiguration pushConfiguration = null;
+        try {
+            bufferedReader = new BufferedReader(
+                    new InputStreamReader(PushConfiguration.class.getClassLoader().getResourceAsStream(location)));
+            Gson gson = new Gson();
+            pushConfiguration =  gson.fromJson(bufferedReader, PushConfiguration.class);
+        }
+        catch (Exception e) {
+           logger.severe("Could not read configuration file : " + e);
+        }
+        finally {
+            try {
+                if (bufferedReader != null) {
+                    bufferedReader.close();
+                }
+            }
+            catch (IOException e) {
+                logger.severe("Could not close buffer : " + e);
+            }
+        }
+        return pushConfiguration;
     }
 }
