@@ -57,27 +57,19 @@ public class PushConfiguration {
         this.serverUrl = serverUrl;
     }
 
-    public static PushConfiguration read(String location) {
+    public static PushConfiguration read(String location) throws IOException {
         BufferedReader bufferedReader = null;
         PushConfiguration pushConfiguration = null;
         try {
             bufferedReader = new BufferedReader(
-                    new InputStreamReader(PushConfiguration.class.getClassLoader().getResourceAsStream(location)));
+                    new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(location)));
             Gson gson = new Gson();
             pushConfiguration =  gson.fromJson(bufferedReader, PushConfiguration.class);
         }
-        catch (Exception e) {
-           logger.severe("Could not read configuration file : " + e);
-        }
-        finally {
-            try {
-                if (bufferedReader != null) {
-                    bufferedReader.close();
-                }
-            }
-            catch (IOException e) {
-                logger.severe("Could not close buffer : " + e);
-            }
+       finally {
+           if (bufferedReader != null) {
+               bufferedReader.close();
+           }
         }
         return pushConfiguration;
     }

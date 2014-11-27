@@ -24,6 +24,7 @@ import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
 import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
 import org.jboss.aerogear.unifiedpush.utils.PushConfiguration;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.nio.charset.Charset;
@@ -52,12 +53,30 @@ public class DefaultPushSender implements PushSender {
         customTrustStore = builder.customTrustStore;
     }
 
+    /**
+     * Starts a {@link Builder} by providing a UnifiedPush Server URL
+     *
+     * @param rootServerURL of the UnifiedPush Server
+     * @return a {@link Builder} instance
+     */
     public static Builder withRootServerURL(String rootServerURL) {
         return new Builder(rootServerURL);
     }
 
+    /**
+     * Starts a {@Link Builder} using an external config file
+     *
+     * @param location of the push configuration file
+     * @return
+     */
     public static Builder withConfig(String location) {
-        return new Builder(PushConfiguration.read(location));
+        try {
+            return new Builder(PushConfiguration.read(location));
+        }
+        catch(IOException e){
+            logger.severe("Could not read config file : " + e);
+            return null;
+        }
     }
 
     /**
@@ -70,7 +89,7 @@ public class DefaultPushSender implements PushSender {
         private TrustStoreConfig customTrustStore;
 
 
-        public Builder(String rootServerURL) {
+        private Builder(String rootServerURL) {
             pushConfiguration = new PushConfiguration();
             if (isEmpty(rootServerURL)) {
                 throw new IllegalStateException("server can not be null");
@@ -78,7 +97,7 @@ public class DefaultPushSender implements PushSender {
             pushConfiguration.setServerUrl(!rootServerURL.endsWith("/") ? rootServerURL + '/' : rootServerURL);
         }
 
-        public Builder(PushConfiguration pushConfiguration) {
+        private Builder(PushConfiguration pushConfiguration) {
           this.pushConfiguration = pushConfiguration;
         }
 
