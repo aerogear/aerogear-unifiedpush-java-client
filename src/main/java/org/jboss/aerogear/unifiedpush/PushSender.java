@@ -18,8 +18,10 @@ package org.jboss.aerogear.unifiedpush;
 
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
+import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
+import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
 
-public interface JavaSender {
+public interface PushSender {
 
     /**
      * Sends the given payload to installations of the referenced PushApplication.
@@ -44,4 +46,32 @@ public interface JavaSender {
      */
     String getServerURL();
 
+    /**
+     * Get the proxy cofniguration.
+     *
+     * @return {@link ProxyConfig}
+     */
+    ProxyConfig getProxy();
+
+
+    /**
+     * Get the custom trustStore configuration;
+     *
+     * @return {@link TrustStoreConfig}
+     */
+    TrustStoreConfig getCustomTrustStore();
+
+    /**
+     * Get the used pushApplicationId.
+     *
+     * @return pushApplicationId that is used
+     */
+    String getPushApplicationId();
+
+    /**
+     * Get the used masterSecret.
+     *
+     * @return masterSecret that is used
+     */
+    String getMasterSecret();
 }

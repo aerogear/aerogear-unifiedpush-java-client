@@ -52,7 +52,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(HttpClient.class)
-public class SenderClientTest {
+public class DefaultPushSenderTest {
 
     /* -- testing data -- */
     private static final String PUSH_APPLICATION_ID = "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c";
@@ -66,8 +66,8 @@ public class SenderClientTest {
     }
 
     /* -- mocks -- */
-    private SenderClient defaultSenderClient;
-    private SenderClient secureSenderClient;
+    private PushSender defaultSenderClient;
+    private PushSender secureSenderClient;
 
     private URLConnection connection;
     private URLConnection secureConnection;
@@ -83,8 +83,8 @@ public class SenderClientTest {
         when(connection.getOutputStream()).thenReturn(out);
         when(secureConnection.getOutputStream()).thenReturn(out);
         // mock getConnection method
-        setDefaultSenderClient(PowerMockito.spy(SenderClient.withRootServerURL("http://aerogear.example.com/ag-push").build()));
-        setSecureSenderClient(PowerMockito.spy(SenderClient.withRootServerURL("https://aerogear.example.com/ag-push").build()));
+        setDefaultSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("http://aerogear.example.com/ag-push").build()));
+        setSecureSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push").build()));
         PowerMockito.spy(HttpClient.class);
         PowerMockito.doReturn(connection).when(HttpClient.class, "getConnection", Matchers.startsWith("http://"), any());
         PowerMockito.doReturn(secureConnection).when(HttpClient.class, "getConnection", Matchers.startsWith("https://"), any());
@@ -332,12 +332,12 @@ public class SenderClientTest {
 
     @Test(expected = IllegalStateException.class)
     public void emptyServerURL() throws Exception {
-        SenderClient.withRootServerURL(null).build();
+        DefaultPushSender.withRootServerURL(null).build();
     }
 
     @Test
     public void testClientBuilderProxySettings() {
-        SenderClient client = SenderClient.withRootServerURL("http://aerogear.example.com/ag-push")
+        DefaultPushSender client = DefaultPushSender.withRootServerURL("http://aerogear.example.com/ag-push")
                 .proxy("proxy", 8080)
                 .proxyType(Proxy.Type.HTTP)
                 .build();
@@ -350,7 +350,7 @@ public class SenderClientTest {
 
     @Test
     public void testClientBuildertrustStoreSettings() {
-        SenderClient client = SenderClient.withRootServerURL("https://aerogear.example.com/ag-push")
+        DefaultPushSender client = DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push")
                 .customTrustStore("../test.truststore", null, "aerogear")
                 .build();
 
@@ -362,7 +362,7 @@ public class SenderClientTest {
 
     @Test
     public void testClientBuilderPushAppIdAndMasterSecret() {
-        SenderClient client = SenderClient.withRootServerURL("https://aerogear.example.com/ag-push")
+        DefaultPushSender client = DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push")
                 .pushApplicationId(PUSH_APPLICATION_ID)
                 .masterSecret(MASTER_SECRET)
                 .build();
@@ -372,11 +372,11 @@ public class SenderClientTest {
         assertEquals(MASTER_SECRET, client.getMasterSecret());
     }
 
-    public SenderClient getDefaultSenderClient() {
+    public PushSender getDefaultSenderClient() {
         return defaultSenderClient;
     }
 
-    public void setDefaultSenderClient(SenderClient defaultSenderClient) {
+    public void setDefaultSenderClient(DefaultPushSender defaultSenderClient) {
         this.defaultSenderClient = defaultSenderClient;
     }
 
@@ -388,11 +388,11 @@ public class SenderClientTest {
         connection = con;
     }
 
-    public SenderClient getSecureSenderClient() {
+    public PushSender getSecureSenderClient() {
         return secureSenderClient;
     }
 
-    public void setSecureSenderClient(SenderClient secureSenderClient) {
+    public void setSecureSenderClient(PushSender secureSenderClient) {
         this.secureSenderClient = secureSenderClient;
     }
 

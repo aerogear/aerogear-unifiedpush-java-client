@@ -30,9 +30,10 @@ import java.util.logging.Logger;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
 
-public class SenderClient implements JavaSender {
 
-    private static final Logger logger = Logger.getLogger(SenderClient.class.getName());
+public class DefaultPushSender implements PushSender {
+
+    private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -46,7 +47,7 @@ public class SenderClient implements JavaSender {
     /**
      * Only called by builder.
      */
-    private SenderClient(Builder builder) {
+    private DefaultPushSender(Builder builder) {
         serverURL = builder.rootServerURL;
         pushApplicationId = builder.pushApplicationId;
         masterSecret = builder.masterSecret;
@@ -170,12 +171,12 @@ public class SenderClient implements JavaSender {
         }
 
         /**
-         * Build the {@link SenderClient}.
+         * Build the {@link DefaultPushSender}.
          * 
-         * @return the built up {@link SenderClient}
+         * @return the built up {@link DefaultPushSender}
          */
-        public SenderClient build() {
-            return new SenderClient(this);
+        public DefaultPushSender build() {
+            return new DefaultPushSender(this);
         }
     }
 
@@ -275,38 +276,22 @@ public class SenderClient implements JavaSender {
         return serverURL;
     }
 
-    /**
-     * Get the proxy cofniguration.
-     * 
-     * @return {@link ProxyConfig}
-     */
+    @Override
     public ProxyConfig getProxy() {
         return proxy;
     }
 
-    /**
-     * Get the custom trustStore configuration;
-     * 
-     * @return {@link TrustStoreConfig}
-     */
+    @Override
     public TrustStoreConfig getCustomTrustStore() {
         return customTrustStore;
     }
 
-    /**
-     * Get the used pushApplicationId.
-     *
-     * @return pushApplicationId that is used
-     */
+    @Override
     public String getPushApplicationId() {
         return pushApplicationId;
     }
 
-    /**
-     * Get the used masterSecret.
-     *
-     * @return masterSecret that is used
-     */
+    @Override
     public String getMasterSecret() {
         return masterSecret;
     }
