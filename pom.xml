@@ -96,7 +96,7 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.3.1</version>
+            <version>2.3</version>
         </dependency>
 
         <!-- TEST dependencies -->
@@ -119,5 +119,10 @@
         </dependency>
 
     </dependencies>
-    
+    <repositories>
+        <repository>
+            <id>alphaups</id>
+            <url>https://repository.jboss.org/nexus/content/repositories/jboss_releases_staging_profile-4376/</url>
+        </repository>
+    </repositories>
 </project>

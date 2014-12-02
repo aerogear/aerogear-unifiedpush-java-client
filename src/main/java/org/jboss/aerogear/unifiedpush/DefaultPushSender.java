@@ -64,7 +64,7 @@ public class DefaultPushSender implements PushSender {
     }
 
     /**
-     * Starts a {@Link Builder} using an external config file
+     * Starts a {@link Builder} using an external config file
      *
      * @param location of the push configuration file
      * @return
