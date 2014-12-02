@@ -91,6 +91,14 @@ public class DefaultPushSenderTest {
     }
 
     @Test
+    public void initWithExternalConfig() {
+        defaultSenderClient = DefaultPushSender.withConfig("pushConfig.json").build();
+        assertEquals(PUSH_APPLICATION_ID, defaultSenderClient.getPushApplicationId());
+        assertEquals(MASTER_SECRET, defaultSenderClient.getMasterSecret());
+        assertEquals("http://aerogear.example.com/ag-push", defaultSenderClient.getServerURL());
+    }
+
+    @Test
     public void sendSendWithCallback404() throws Exception {
         // return 404
         int STATUS_NOT_FOUND = 404;
