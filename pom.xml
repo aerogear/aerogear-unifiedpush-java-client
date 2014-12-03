@@ -20,7 +20,7 @@
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>unifiedpush-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0-alpha.1-SNAPSHOT</version>
     <name>AeroGear Java Client Library</name>
 
     <parent>
@@ -119,10 +119,4 @@
         </dependency>
 
     </dependencies>
-    <repositories>
-        <repository>
-            <id>alphaups</id>
-            <url>https://repository.jboss.org/nexus/content/repositories/jboss_releases_staging_profile-4376/</url>
-        </repository>
-    </repositories>
 </project>
