@@ -20,13 +20,13 @@
     <groupId>org.jboss.aerogear</groupId>
     <artifactId>unifiedpush-java-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.1.0-alpha.1-SNAPSHOT</version>
+    <version>1.1.0-alpha.2-SNAPSHOT</version>
     <name>AeroGear Java Client Library</name>
 
     <parent>
         <groupId>org.jboss.aerogear</groupId>
         <artifactId>aerogear-parent</artifactId>
-        <version>0.2.9</version>
+        <version>0.2.12</version>
     </parent>
 
 
@@ -47,7 +47,7 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <aerogear.bom.version>0.2.9</aerogear.bom.version>
+        <aerogear.bom.version>0.2.12</aerogear.bom.version>
     </properties>
 
     <dependencyManagement>
