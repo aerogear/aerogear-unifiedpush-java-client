@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.Proxy;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Logger;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
@@ -222,7 +224,7 @@ public class DefaultPushSender implements PushSender {
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
         String jsonString = unifiedMessage.getObject().toJsonString();
         // fire!
-        submitPayload(buildUrl(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback);
+        submitPayload(buildUrl(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback, new ArrayList<String>());
     }
 
     @Override
@@ -240,7 +242,14 @@ public class DefaultPushSender implements PushSender {
      * @param callback the {@link MessageResponseCallback} that will be called once the POST request completes.
      */
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
-            MessageResponseCallback callback) {
+            MessageResponseCallback callback, List<String> redirectUrls) {
+        if (redirectUrls.contains(url)) {
+            throw new IllegalStateException("The site contains an infinite redirect loop! Duplicate url: " +
+                    url);
+        } else {
+            redirectUrls.add(url);
+        }
+
         String credentials = pushApplicationId + ':' + masterSecret;
         int statusCode;
 
@@ -261,7 +270,7 @@ public class DefaultPushSender implements PushSender {
                 String redirectURL = httpURLConnection.getHeaderField("Location");
                 logger.info(String.format("Performing redirect to '%s'", redirectURL));
                 // execute the 'redirect'
-                submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback);
+                submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback, redirectUrls);
             } else {
                 if (callback != null) {
                     callback.onComplete(statusCode);
