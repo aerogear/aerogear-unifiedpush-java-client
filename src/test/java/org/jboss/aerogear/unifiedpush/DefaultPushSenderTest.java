@@ -298,6 +298,44 @@ public class DefaultPushSenderTest {
     }
 
     @Test
+    public void sendSendWithInfiniteRedirect() throws Exception {
+        // return 301
+        int STATUS_REDIRECT = 301;
+        when(((HttpURLConnection) getConnnection()).getResponseCode()).thenReturn(STATUS_REDIRECT);
+        when(getConnnection().getHeaderField("Location")).thenReturn("http://aerogear.example.com/ag-push");
+
+        final CountDownLatch latch = new CountDownLatch(1);
+        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final List<Throwable> throwableList = new ArrayList<Throwable>(1);
+
+        MessageResponseCallback callback = new MessageResponseCallback() {
+            @Override
+            public void onComplete(int statusCode) {
+                latch.countDown();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                onFailCalled.set(true);
+                throwableList.add(throwable);
+                latch.countDown();
+            }
+        };
+
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .alert(ALERT_MSG)
+                .sound(DEFAULT_SOUND)
+                .criteria().aliases(IDENTIFIERS_LIST)
+                .build();
+
+        defaultSenderClient.send(unifiedMessage,callback);
+        latch.await(1000, TimeUnit.MILLISECONDS);
+        // onError callback should not be called
+        assertTrue(onFailCalled.get());
+        assertEquals(throwableList.get(0).getMessage(), "The site contains an infinite redirect loop! Duplicate url: http://aerogear.example.com/ag-push");
+    }
+
+    @Test
     public void sendSendWithCallback200_SSL() throws Exception {
         // return 200
         int STATUS_OK = 200;
