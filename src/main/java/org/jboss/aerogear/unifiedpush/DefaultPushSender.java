@@ -240,6 +240,8 @@ public class DefaultPushSender implements PushSender {
      * @param pushApplicationId the registered applications identifier.
      * @param masterSecret the master secret for the push server.
      * @param callback the {@link MessageResponseCallback} that will be called once the POST request completes.
+     * @param redirectUrls a list containing the previous redirectUrls, used to detect an infinite loop
+     * @throws an {@link java.lang.IllegalStateException} if an infinite loop is detected
      */
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
             MessageResponseCallback callback, List<String> redirectUrls) {
