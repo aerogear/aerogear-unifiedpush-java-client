@@ -16,6 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.jboss.aerogear.unifiedpush.message.windows.BadgeType;
+import org.jboss.aerogear.unifiedpush.message.windows.TileType;
+import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
+import org.jboss.aerogear.unifiedpush.message.windows.Type;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,6 +28,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -149,4 +154,51 @@ public class UnifiedMessageTest {
         assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getObject().getUserData()).get("foo-key"));
         assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getObject().getUserData()).get("bar-key"));
     }
+
+    @Test
+    public void windowsBadgeMessage() {
+
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .badge("5")
+                .windows()
+                    .badgeType(BadgeType.busy)
+                .build();
+        assertEquals(Type.badge, unifiedMessage.getMessage().getObject().getWindows().getType());
+        assertEquals(BadgeType.busy, unifiedMessage.getMessage().getObject().getWindows().getBadge());
+    }
+
+    @Test
+    public void windowsTileMessage() {
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .windows()
+                .tileType(TileType.TileSquarePeekImageAndText01)
+                .textFields(Arrays.asList("bob","alice"))
+                .images(Arrays.asList("img/bob.png","img/alice.png"))
+                .build();
+        assertEquals(Type.tile, unifiedMessage.getMessage().getObject().getWindows().getType());
+        assertEquals(TileType.TileSquarePeekImageAndText01, unifiedMessage.getMessage().getObject().getWindows().getTileType());
+        assertEquals(2, unifiedMessage.getMessage().getObject().getWindows().getTextFields().size());
+        assertEquals(2,unifiedMessage.getMessage().getObject().getWindows().getImages().size());
+    }
+
+    @Test
+    public void windowsToastMessage() {
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .windows()
+                .toastType(ToastType.ToastText01)
+                .build();
+        assertEquals(Type.toast, unifiedMessage.getMessage().getObject().getWindows().getType());
+        assertEquals(ToastType.ToastText01, unifiedMessage.getMessage().getObject().getWindows().getToastType());
+    }
+
+    @Test
+    public void windowsRawMessage() {
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .windows()
+                .type(Type.raw)
+                .build();
+        assertEquals(Type.raw, unifiedMessage.getMessage().getObject().getWindows().getType());
+    }
+
+
 }

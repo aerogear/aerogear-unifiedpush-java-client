@@ -17,6 +17,13 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
+import org.jboss.aerogear.unifiedpush.message.windows.TileType;
+import org.jboss.aerogear.unifiedpush.message.windows.BadgeType;
+import org.jboss.aerogear.unifiedpush.message.windows.DurationType;
+import org.jboss.aerogear.unifiedpush.message.windows.Type;
+import org.jboss.aerogear.unifiedpush.message.windows.Windows;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -26,7 +33,7 @@ import java.util.Set;
 
 /**
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
- * The message format is very simple: A generic JSON map is used to send messages to Android and iOS devices.
+ * The message format is very simple: A generic JSON map is used to send messages to Android, iOS and Windows devices.
  * The applications on the devices will receive the JSON map and are responsible for performing a lookup to read values of the given keys.
  * See the <a href="http://www.aerogear.org/docs/specs/aerogear-push-messages/">Message Specification</a> for more information.
  * <p>
@@ -248,6 +255,7 @@ public class UnifiedMessage {
 
         private final Builder builder;
         private final Message message = new Message();
+        private  WindowsBuilder windowsBuilder;
 
         /**
          * Triggers a dialog, displaying the value.
@@ -354,6 +362,21 @@ public class UnifiedMessage {
             return builder.configBuilder;
         }
 
+        /**
+         * Windows specific push notification settings support for Tile, Raw, Badge and Toast messages
+         * For all the templates as much as possible the main parts of the message are re-used. Alert is the main text
+         * as is the badge number for badge notifications. Only specific windows settings are put in this part of the message
+         * and ignored by other message senders.
+         *
+         * @return a {@link WindowsBuilder} instance
+         */
+        public WindowsBuilder windows() {
+            if (windowsBuilder == null) {
+                windowsBuilder = new WindowsBuilder(this);
+            }
+            return windowsBuilder;
+        }
+
         private static String fixVersion(String version) {
             if (version != null && !version.startsWith("version=")) {
                 version = "version=" + version;
@@ -367,6 +390,107 @@ public class UnifiedMessage {
 
         protected Message getObject() {
             return message;
+        }
+
+        public static class WindowsBuilder {
+
+            private final MessageBuilder messageBuilder;
+            private final Windows windows = new Windows();
+
+            public WindowsBuilder(MessageBuilder builder) {
+                this.messageBuilder = builder;
+            }
+
+            /**
+             * Set the type of message to send toast, raw, badge or tile.
+             * <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh465403.aspx">more info about the types</a>
+             *
+             * @param type of message to send
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder type(Type type) {
+                windows.setType(type);
+                return this;
+            }
+
+            /**
+             * Set the badge notifications type for badges that are not numbers,
+             * for numbers use {@link MessageBuilder#badge(String)} method.
+             * Check the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Tile and badge catalog</a>
+             *
+             * @param the badge notifications type
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder badgeType(BadgeType badgeType) {
+                windows.setType(Type.badge);
+                windows.setBadge(badgeType);
+                return this;
+            }
+
+            /**
+             * Set the type of the tile messages, different sizes are available.
+             * See the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx">tile template catalog</a>
+             *
+             * @param tileType
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder tileType(TileType tileType) {
+                windows.setType(Type.tile);
+                windows.setTileType(tileType);
+                return this;
+            }
+
+            /**
+             * Set the duration of a Toast message (long or short)
+             *
+             * @param the duration of a Toast message (long or short)
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder durationType(DurationType durationType) {
+                windows.setDuration(durationType);
+                return this;
+            }
+
+            /**
+             * Set the toast template.
+             * Refer to the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Toast template catalog</a>
+             *
+             * @param the toast template
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder toastType(ToastType toastType) {
+                windows.setType(Type.toast);
+                windows.setToastType(toastType);
+                return this;
+            }
+
+            /**
+             * Set a list of image's paths for the Tile Notification Type
+             *
+             * @param a list of image's paths
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder images(List<String> images) {
+                windows.setImages(images);
+                return this;
+            }
+
+            /**
+             * Set a list of text fields for the Tile Notification Type
+             *
+             * @param a list of text fields
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder textFields(List<String> textFields) {
+                windows.setTextFields(textFields);
+                return this;
+            }
+
+            public UnifiedMessage build() {
+                messageBuilder.message.setWindows(windows);
+                return messageBuilder.builder.build();
+            }
+
         }
 
     }
