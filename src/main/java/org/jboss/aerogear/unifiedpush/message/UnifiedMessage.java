@@ -255,7 +255,7 @@ public class UnifiedMessage {
 
         private final Builder builder;
         private final Message message = new Message();
-        private  WindowsBuilder windowsBuilder;
+        private WindowsBuilder windowsBuilder;
 
         /**
          * Triggers a dialog, displaying the value.
@@ -486,9 +486,9 @@ public class UnifiedMessage {
                 return this;
             }
 
-            public UnifiedMessage build() {
+            public MessageBuilder build() {
                 messageBuilder.message.setWindows(windows);
-                return messageBuilder.builder.build();
+                return messageBuilder;
             }
 
         }
