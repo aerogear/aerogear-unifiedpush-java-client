@@ -414,6 +414,17 @@ public class UnifiedMessage {
             }
 
             /**
+             * Set the raw notification type. A raw notification is a type of push notification without any associated UI.
+             * <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761463.aspx">more info about the raw type</a>
+             *
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder raw() {
+                windows.setType(Type.raw);
+                return this;
+            }
+
+            /**
              * Set the badge notifications type for badges that are not numbers,
              * for numbers use {@link MessageBuilder#badge(String)} method.
              * Check the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Tile and badge catalog</a>

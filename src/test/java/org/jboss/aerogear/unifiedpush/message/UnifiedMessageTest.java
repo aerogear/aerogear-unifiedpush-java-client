@@ -198,7 +198,7 @@ public class UnifiedMessageTest {
     public void windowsRawMessage() {
         UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
                 .windows()
-                 .type(Type.raw)
+                 .raw()
                  .build()
                 .build();
         assertEquals(Type.raw, unifiedMessage.getMessage().getObject().getWindows().getType());
