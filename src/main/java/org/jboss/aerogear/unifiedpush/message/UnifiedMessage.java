@@ -298,7 +298,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder contentAvailable() {
-            message.setContentAvailable(true);
+            message.getApns().setContentAvailable(true);
             return this;
         }
 
@@ -309,7 +309,7 @@ public class UnifiedMessage {
          * @return the current {@link MessageBuilder} instance
          */
         public MessageBuilder actionCategory(String actionCategory) {
-            message.setActionCategory(actionCategory);
+            message.getApns().setActionCategory(actionCategory);
             return this;
         }
 
