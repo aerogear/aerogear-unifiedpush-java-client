@@ -17,6 +17,7 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
 import org.jboss.aerogear.unifiedpush.message.windows.TileType;
 import org.jboss.aerogear.unifiedpush.message.windows.BadgeType;
@@ -256,6 +257,7 @@ public class UnifiedMessage {
         private final Builder builder;
         private final Message message = new Message();
         private WindowsBuilder windowsBuilder;
+        private ApnsBuilder apnsBuilder;
 
         /**
          * Triggers a dialog, displaying the value.
@@ -290,29 +292,7 @@ public class UnifiedMessage {
             message.setBadge(Integer.valueOf(badge));
             return this;
         }
-
-        /**
-         * An iOS specific argument to mark the payload as 'content-available'. The feature is
-         * needed when sending notifications to Newsstand applications and submitting silent iOS notifications (iOS7)
-         * 
-         * @return the current {@link MessageBuilder} instance
-         */
-        public MessageBuilder contentAvailable() {
-            message.getApns().setContentAvailable(true);
-            return this;
-        }
-
-        /**
-         * An iOS specific argument to pass an Action Category for interaction notifications ( iOS8)
-         * 
-         * @param actionCategory , the identifier of the action category for the interactive notification
-         * @return the current {@link MessageBuilder} instance
-         */
-        public MessageBuilder actionCategory(String actionCategory) {
-            message.getApns().setActionCategory(actionCategory);
-            return this;
-        }
-
+        
         /**
          * Needed when sending a message to a SimplePush Network
          * 
@@ -375,6 +355,19 @@ public class UnifiedMessage {
                 windowsBuilder = new WindowsBuilder(this);
             }
             return windowsBuilder;
+        }
+
+        /**
+         * Apns specific push notification settings like "title", "actionCategory" ...
+         * <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9">more info about apns</a>
+         *
+         * @return a {@link ApnsBuilder} instance
+         */
+        public ApnsBuilder apns() {
+            if (apnsBuilder == null) {
+                apnsBuilder = new ApnsBuilder(this);
+            }
+            return apnsBuilder;
         }
 
         private static String fixVersion(String version) {
@@ -504,6 +497,96 @@ public class UnifiedMessage {
 
         }
 
+        public static class ApnsBuilder {
+            private final MessageBuilder messageBuilder;
+            private final APNs apns= new APNs();
+
+            public ApnsBuilder(MessageBuilder builder) {
+                this.messageBuilder = builder;
+            }
+
+            /**
+             * An iOS specific argument to mark the payload as 'content-available'. The feature is
+             * needed when sending notifications to Newsstand applications and submitting silent iOS notifications (iOS7)
+             *
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder contentAvailable() {
+                apns.setContentAvailable(true);
+                return this;
+            }
+
+            /**
+             * An iOS specific argument to pass an Action Category for interaction notifications ( iOS8)
+             *
+             * @param actionCategory , the identifier of the action category for the interactive notification
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder actionCategory(String actionCategory) {
+                apns.setActionCategory(actionCategory);
+                return this;
+            }
+
+            /**
+             * Sets the value of the 'action' key from the submitted payload.
+             *
+             * @param the 'action' key
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder action(String action) {
+                apns.setAction(action);
+                return this;
+            }
+
+            /**
+             * Sets the value of the 'title' key from the submitted payload.
+             *
+             * @param the value of the 'title' key
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder title(String title) {
+                apns.setTitle(title);
+                return this;
+            }
+
+            /**
+             * The key to a title string in the Localizable.strings file for the current localization.
+             *
+             * @param localized Title Key
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder localizedTitleKey(String localizedTitleKey) {
+                apns.setLocalizedTitleKey(localizedTitleKey);
+                return this;
+            }
+
+            /**
+             * Sets the arguments for the localizable title key
+             *
+             * @param localized Title Arguments
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder localizedTitleArguments(String[] localizedTitleArguments) {
+                apns.setLocalizedTitleArguments(localizedTitleArguments);
+                return this;
+            }
+
+            /**
+             * Sets the value of the 'url-args' key from the submitted payload.
+             *
+             * @param a String Array containing the keys
+             * @return the current {@link ApnsBuilder} instance
+             */
+            public ApnsBuilder urlArgs(String[] urlArgs) {
+                apns.setUrlArgs(urlArgs);
+                return this;
+            }
+
+            public MessageBuilder build() {
+                messageBuilder.message.setApns(apns);
+                return messageBuilder;
+            }
+        }
     }
 
     public static class ConfigBuilder {

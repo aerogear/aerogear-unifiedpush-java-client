@@ -114,7 +114,9 @@ public class UnifiedMessageTest {
     @Test
     public void contentAvailable() {
         UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .contentAvailable()
+                .apns()
+                    .contentAvailable()
+                    .build()
                 .build();
         assertTrue(unifiedMessage.getMessage().getObject().getApns().isContentAvailable());
     }
@@ -128,7 +130,9 @@ public class UnifiedMessageTest {
     @Test
     public void actionCategoryTest() {
         UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .actionCategory("myInteractiveNotification")
+                .apns()
+                   .actionCategory("myInteractiveNotification")
+                   .build()
                 .build();
         assertEquals("myInteractiveNotification", unifiedMessage.getMessage().getObject().getApns().getActionCategory());
     }
