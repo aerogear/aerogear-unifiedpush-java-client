@@ -208,5 +208,19 @@ public class UnifiedMessageTest {
         assertEquals(Type.raw, unifiedMessage.getMessage().getObject().getWindows().getType());
     }
 
+    @Test
+    public void windowsAndIosCombinedMessage() {
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .windows()
+                  .raw()
+                  .build()
+                .apns()
+                  .contentAvailable()
+                  .build()
+                .build();
+        assertEquals(Type.raw, unifiedMessage.getMessage().getObject().getWindows().getType());
+        assertEquals(true, unifiedMessage.getMessage().getObject().getApns().isContentAvailable());
+    }
+
 
 }
