@@ -69,7 +69,7 @@ public class DefaultPushSender implements PushSender {
      * Starts a {@link Builder} using an external config file
      *
      * @param location of the push configuration file
-     * @return
+     * @return a {@link Builder} instance
      */
     public static Builder withConfig(String location) {
         try {

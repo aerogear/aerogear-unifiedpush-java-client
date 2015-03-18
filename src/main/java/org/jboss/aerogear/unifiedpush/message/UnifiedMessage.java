@@ -422,7 +422,7 @@ public class UnifiedMessage {
              * for numbers use {@link MessageBuilder#badge(String)} method.
              * Check the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Tile and badge catalog</a>
              *
-             * @param the badge notifications type
+             * @param badgeType the badge notifications type
              * @return the current {@link WindowsBuilder} instance
              */
             public WindowsBuilder badgeType(BadgeType badgeType) {
@@ -435,7 +435,7 @@ public class UnifiedMessage {
              * Set the type of the tile messages, different sizes are available.
              * See the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx">tile template catalog</a>
              *
-             * @param tileType
+             * @param tileType the tileType
              * @return the current {@link WindowsBuilder} instance
              */
             public WindowsBuilder tileType(TileType tileType) {
@@ -447,7 +447,7 @@ public class UnifiedMessage {
             /**
              * Set the duration of a Toast message (long or short)
              *
-             * @param the duration of a Toast message (long or short)
+             * @param durationType the duration of a Toast message (long or short)
              * @return the current {@link WindowsBuilder} instance
              */
             public WindowsBuilder durationType(DurationType durationType) {
@@ -459,7 +459,7 @@ public class UnifiedMessage {
              * Set the toast template.
              * Refer to the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Toast template catalog</a>
              *
-             * @param the toast template
+             * @param toastType the toast template
              * @return the current {@link WindowsBuilder} instance
              */
             public WindowsBuilder toastType(ToastType toastType) {
@@ -471,7 +471,7 @@ public class UnifiedMessage {
             /**
              * Set a list of image's paths for the Tile Notification Type
              *
-             * @param a list of image's paths
+             * @param images a list of image's paths
              * @return the current {@link WindowsBuilder} instance
              */
             public WindowsBuilder images(List<String> images) {
@@ -482,7 +482,7 @@ public class UnifiedMessage {
             /**
              * Set a list of text fields for the Tile Notification Type
              *
-             * @param a list of text fields
+             * @param textFields a list of text fields
              * @return the current {@link WindowsBuilder} instance
              */
             public WindowsBuilder textFields(List<String> textFields) {
@@ -519,7 +519,7 @@ public class UnifiedMessage {
             /**
              * An iOS specific argument to pass an Action Category for interaction notifications ( iOS8)
              *
-             * @param actionCategory , the identifier of the action category for the interactive notification
+             * @param actionCategory the identifier of the action category for the interactive notification
              * @return the current {@link ApnsBuilder} instance
              */
             public ApnsBuilder actionCategory(String actionCategory) {
@@ -530,7 +530,7 @@ public class UnifiedMessage {
             /**
              * Sets the value of the 'action' key from the submitted payload.
              *
-             * @param the 'action' key
+             * @param action the 'action' key
              * @return the current {@link ApnsBuilder} instance
              */
             public ApnsBuilder action(String action) {
@@ -541,7 +541,7 @@ public class UnifiedMessage {
             /**
              * Sets the value of the 'title' key from the submitted payload.
              *
-             * @param the value of the 'title' key
+             * @param title the value of the 'title' key
              * @return the current {@link ApnsBuilder} instance
              */
             public ApnsBuilder title(String title) {
@@ -552,7 +552,7 @@ public class UnifiedMessage {
             /**
              * The key to a title string in the Localizable.strings file for the current localization.
              *
-             * @param localized Title Key
+             * @param localizedTitleKey the localized title key
              * @return the current {@link ApnsBuilder} instance
              */
             public ApnsBuilder localizedTitleKey(String localizedTitleKey) {
@@ -563,7 +563,7 @@ public class UnifiedMessage {
             /**
              * Sets the arguments for the localizable title key
              *
-             * @param localized Title Arguments
+             * @param localizedTitleArguments the localized title arguments
              * @return the current {@link ApnsBuilder} instance
              */
             public ApnsBuilder localizedTitleArguments(String[] localizedTitleArguments) {
@@ -574,7 +574,7 @@ public class UnifiedMessage {
             /**
              * Sets the value of the 'url-args' key from the submitted payload.
              *
-             * @param a String Array containing the keys
+             * @param urlArgs a String Array containing the keys
              * @return the current {@link ApnsBuilder} instance
              */
             public ApnsBuilder urlArgs(String[] urlArgs) {

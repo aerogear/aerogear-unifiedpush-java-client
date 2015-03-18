@@ -97,7 +97,7 @@ public class ProxyConfig {
     /**
      * Get the proxy type that is used in proxy connection.
      * 
-     * @return A {@link Proxy.Type}
+     * @return A {@link Proxy Type}
      */
     public Proxy.Type getProxyType() {
         return proxyType;
