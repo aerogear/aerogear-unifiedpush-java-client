@@ -209,6 +209,16 @@ public class UnifiedMessageTest {
     }
 
     @Test
+    public void windowsPageTest() {
+        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
+                .windows()
+                .page("/MainPage.xaml")
+                .build()
+                .build();
+        assertEquals("/MainPage.xaml", unifiedMessage.getMessage().getObject().getWindows().getPage());
+    }
+
+    @Test
     public void windowsAndIosCombinedMessage() {
         UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
                 .windows()
