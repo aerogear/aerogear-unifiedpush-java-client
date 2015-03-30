@@ -490,6 +490,24 @@ public class UnifiedMessage {
                 return this;
             }
 
+            /**
+             * Sets the page, this is a Windows specific setting that contains the
+             * page in you application to launch when the user 'touches' the notification
+             * in the notification dock. For cordova applications set this to 'cordova' to
+             * launch your app and invoke the javascript callback.
+             *
+             * Payload example:
+             * <pre>
+             *     "page": "/MainPage.xaml"
+             * </pre>
+             * @param page to launch when user 'touches' the notification
+             * @return the current {@link WindowsBuilder} instance
+             */
+            public WindowsBuilder page(String page){
+                windows.setPage(page);
+                return this;
+            }
+
             public MessageBuilder build() {
                 messageBuilder.message.setWindows(windows);
                 return messageBuilder;
