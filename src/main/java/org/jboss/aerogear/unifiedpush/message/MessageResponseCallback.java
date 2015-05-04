@@ -17,25 +17,25 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
+import org.jboss.aerogear.unifiedpush.PushSenderException;
+
 /**
  * A simple Callback interface used when sending {@link UnifiedMessage}
- * 
  */
 public interface MessageResponseCallback {
 
     /**
-     * Will be called whatever the response status code is. It's the developer
-     * responsibility to implement the status code handling. Please consult the
-     * <a href="http://aerogear.org/docs/specs/aerogear-unifiedpush-rest/sender/index.html/">server documentation</a>
-     * for a list of valid responses.
-     * 
+     * Will be called if response from server is successful.
+     *
      * @param statusCode the status code as returned by the server.
      */
     void onComplete(int statusCode);
 
     /**
      * Will be called if an Exception occurs (i.e : {@link java.io.IOException} )
-     * 
+     *
+     * {@link PushSenderException} is passed as a parameter when returned statusCode is erroneous.
+     *
      * @param throwable contains failure details.
      */
     void onError(Throwable throwable);
