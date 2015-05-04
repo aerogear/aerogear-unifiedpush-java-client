@@ -37,7 +37,14 @@ import org.jboss.aerogear.unifiedpush.ca.TrustStoreManagerService;
 import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
 import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
 
-public class HttpClient {
+/**
+ * Util class for URLConnection creation
+ */
+public class HttpRequestUtil {
+
+    private HttpRequestUtil() {
+        // no-op
+    }
 
     /**
      * Returns URLConnection that 'posts' the given JSON to the given UnifiedPush Server URL.

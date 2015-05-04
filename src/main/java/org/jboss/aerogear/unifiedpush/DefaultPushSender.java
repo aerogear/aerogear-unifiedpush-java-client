@@ -17,7 +17,7 @@
 package org.jboss.aerogear.unifiedpush;
 
 import net.iharder.Base64;
-import org.jboss.aerogear.unifiedpush.http.HttpClient;
+import org.jboss.aerogear.unifiedpush.http.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
@@ -260,7 +260,7 @@ public class DefaultPushSender implements PushSender {
             String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
 
             // POST the payload to the UnifiedPush Server
-            httpURLConnection = (HttpURLConnection) HttpClient.post(url, encoded, jsonPayloadObject, UTF_8, proxy,
+            httpURLConnection = (HttpURLConnection) HttpRequestUtil.post(url, encoded, jsonPayloadObject, UTF_8, proxy,
                     customTrustStore);
 
             statusCode = httpURLConnection.getResponseCode();

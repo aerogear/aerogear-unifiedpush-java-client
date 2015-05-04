@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.jboss.aerogear.unifiedpush.http.HttpClient;
+import org.jboss.aerogear.unifiedpush.http.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.junit.Before;
@@ -51,7 +51,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest(HttpClient.class)
+@PrepareForTest(HttpRequestUtil.class)
 public class DefaultPushSenderTest {
 
     /* -- testing data -- */
@@ -85,9 +85,9 @@ public class DefaultPushSenderTest {
         // mock getConnection method
         setDefaultSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("http://aerogear.example.com/ag-push").build()));
         setSecureSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push").build()));
-        PowerMockito.spy(HttpClient.class);
-        PowerMockito.doReturn(connection).when(HttpClient.class, "getConnection", Matchers.startsWith("http://"), any());
-        PowerMockito.doReturn(secureConnection).when(HttpClient.class, "getConnection", Matchers.startsWith("https://"), any());
+        PowerMockito.spy(HttpRequestUtil.class);
+        PowerMockito.doReturn(connection).when(HttpRequestUtil.class, "getConnection", Matchers.startsWith("http://"), any());
+        PowerMockito.doReturn(secureConnection).when(HttpRequestUtil.class, "getConnection", Matchers.startsWith("https://"), any());
     }
 
     @Test
@@ -183,7 +183,7 @@ public class DefaultPushSenderTest {
     @Test
     public void sendSendWithCallbackAndException() throws Exception {
         // throw IOException when posting
-        PowerMockito.doThrow(new IOException()).when(HttpClient.class, "post", anyString(), anyString(), anyString(), any(),
+        PowerMockito.doThrow(new IOException()).when(HttpRequestUtil.class, "post", anyString(), anyString(), anyString(), any(),
                 any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
@@ -221,7 +221,7 @@ public class DefaultPushSenderTest {
     @Test
     public void sendSendWithCallbackAndException_SSL() throws Exception {
         // throw IOException when posting
-        PowerMockito.doThrow(new IOException()).when(HttpClient.class, "post", anyString(), anyString(), anyString(), any(),
+        PowerMockito.doThrow(new IOException()).when(HttpRequestUtil.class, "post", anyString(), anyString(), anyString(), any(),
                 any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
