@@ -16,13 +16,7 @@
  */
 package org.jboss.aerogear.unifiedpush;
 
-import net.iharder.Base64;
-import org.jboss.aerogear.unifiedpush.http.HttpClient;
-import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
-import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
-import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
-import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
-import org.jboss.aerogear.unifiedpush.utils.PushConfiguration;
+import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -32,7 +26,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
-import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
+import net.iharder.Base64;
+
+import org.jboss.aerogear.unifiedpush.http.HttpClient;
+import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
+import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
+import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
+import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
+import org.jboss.aerogear.unifiedpush.utils.PushConfiguration;
 
 
 public class DefaultPushSender implements PushSender {
@@ -40,7 +41,7 @@ public class DefaultPushSender implements PushSender {
     private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
-    
+
     private final PushConfiguration pushConfiguration;
     private final ProxyConfig proxy;
     private final TrustStoreConfig customTrustStore;
@@ -128,7 +129,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Set a custom trustStore.
-         * 
+         *
          * @param trustStorePath The trustStore file path.
          * @param trustStoreType The trustStore type. If null the default type iss used.
          * @param trustStorePassword The trustStore password.
@@ -141,7 +142,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Specify proxy that should be used to connect.
-         * 
+         *
          * @param proxyHost Hostname of proxy.
          * @param proxyPort Port of proxy.
          * @return the current {@link Builder} instance
@@ -157,7 +158,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * If proxy needs authentication, specify User.
-         * 
+         *
          * @param proxyUser Username for authentication.
          * @return the current {@link Builder} instance
          */
@@ -171,7 +172,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Sets password used with specified user.
-         * 
+         *
          * @param proxyPassword Password for user authentication.
          * @return the current {@link Builder} instance
          */
@@ -185,7 +186,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Configure type of proxy.
-         * 
+         *
          * @param proxyType Type of proxy as
          * @return the current {@link Builder} instance
          */
@@ -199,7 +200,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Build the {@link DefaultPushSender}.
-         * 
+         *
          * @return the built up {@link DefaultPushSender}
          */
         public DefaultPushSender build() {
@@ -209,7 +210,7 @@ public class DefaultPushSender implements PushSender {
 
     /**
      * Construct the URL fired against the Unified Push Server
-     * 
+     *
      * @return a StringBuilder containing the constructed URL
      */
     protected String buildUrl() {
@@ -234,7 +235,7 @@ public class DefaultPushSender implements PushSender {
 
     /**
      * The actual method that does the real send and connection handling
-     * 
+     *
      * @param url the URL to use for the HTTP POST request.
      * @param jsonPayloadObject the JSON payload of the POST request
      * @param pushApplicationId the registered applications identifier.
@@ -242,6 +243,7 @@ public class DefaultPushSender implements PushSender {
      * @param callback the {@link MessageResponseCallback} that will be called once the POST request completes.
      * @param redirectUrls a list containing the previous redirectUrls, used to detect an infinite loop
      * @throws an {@link java.lang.IllegalStateException} if an infinite loop is detected
+     * @throws an {@link PushSenderException} if erroneous status code is returned as a response
      */
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
             MessageResponseCallback callback, List<String> redirectUrls) {
@@ -275,7 +277,11 @@ public class DefaultPushSender implements PushSender {
                 submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback, redirectUrls);
             } else {
                 if (callback != null) {
-                    callback.onComplete(statusCode);
+                    if (statusCode >= 400) {
+                        callback.onError(new PushSenderException("Communication error - server responded with erroneous statusCode=" + statusCode, statusCode));
+                    } else {
+                        callback.onComplete(statusCode);
+                    }
                 }
             }
 
@@ -304,7 +310,7 @@ public class DefaultPushSender implements PushSender {
 
     /**
      * Get the used server URL.
-     * 
+     *
      * @return The Server that is used
      */
     @Override

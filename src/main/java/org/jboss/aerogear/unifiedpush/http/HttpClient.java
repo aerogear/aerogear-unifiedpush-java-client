@@ -27,6 +27,7 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.security.KeyStore;
+
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
@@ -40,7 +41,7 @@ public class HttpClient {
 
     /**
      * Returns URLConnection that 'posts' the given JSON to the given UnifiedPush Server URL.
-     * 
+     *
      * @param url
      * @param encodedCredentials
      * @param jsonPayloadObject
@@ -79,7 +80,7 @@ public class HttpClient {
         ((HttpURLConnection) conn).setFixedLengthStreamingMode(bytes.length);
         conn.setRequestProperty("Authorization", "Basic " + encodedCredentials);
         conn.setRequestProperty("Content-Type", "application/json");
-        conn.setRequestProperty("Accept", "application/json");
+        conn.setRequestProperty("Accept", "application/json, text/plain");
 
         // custom header, for UPS
         conn.setRequestProperty("aerogear-sender", "AeroGear Java Sender");
@@ -100,7 +101,7 @@ public class HttpClient {
 
     /**
      * Method to open/establish a URLConnection.
-     * 
+     *
      * @param url The URL to connect to.
      * @param proxy The proxy configuration.
      * @return {@link URLConnection}
