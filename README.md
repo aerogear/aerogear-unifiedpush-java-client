@@ -18,7 +18,7 @@ Add the following dependencies to your ```pom.xml``` file:
         <dependency>
              <groupId>org.jboss.aerogear</groupId>
              <artifactId>unifiedpush-java-client</artifactId>
-             <version>1.1.0</version>
+             <version>1.1.0-alpha.2</version>
         </dependency>
 
 ## Usage
