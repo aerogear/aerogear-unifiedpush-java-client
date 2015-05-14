@@ -39,7 +39,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import org.jboss.aerogear.unifiedpush.http.HttpRequestUtil;
+import org.jboss.aerogear.unifiedpush.utils.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.junit.Before;
