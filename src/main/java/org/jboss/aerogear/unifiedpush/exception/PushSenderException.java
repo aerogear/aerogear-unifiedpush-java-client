@@ -14,19 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-package org.jboss.aerogear.unifiedpush.message;
+package org.jboss.aerogear.unifiedpush.exception;
 
 /**
- * A simple Callback interface used when sending {@link UnifiedMessage}
- * 
+ * Thrown when sending the push delivery request fails.
  */
-public interface MessageResponseCallback {
+public class PushSenderException extends RuntimeException {
 
-    /**
-     * Will be called when push message could be delivered. Please consult the
-     * <a href="http://aerogear.org/docs/specs/aerogear-unifiedpush-rest/sender/index.html/">server documentation</a>
-     * for details.
-     */
-    void onComplete();
+    static final long serialVersionUID = -7234897190745766939L;
+
+    public PushSenderException() {
+        super();
+    }
+
+    public PushSenderException(String message) {
+        super(message);
+    }
+
+    public PushSenderException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

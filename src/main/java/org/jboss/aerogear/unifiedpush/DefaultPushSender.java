@@ -17,6 +17,8 @@
 package org.jboss.aerogear.unifiedpush;
 
 import net.iharder.Base64;
+import org.jboss.aerogear.unifiedpush.exception.PushSenderException;
+import org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException;
 import org.jboss.aerogear.unifiedpush.utils.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
@@ -30,6 +32,7 @@ import java.net.Proxy;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
@@ -76,7 +79,7 @@ public class DefaultPushSender implements PushSender {
             return new Builder(PushConfiguration.read(location));
         }
         catch(IOException e){
-            logger.severe("Could not read config file : " + e);
+            logger.log(Level.SEVERE, "Could not read config file", e);
             return null;
         }
     }
@@ -241,50 +244,54 @@ public class DefaultPushSender implements PushSender {
      * @param masterSecret the master secret for the push server.
      * @param callback the {@link MessageResponseCallback} that will be called once the POST request completes.
      * @param redirectUrls a list containing the previous redirectUrls, used to detect an infinite loop
-     * @throws an {@link java.lang.IllegalStateException} if an infinite loop is detected
+     * @throws {@link org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException} when delivering push message to Unified Push Server fails.
+     * @throws {@link org.jboss.aerogear.unifiedpush.exception.PushSenderException} when generic error during sending occurs, such as an infinite redirect loop.
      */
     private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
             MessageResponseCallback callback, List<String> redirectUrls) {
         if (redirectUrls.contains(url)) {
-            throw new IllegalStateException("The site contains an infinite redirect loop! Duplicate url: " +
+            throw new PushSenderException("The site contains an infinite redirect loop! Duplicate url: " +
                     url);
         } else {
             redirectUrls.add(url);
         }
 
-        String credentials = pushApplicationId + ':' + masterSecret;
-        int statusCode;
-
         HttpURLConnection httpURLConnection = null;
         try {
-            String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
+            final String credentials = pushApplicationId + ':' + masterSecret;
+            final String encoded = Base64.encodeBytes(credentials.getBytes(UTF_8));
 
             // POST the payload to the UnifiedPush Server
             httpURLConnection = (HttpURLConnection) HttpRequestUtil.post(url, encoded, jsonPayloadObject, UTF_8, proxy,
                     customTrustStore);
 
-            statusCode = httpURLConnection.getResponseCode();
-            logger.info(String.format("HTTP Response code from UnifiedPush Server: %s", statusCode));
+            final int statusCode = httpURLConnection.getResponseCode();
+            logger.log(Level.INFO, String.format("HTTP Response code from UnifiedPush Server: %s", statusCode));
 
             // if we got a redirect, let's extract the 'Location' header from the response
             // and submit the payload again
             if (isRedirect(statusCode)) {
                 String redirectURL = httpURLConnection.getHeaderField("Location");
-                logger.info(String.format("Performing redirect to '%s'", redirectURL));
+                logger.log(Level.INFO, String.format("Performing redirect to '%s'", redirectURL));
                 // execute the 'redirect'
                 submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback, redirectUrls);
+            } else if (statusCode >= 400) {
+                // treating any 400/500 error codes an an exception to a sending attempt:
+                logger.log(Level.SEVERE, "The Unified Push Server returned status code: " + statusCode);
+                throw new PushSenderHttpException(statusCode);
             } else {
                 if (callback != null) {
-                    callback.onComplete(statusCode);
+                    callback.onComplete();
                 }
             }
-
+        } catch (PushSenderHttpException pshe) {
+            throw pshe;
         } catch (Exception e) {
-            logger.severe("Send did not succeed: " + e.getMessage());
-            if (callback != null) {
-                callback.onError(e);
-            }
-        } finally {
+            logger.log(Level.INFO, "Error happening while trying to send the push delivery request", e);
+
+            throw new PushSenderException(e.getMessage(), e);
+        }
+        finally {
             // tear down
             if (httpURLConnection != null) {
                 httpURLConnection.disconnect();

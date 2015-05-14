@@ -35,10 +35,11 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import org.jboss.aerogear.unifiedpush.exception.PushSenderException;
+import org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException;
 import org.jboss.aerogear.unifiedpush.utils.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
@@ -60,6 +61,11 @@ public class DefaultPushSenderTest {
     private static final String ALERT_MSG = "Hello from Java Sender API, via JUnit";
     private static final String DEFAULT_SOUND = "default";
     private static final List<String> IDENTIFIERS_LIST = new ArrayList<String>();
+
+    // STATUS CODES for mocking
+    private static int STATUS_OK = 200;
+    private static int STATUS_REDIRECT = 301;
+    private static int STATUS_NOT_FOUND = 404;
 
     static {
         IDENTIFIERS_LIST.add("mwessendorf2");
@@ -100,25 +106,18 @@ public class DefaultPushSenderTest {
 
     @Test
     public void sendSendWithCallback404() throws Exception {
-        // return 404
-        int STATUS_NOT_FOUND = 404;
 
         when(((HttpURLConnection) getConnnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean pushSenderHttpExceptionThrown = new AtomicBoolean(false);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                returnedStatusList.add(statusCode);
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
         };
@@ -129,11 +128,19 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        defaultSenderClient.send(unifiedMessage, callback);
+        try {
+            defaultSenderClient.send(unifiedMessage, callback);
+        } catch (PushSenderHttpException pshe) {
+
+            returnedStatusList.add(pshe.getStatusCode());
+            pushSenderHttpExceptionThrown.set(true);
+            latch.countDown();
+        }
 
         latch.await(1000, TimeUnit.MILLISECONDS);
-        // onError callback should not be called
-        assertFalse(onFailCalled.get());
+
+        assertTrue(pushSenderHttpExceptionThrown.get());
+        assertFalse(onCompleteCalled.get());
         assertNotNull(returnedStatusList);
         assertEquals(1, returnedStatusList.size());
         assertEquals(STATUS_NOT_FOUND, returnedStatusList.get(0).intValue());
@@ -141,27 +148,21 @@ public class DefaultPushSenderTest {
 
     @Test
     public void sendSendWithCallback404_SSL() throws Exception {
-        // return 404
-        int STATUS_NOT_FOUND = 404;
 
         when(((HttpURLConnection) getSecureConnection()).getResponseCode()).thenReturn(STATUS_NOT_FOUND);
 
         final CountDownLatch latch = new CountDownLatch(1);
         final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean pushSenderHttpExceptionThrown = new AtomicBoolean(false);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                returnedStatusList.add(statusCode);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
 
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
-                latch.countDown();
-            }
         };
 
         UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
@@ -170,11 +171,19 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        secureSenderClient.send(unifiedMessage, callback);
+        try {
+            secureSenderClient.send(unifiedMessage, callback);
+        } catch (PushSenderHttpException pshe) {
+
+            returnedStatusList.add(pshe.getStatusCode());
+            pushSenderHttpExceptionThrown.set(true);
+            latch.countDown();
+        }
 
         latch.await(1000, TimeUnit.MILLISECONDS);
-        // onError callback should not be called
-        assertFalse(onFailCalled.get());
+
+        assertTrue(pushSenderHttpExceptionThrown.get());
+        assertFalse(onCompleteCalled.get());
         assertNotNull(returnedStatusList);
         assertEquals(1, returnedStatusList.size());
         assertEquals(STATUS_NOT_FOUND, returnedStatusList.get(0).intValue());
@@ -187,19 +196,13 @@ public class DefaultPushSenderTest {
                 any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
-        final AtomicReference<Throwable> exceptionReference = new AtomicReference<Throwable>();
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean pushSenderExceptionThrown = new AtomicBoolean(false);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
-                exceptionReference.set(throwable);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
         };
@@ -210,12 +213,18 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        defaultSenderClient.send(unifiedMessage, callback);
+        try {
+            defaultSenderClient.send(unifiedMessage, callback);
+        } catch (PushSenderException pse) {
+
+            pushSenderExceptionThrown.set(true);
+            latch.countDown();
+        }
 
         latch.await(1000, TimeUnit.MILLISECONDS);
-        assertTrue(onFailCalled.get());
-        assertEquals(IOException.class, exceptionReference.get().getClass());
 
+        assertFalse(onCompleteCalled.get());
+        assertTrue(pushSenderExceptionThrown.get());
     }
 
     @Test
@@ -225,19 +234,13 @@ public class DefaultPushSenderTest {
                 any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
-        final AtomicReference<Throwable> exceptionReference = new AtomicReference<Throwable>();
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean pushSenderExceptionThrown = new AtomicBoolean(false);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
-                exceptionReference.set(throwable);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
         };
@@ -248,35 +251,34 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        secureSenderClient.send(unifiedMessage, callback);
+        try {
+            secureSenderClient.send(unifiedMessage, callback);
+        } catch (PushSenderException pse) {
+
+            pushSenderExceptionThrown.set(true);
+            latch.countDown();
+        }
+
 
         latch.await(1000, TimeUnit.MILLISECONDS);
-        assertTrue(onFailCalled.get());
-        assertEquals(IOException.class, exceptionReference.get().getClass());
 
+        assertFalse(onCompleteCalled.get());
+        assertTrue(pushSenderExceptionThrown.get());
     }
 
     @Test
     public void sendSendWithCallback200() throws Exception {
-        // return 200
-        int STATUS_OK = 200;
 
         when(((HttpURLConnection) getConnnection()).getResponseCode()).thenReturn(STATUS_OK);
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean exceptionThrown = new AtomicBoolean(false);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                returnedStatusList.add(statusCode);
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
         };
@@ -287,37 +289,36 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        defaultSenderClient.send(unifiedMessage, callback);
+        try {
+            defaultSenderClient.send(unifiedMessage, callback);
+        } catch (Exception e) {
+
+            exceptionThrown.set(true);
+            latch.countDown();
+        }
+
 
         latch.await(1000, TimeUnit.MILLISECONDS);
-        // onError callback should not be called
-        assertFalse(onFailCalled.get());
-        assertNotNull(returnedStatusList);
-        assertEquals(1, returnedStatusList.size());
-        assertEquals(STATUS_OK, returnedStatusList.get(0).intValue());
+
+        assertTrue(onCompleteCalled.get());
+        assertFalse(exceptionThrown.get());
     }
 
     @Test
     public void sendSendWithInfiniteRedirect() throws Exception {
-        // return 301
-        int STATUS_REDIRECT = 301;
+
         when(((HttpURLConnection) getConnnection()).getResponseCode()).thenReturn(STATUS_REDIRECT);
         when(getConnnection().getHeaderField("Location")).thenReturn("http://aerogear.example.com/ag-push");
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean pushSenderExceptionThrown = new AtomicBoolean(false);
         final List<Throwable> throwableList = new ArrayList<Throwable>(1);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
-                throwableList.add(throwable);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
         };
@@ -328,34 +329,35 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        defaultSenderClient.send(unifiedMessage,callback);
+        try {
+            defaultSenderClient.send(unifiedMessage,callback);
+        } catch (PushSenderException pse) {
+
+            pushSenderExceptionThrown.set(true);
+            throwableList.add(pse);
+            latch.countDown();
+        }
+
         latch.await(1000, TimeUnit.MILLISECONDS);
-        // onError callback should not be called
-        assertTrue(onFailCalled.get());
+
+        assertFalse(onCompleteCalled.get());
+        assertTrue(pushSenderExceptionThrown.get());
         assertEquals(throwableList.get(0).getMessage(), "The site contains an infinite redirect loop! Duplicate url: http://aerogear.example.com/ag-push");
     }
 
     @Test
     public void sendSendWithCallback200_SSL() throws Exception {
-        // return 200
-        int STATUS_OK = 200;
 
         when(((HttpURLConnection) getSecureConnection()).getResponseCode()).thenReturn(STATUS_OK);
 
         final CountDownLatch latch = new CountDownLatch(1);
-        final List<Integer> returnedStatusList = new ArrayList<Integer>(1);
-        final AtomicBoolean onFailCalled = new AtomicBoolean(false);
+        final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
+        final AtomicBoolean exceptionThrown = new AtomicBoolean(false);
 
         MessageResponseCallback callback = new MessageResponseCallback() {
             @Override
-            public void onComplete(int statusCode) {
-                returnedStatusList.add(statusCode);
-                latch.countDown();
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                onFailCalled.set(true);
+            public void onComplete() {
+                onCompleteCalled.set(true);
                 latch.countDown();
             }
         };
@@ -366,14 +368,19 @@ public class DefaultPushSenderTest {
                 .criteria().aliases(IDENTIFIERS_LIST)
                 .build();
 
-        secureSenderClient.send(unifiedMessage, callback);
+        try {
+            secureSenderClient.send(unifiedMessage, callback);
+        } catch (Exception e) {
+
+            exceptionThrown.set(true);
+            latch.countDown();
+        }
+
 
         latch.await(1000, TimeUnit.MILLISECONDS);
-        // onError callback should not be called
-        assertFalse(onFailCalled.get());
-        assertNotNull(returnedStatusList);
-        assertEquals(1, returnedStatusList.size());
-        assertEquals(STATUS_OK, returnedStatusList.get(0).intValue());
+
+        assertTrue(onCompleteCalled.get());
+        assertFalse(exceptionThrown.get());
     }
 
     @Test(expected = IllegalStateException.class)
