@@ -103,11 +103,6 @@ Create a callback
             public void onComplete(int statusCode) {
               //do cool stuff
             }
-
-            @Override
-            public void onError(Throwable throwable) {
-              //bring out the bad news
-            }
         };
 ```
 
