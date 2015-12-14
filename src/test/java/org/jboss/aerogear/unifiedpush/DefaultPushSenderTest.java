@@ -101,7 +101,7 @@ public class DefaultPushSenderTest {
         defaultSenderClient = DefaultPushSender.withConfig("pushConfig.json").build();
         assertEquals(PUSH_APPLICATION_ID, defaultSenderClient.getPushApplicationId());
         assertEquals(MASTER_SECRET, defaultSenderClient.getMasterSecret());
-        assertEquals("http://aerogear.example.com/ag-push", defaultSenderClient.getServerURL());
+        assertEquals("http://aerogear.example.com/ag-push/", defaultSenderClient.getServerURL());
     }
 
     @Test
