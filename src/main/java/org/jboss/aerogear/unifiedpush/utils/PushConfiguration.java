@@ -65,6 +65,9 @@ public class PushConfiguration {
                     new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(location)));
             Gson gson = new Gson();
             pushConfiguration =  gson.fromJson(bufferedReader, PushConfiguration.class);
+            if (!pushConfiguration.getServerUrl().endsWith("/")) {
+                pushConfiguration.setServerUrl(pushConfiguration.getServerUrl() + '/');
+            }
         }
        finally {
            if (bufferedReader != null) {
