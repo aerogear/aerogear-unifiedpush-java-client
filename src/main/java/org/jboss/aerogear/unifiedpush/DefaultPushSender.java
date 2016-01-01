@@ -262,7 +262,8 @@ public class DefaultPushSender implements PushSender {
      * @param pushApplicationId the registered applications identifier.
      * @param masterSecret the master secret for the push server.
      * @param callback the {@link org.jboss.aerogear.unifiedpush.message.MessageResponseCallback} that will be called once the POST request completes.
-     * @param redirectUrls a list containing the previous redirectUrls, used to detect an infinite loop      @throws org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException when delivering push message to Unified Push Server fails.
+     * @param redirectUrls a list containing the previous redirectUrls, used to detect an infinite loop
+     * @throws org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException when delivering push message to Unified Push Server fails.
      * @throws org.jboss.aerogear.unifiedpush.exception.PushSenderException when generic error during sending occurs, such as an infinite redirect loop.
      */
     private void submitPayload(String url, HttpRequestUtil.ConnectionSettings connectionSettings, String jsonPayloadObject, String pushApplicationId, String masterSecret,
