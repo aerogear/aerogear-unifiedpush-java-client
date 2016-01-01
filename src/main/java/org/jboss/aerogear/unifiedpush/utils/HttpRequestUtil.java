@@ -41,6 +41,43 @@ import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
  * Util class for URLConnection creation
  */
 public class HttpRequestUtil {
+	/**
+	 * Additional settings to use for {@link java.net.URLConnection} on submitting payload.
+	 */
+	public static class ConnectionSettings {
+		private Integer readTimeout;
+		private Integer connectTimeout;
+
+		/**
+		 * @return Timeout in ms or {@code null} if using default.
+		 */
+		public Integer getReadTimeout() {
+			return readTimeout;
+		}
+
+		/**
+		 * @param readTimeout Read timeout in ms or {@code null} to use default.
+		 * @see java.net.HttpURLConnection#setReadTimeout(int)
+		 */
+		public void setReadTimeout(Integer readTimeout) {
+			this.readTimeout = readTimeout;
+		}
+
+		/**
+		 * @return Timeout in ms or {@code null} if using default.
+		 */
+		public Integer getConnectTimeout() {
+			return connectTimeout;
+		}
+
+		/**
+		 * @param connectTimeout Connect timeout in ms or {@code null} to use default.
+		 * @see java.net.HttpURLConnection#setConnectTimeout(int)
+		 */
+		public void setConnectTimeout(Integer connectTimeout) {
+			this.connectTimeout = connectTimeout;
+		}
+	}
 
     private HttpRequestUtil() {
         // no-op
@@ -55,11 +92,12 @@ public class HttpRequestUtil {
      * @param charset
      * @param proxy
      * @param customTrustStore
+     * @param connectionSettings
      * @return {@link URLConnection}
      * @throws Exception
      */
     public static URLConnection post(String url, String encodedCredentials, String jsonPayloadObject, Charset charset,
-            ProxyConfig proxy, TrustStoreConfig customTrustStore) throws Exception {
+                                     ProxyConfig proxy, TrustStoreConfig customTrustStore, ConnectionSettings connectionSettings) throws Exception {
 
         if (url == null || encodedCredentials == null || jsonPayloadObject == null) {
             throw new IllegalArgumentException("arguments cannot be null");
@@ -88,6 +126,12 @@ public class HttpRequestUtil {
         conn.setRequestProperty("Authorization", "Basic " + encodedCredentials);
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setRequestProperty("Accept", "application/json, text/plain");
+	    if(connectionSettings.getReadTimeout() != null) {
+		    conn.setReadTimeout(connectionSettings.getReadTimeout());
+	    }
+		if(connectionSettings.getConnectTimeout() != null) {
+			conn.setConnectTimeout(connectionSettings.getConnectTimeout());
+		}
 
         // custom header, for UPS
         conn.setRequestProperty("aerogear-sender", "AeroGear Java Sender");

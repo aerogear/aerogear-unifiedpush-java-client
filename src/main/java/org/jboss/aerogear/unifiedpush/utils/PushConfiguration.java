@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
 import java.util.logging.Logger;
 
 public class PushConfiguration {
@@ -29,6 +30,7 @@ public class PushConfiguration {
     private String serverUrl;
     private String pushApplicationId;
     private String masterSecret;
+	private HttpRequestUtil.ConnectionSettings connectionSettings = new HttpRequestUtil.ConnectionSettings();
 
     public PushConfiguration(){
     }
@@ -57,7 +59,11 @@ public class PushConfiguration {
         this.serverUrl = serverUrl;
     }
 
-    public static PushConfiguration read(String location) throws IOException {
+	public HttpRequestUtil.ConnectionSettings getConnectionSettings() {	return connectionSettings; }
+
+	public void setConnectionSettings(HttpRequestUtil.ConnectionSettings connectionSettings) { this.connectionSettings = connectionSettings; }
+
+	public static PushConfiguration read(String location) throws IOException {
         BufferedReader bufferedReader = null;
         PushConfiguration pushConfiguration = null;
         try {
