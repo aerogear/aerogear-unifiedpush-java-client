@@ -129,23 +129,23 @@ public class DefaultPushSender implements PushSender {
             return this;
         }
 
-	    /**
-	     * @param readTimeout Read timeout in ms for underlying {@link java.net.URLConnection}.
-	     * @return the current {@link Builder} instance
-	     */
-	    public Builder connectionReadTimeout(Integer readTimeout) {
-		    pushConfiguration.getConnectionSettings().setReadTimeout(readTimeout);
-		    return this;
-	    }
+        /**
+         * @param readTimeout Read timeout in ms for underlying {@link java.net.URLConnection}.
+         * @return the current {@link Builder} instance
+         */
+        public Builder connectionReadTimeout(Integer readTimeout) {
+            pushConfiguration.getConnectionSettings().setReadTimeout(readTimeout);
+            return this;
+        }
 
-	    /**
-	     * @param connectTimeout Connect timeout in ms for underlying {@link java.net.URLConnection}.
-	     * @return the current {@link Builder} instance
-	     */
-	    public Builder connectionConnectTimeout(Integer connectTimeout) {
-		    pushConfiguration.getConnectionSettings().setConnectTimeout(connectTimeout);
-		    return this;
-	    }
+        /**
+         * @param connectTimeout Connect timeout in ms for underlying {@link java.net.URLConnection}.
+         * @return the current {@link Builder} instance
+         */
+        public Builder connectionConnectTimeout(Integer connectTimeout) {
+            pushConfiguration.getConnectionSettings().setConnectTimeout(connectTimeout);
+            return this;
+        }
 
         /**
          * Set a custom trustStore.
@@ -358,5 +358,5 @@ public class DefaultPushSender implements PushSender {
         return pushConfiguration.getMasterSecret();
     }
 
-	protected PushConfiguration getPushConfiguration() { return pushConfiguration; }
+    protected PushConfiguration getPushConfiguration() { return pushConfiguration; }
 }

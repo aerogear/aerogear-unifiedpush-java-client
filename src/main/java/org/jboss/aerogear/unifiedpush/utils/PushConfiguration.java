@@ -62,22 +62,22 @@ public class PushConfiguration {
 
 	public void setConnectionSettings(HttpRequestUtil.ConnectionSettings connectionSettings) { this.connectionSettings = connectionSettings; }
 
-	public static PushConfiguration read(String location) throws IOException {
+    public static PushConfiguration read(String location) throws IOException {
         BufferedReader bufferedReader = null;
         PushConfiguration pushConfiguration = null;
         try {
             bufferedReader = new BufferedReader(
                     new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(location)));
             Gson gson = new Gson();
-            pushConfiguration =  gson.fromJson(bufferedReader, PushConfiguration.class);
-            if (!pushConfiguration.getServerUrl().endsWith("/")) {
+            pushConfiguration = gson.fromJson(bufferedReader, PushConfiguration.class);
+            if(!pushConfiguration.getServerUrl().endsWith("/")) {
                 pushConfiguration.setServerUrl(pushConfiguration.getServerUrl() + '/');
             }
         }
-       finally {
-           if (bufferedReader != null) {
-               bufferedReader.close();
-           }
+        finally {
+            if(bufferedReader != null) {
+                bufferedReader.close();
+            }
         }
         return pushConfiguration;
     }
