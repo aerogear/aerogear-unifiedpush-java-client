@@ -58,9 +58,13 @@ public class PushConfiguration {
         this.serverUrl = serverUrl;
     }
 
-	public HttpRequestUtil.ConnectionSettings getConnectionSettings() {	return connectionSettings; }
+    public HttpRequestUtil.ConnectionSettings getConnectionSettings() {
+        return connectionSettings;
+    }
 
-	public void setConnectionSettings(HttpRequestUtil.ConnectionSettings connectionSettings) { this.connectionSettings = connectionSettings; }
+    public void setConnectionSettings(HttpRequestUtil.ConnectionSettings connectionSettings) {
+        this.connectionSettings = connectionSettings;
+    }
 
     public static PushConfiguration read(String location) throws IOException {
         BufferedReader bufferedReader = null;
