@@ -43,7 +43,7 @@ public class DefaultPushSender implements PushSender {
     private static final Logger logger = Logger.getLogger(DefaultPushSender.class.getName());
 
     private static final Charset UTF_8 = Charset.forName("UTF-8");
-    
+
     private final PushConfiguration pushConfiguration;
     private final ProxyConfig proxy;
     private final TrustStoreConfig customTrustStore;
@@ -130,8 +130,26 @@ public class DefaultPushSender implements PushSender {
         }
 
         /**
+         * @param readTimeout Read timeout in ms for underlying {@link java.net.URLConnection}.
+         * @return the current {@link Builder} instance
+         */
+        public Builder connectionReadTimeout(Integer readTimeout) {
+            pushConfiguration.getConnectionSettings().setReadTimeout(readTimeout);
+            return this;
+        }
+
+        /**
+         * @param connectTimeout Connect timeout in ms for underlying {@link java.net.URLConnection}.
+         * @return the current {@link Builder} instance
+         */
+        public Builder connectionConnectTimeout(Integer connectTimeout) {
+            pushConfiguration.getConnectionSettings().setConnectTimeout(connectTimeout);
+            return this;
+        }
+
+        /**
          * Set a custom trustStore.
-         * 
+         *
          * @param trustStorePath The trustStore file path.
          * @param trustStoreType The trustStore type. If null the default type iss used.
          * @param trustStorePassword The trustStore password.
@@ -144,7 +162,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Specify proxy that should be used to connect.
-         * 
+         *
          * @param proxyHost Hostname of proxy.
          * @param proxyPort Port of proxy.
          * @return the current {@link Builder} instance
@@ -160,7 +178,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * If proxy needs authentication, specify User.
-         * 
+         *
          * @param proxyUser Username for authentication.
          * @return the current {@link Builder} instance
          */
@@ -174,7 +192,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Sets password used with specified user.
-         * 
+         *
          * @param proxyPassword Password for user authentication.
          * @return the current {@link Builder} instance
          */
@@ -188,7 +206,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Configure type of proxy.
-         * 
+         *
          * @param proxyType Type of proxy as
          * @return the current {@link Builder} instance
          */
@@ -202,7 +220,7 @@ public class DefaultPushSender implements PushSender {
 
         /**
          * Build the {@link DefaultPushSender}.
-         * 
+         *
          * @return the built up {@link DefaultPushSender}
          */
         public DefaultPushSender build() {
@@ -212,7 +230,7 @@ public class DefaultPushSender implements PushSender {
 
     /**
      * Construct the URL fired against the Unified Push Server
-     * 
+     *
      * @return a StringBuilder containing the constructed URL
      */
     protected String buildUrl() {
@@ -227,7 +245,7 @@ public class DefaultPushSender implements PushSender {
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
         String jsonString = unifiedMessage.getObject().toJsonString();
         // fire!
-        submitPayload(buildUrl(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback, new ArrayList<String>());
+        submitPayload(buildUrl(), pushConfiguration.getConnectionSettings(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback, new ArrayList<String>());
     }
 
     @Override
@@ -237,18 +255,19 @@ public class DefaultPushSender implements PushSender {
 
     /**
      * The actual method that does the real send and connection handling
-     * 
+     *
      * @param url the URL to use for the HTTP POST request.
+     * @param connectionSettings additional settings to use for the underlying {@link java.net.URLConnection}.
      * @param jsonPayloadObject the JSON payload of the POST request
      * @param pushApplicationId the registered applications identifier.
      * @param masterSecret the master secret for the push server.
-     * @param callback the {@link MessageResponseCallback} that will be called once the POST request completes.
+     * @param callback the {@link org.jboss.aerogear.unifiedpush.message.MessageResponseCallback} that will be called once the POST request completes.
      * @param redirectUrls a list containing the previous redirectUrls, used to detect an infinite loop
-     * @throws {@link org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException} when delivering push message to Unified Push Server fails.
-     * @throws {@link org.jboss.aerogear.unifiedpush.exception.PushSenderException} when generic error during sending occurs, such as an infinite redirect loop.
+     * @throws org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException when delivering push message to Unified Push Server fails.
+     * @throws org.jboss.aerogear.unifiedpush.exception.PushSenderException when generic error during sending occurs, such as an infinite redirect loop.
      */
-    private void submitPayload(String url, String jsonPayloadObject, String pushApplicationId, String masterSecret,
-            MessageResponseCallback callback, List<String> redirectUrls) {
+    private void submitPayload(String url, HttpRequestUtil.ConnectionSettings connectionSettings, String jsonPayloadObject, String pushApplicationId, String masterSecret,
+                               MessageResponseCallback callback, List<String> redirectUrls) {
         if (redirectUrls.contains(url)) {
             throw new PushSenderException("The site contains an infinite redirect loop! Duplicate url: " +
                     url);
@@ -263,7 +282,7 @@ public class DefaultPushSender implements PushSender {
 
             // POST the payload to the UnifiedPush Server
             httpURLConnection = (HttpURLConnection) HttpRequestUtil.post(url, encoded, jsonPayloadObject, UTF_8, proxy,
-                    customTrustStore);
+                    customTrustStore, connectionSettings);
 
             final int statusCode = httpURLConnection.getResponseCode();
             logger.log(Level.INFO, String.format("HTTP Response code from UnifiedPush Server: %s", statusCode));
@@ -274,7 +293,7 @@ public class DefaultPushSender implements PushSender {
                 String redirectURL = httpURLConnection.getHeaderField("Location");
                 logger.log(Level.INFO, String.format("Performing redirect to '%s'", redirectURL));
                 // execute the 'redirect'
-                submitPayload(redirectURL, jsonPayloadObject, pushApplicationId, masterSecret, callback, redirectUrls);
+                submitPayload(redirectURL, pushConfiguration.getConnectionSettings(), jsonPayloadObject, pushApplicationId, masterSecret, callback, redirectUrls);
             } else if (statusCode >= 400) {
                 // treating any 400/500 error codes an an exception to a sending attempt:
                 logger.log(Level.SEVERE, "The Unified Push Server returned status code: " + statusCode);
@@ -311,7 +330,7 @@ public class DefaultPushSender implements PushSender {
 
     /**
      * Get the used server URL.
-     * 
+     *
      * @return The Server that is used
      */
     @Override
@@ -339,4 +358,5 @@ public class DefaultPushSender implements PushSender {
         return pushConfiguration.getMasterSecret();
     }
 
+    protected PushConfiguration getPushConfiguration() { return pushConfiguration; }
 }

@@ -29,6 +29,7 @@ public class PushConfiguration {
     private String serverUrl;
     private String pushApplicationId;
     private String masterSecret;
+	private HttpRequestUtil.ConnectionSettings connectionSettings = new HttpRequestUtil.ConnectionSettings();
 
     public PushConfiguration(){
     }
@@ -57,6 +58,14 @@ public class PushConfiguration {
         this.serverUrl = serverUrl;
     }
 
+    public HttpRequestUtil.ConnectionSettings getConnectionSettings() {
+        return connectionSettings;
+    }
+
+    public void setConnectionSettings(HttpRequestUtil.ConnectionSettings connectionSettings) {
+        this.connectionSettings = connectionSettings;
+    }
+
     public static PushConfiguration read(String location) throws IOException {
         BufferedReader bufferedReader = null;
         PushConfiguration pushConfiguration = null;
@@ -64,15 +73,15 @@ public class PushConfiguration {
             bufferedReader = new BufferedReader(
                     new InputStreamReader(Thread.currentThread().getContextClassLoader().getResourceAsStream(location)));
             Gson gson = new Gson();
-            pushConfiguration =  gson.fromJson(bufferedReader, PushConfiguration.class);
-            if (!pushConfiguration.getServerUrl().endsWith("/")) {
+            pushConfiguration = gson.fromJson(bufferedReader, PushConfiguration.class);
+            if(!pushConfiguration.getServerUrl().endsWith("/")) {
                 pushConfiguration.setServerUrl(pushConfiguration.getServerUrl() + '/');
             }
         }
-       finally {
-           if (bufferedReader != null) {
-               bufferedReader.close();
-           }
+        finally {
+            if(bufferedReader != null) {
+                bufferedReader.close();
+            }
         }
         return pushConfiguration;
     }

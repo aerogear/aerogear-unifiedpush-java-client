@@ -23,6 +23,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.io.IOException;
@@ -47,6 +49,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Matchers;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -60,6 +63,8 @@ public class DefaultPushSenderTest {
     private static final String MASTER_SECRET = "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b";
     private static final String ALERT_MSG = "Hello from Java Sender API, via JUnit";
     private static final String DEFAULT_SOUND = "default";
+    private static final Integer CONNECTION_CONNECT_TIMEOUT = 10000;
+    private static final Integer CONNECTION_READ_TIMEOUT = 1000;
     private static final List<String> IDENTIFIERS_LIST = new ArrayList<String>();
 
     // STATUS CODES for mocking
@@ -89,7 +94,9 @@ public class DefaultPushSenderTest {
         when(connection.getOutputStream()).thenReturn(out);
         when(secureConnection.getOutputStream()).thenReturn(out);
         // mock getConnection method
-        setDefaultSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("http://aerogear.example.com/ag-push").build()));
+        setDefaultSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("http://aerogear.example.com/ag-push")
+                                                        .connectionConnectTimeout(CONNECTION_CONNECT_TIMEOUT)
+                                                        .build()));
         setSecureSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push").build()));
         PowerMockito.spy(HttpRequestUtil.class);
         PowerMockito.doReturn(connection).when(HttpRequestUtil.class, "getConnection", Matchers.startsWith("http://"), any());
@@ -102,6 +109,8 @@ public class DefaultPushSenderTest {
         assertEquals(PUSH_APPLICATION_ID, defaultSenderClient.getPushApplicationId());
         assertEquals(MASTER_SECRET, defaultSenderClient.getMasterSecret());
         assertEquals("http://aerogear.example.com/ag-push/", defaultSenderClient.getServerURL());
+        assertEquals(CONNECTION_CONNECT_TIMEOUT, ((DefaultPushSender) defaultSenderClient).getPushConfiguration().getConnectionSettings().getConnectTimeout());
+        assertEquals(CONNECTION_READ_TIMEOUT, ((DefaultPushSender) defaultSenderClient).getPushConfiguration().getConnectionSettings().getReadTimeout());
     }
 
     @Test
@@ -193,7 +202,7 @@ public class DefaultPushSenderTest {
     public void sendSendWithCallbackAndException() throws Exception {
         // throw IOException when posting
         PowerMockito.doThrow(new IOException()).when(HttpRequestUtil.class, "post", anyString(), anyString(), anyString(), any(),
-                any(), any());
+                                                     any(), any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
@@ -231,7 +240,7 @@ public class DefaultPushSenderTest {
     public void sendSendWithCallbackAndException_SSL() throws Exception {
         // throw IOException when posting
         PowerMockito.doThrow(new IOException()).when(HttpRequestUtil.class, "post", anyString(), anyString(), anyString(), any(),
-                any(), any());
+                                                     any(), any(), any());
 
         final CountDownLatch latch = new CountDownLatch(1);
         final AtomicBoolean onCompleteCalled = new AtomicBoolean(false);
@@ -302,6 +311,8 @@ public class DefaultPushSenderTest {
 
         assertTrue(onCompleteCalled.get());
         assertFalse(exceptionThrown.get());
+        verify(getConnnection(), times(1)).setConnectTimeout(CONNECTION_CONNECT_TIMEOUT); // This was explicitly provided and should be set.
+        verify(getConnnection(), never()).setReadTimeout(Mockito.anyInt()); // Never configured a read timeout, method should never have been called.
     }
 
     @Test
@@ -423,6 +434,18 @@ public class DefaultPushSenderTest {
         assertEquals("https://aerogear.example.com/ag-push/", client.getServerURL());
         assertEquals(PUSH_APPLICATION_ID, client.getPushApplicationId());
         assertEquals(MASTER_SECRET, client.getMasterSecret());
+    }
+
+    @Test
+    public void testClientBuilderConnectionSettings() {
+        DefaultPushSender client = DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push")
+                .connectionConnectTimeout(CONNECTION_CONNECT_TIMEOUT)
+                .connectionReadTimeout(CONNECTION_READ_TIMEOUT)
+                .build();
+
+        assertEquals("https://aerogear.example.com/ag-push/", client.getServerURL());
+        assertEquals(CONNECTION_CONNECT_TIMEOUT, client.getPushConfiguration().getConnectionSettings().getConnectTimeout());
+        assertEquals(CONNECTION_READ_TIMEOUT, client.getPushConfiguration().getConnectionSettings().getReadTimeout());
     }
 
     public PushSender getDefaultSenderClient() {
