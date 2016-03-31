@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.Arrays;
+import static org.jboss.aerogear.unifiedpush.message.Priority.HIGH;
 
 import static org.junit.Assert.*;
 
@@ -40,11 +41,13 @@ public class UnifiedMessageTest {
                 .alert("Hello from Java Sender API, via JUnit")
                 .sound("default")
                 .badge("1")
+                .priority(HIGH)
                 .config()
                     .timeToLive(3600)
                 .build();
         assertEquals("Hello from Java Sender API, via JUnit", unifiedMessage.getMessage().getObject().getAlert());
         assertEquals("default", unifiedMessage.getMessage().getObject().getSound());
+        assertEquals(HIGH, unifiedMessage.getMessage().getObject().getPriority());
         assertEquals(1, unifiedMessage.getMessage().getObject().getBadge());
         assertEquals(3600, unifiedMessage.getConfig().getObject().getTimeToLive());
     }
