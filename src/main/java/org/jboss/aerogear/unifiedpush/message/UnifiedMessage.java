@@ -305,6 +305,20 @@ public class UnifiedMessage {
         }
 
         /**
+         * Sets the Priority of the message.  This is used by iOS and GCM to 
+         * signal to the remote services if the message should wake a device up 
+         * or not to process the message.
+         * 
+         * @param priority the priority to use.  Defaults to NORMAL.
+         * @return the current {@link MessageBuilder} instance
+         */
+        public MessageBuilder priority(Priority priority) {
+            message.setPriority(priority);
+            return this;
+        }
+
+        
+        /**
          * Adds an custom value for the given key. This is used to pass user data to
          * the UnifiedPush Server
          *
