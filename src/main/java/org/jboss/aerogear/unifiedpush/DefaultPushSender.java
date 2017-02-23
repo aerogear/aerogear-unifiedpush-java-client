@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import static org.jboss.aerogear.unifiedpush.utils.ValidationUtils.isEmpty;
 
@@ -243,9 +244,20 @@ public class DefaultPushSender implements PushSender {
 
     @Override
     public void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback) {
-        String jsonString = unifiedMessage.getObject().toJsonString();
+        final String jsonString = unifiedMessage.getObject().toJsonString();
         // fire!
-        submitPayload(buildUrl(), pushConfiguration.getConnectionSettings(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback, new ArrayList<String>());
+        submitPayload(buildUrl(), pushConfiguration.getConnectionSettings(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback, new ArrayList<>());
+    }
+
+    @Override
+    public void send(List<UnifiedMessage> unifiedMessages, MessageResponseCallback callback) {
+
+        final String jsonString = unifiedMessages.stream()
+                .map(unifiedMessage -> unifiedMessage.getObject().toJsonString())
+                .collect(Collectors.toList()).toString();
+
+        // fire!
+        submitPayload(buildUrl()+"batch/", pushConfiguration.getConnectionSettings(), jsonString, pushConfiguration.getPushApplicationId(), pushConfiguration.getMasterSecret(), callback, new ArrayList<>());
     }
 
     @Override

@@ -21,6 +21,8 @@ import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
 import org.jboss.aerogear.unifiedpush.model.ProxyConfig;
 import org.jboss.aerogear.unifiedpush.model.TrustStoreConfig;
 
+import java.util.List;
+
 public interface PushSender {
 
     /**
@@ -31,6 +33,15 @@ public interface PushSender {
      * @param callback the {@link MessageResponseCallback}.
      */
     void send(UnifiedMessage unifiedMessage, MessageResponseCallback callback);
+
+    /**
+     * Sends the given payload to installations of the referenced PushApplication.
+     * We also pass a {@link MessageResponseCallback} to handle the message
+     *
+     * @param unifiedMessages collection of {@link UnifiedMessage} to send.
+     * @param callback the {@link MessageResponseCallback}.
+     */
+    void send(List<UnifiedMessage> unifiedMessages, MessageResponseCallback callback);
 
     /**
      * Sends the given payload to installations of the referenced PushApplication.
