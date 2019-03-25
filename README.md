@@ -34,9 +34,9 @@ Create a ```JavaSender```:
 
 ```java
 PushSender defaultPushSender = DefaultPushSender
-    .withRootServerURL("http://localhost:8080/ag-push")
-    .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-    .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+    .withRootServerURL("<pushServerURL e.g http(s)//host:port/context>")
+    .pushApplicationId("<pushApplicationId e.g. 1234456-234320>")
+    .masterSecret("<masterSecret e.g. 1234456-234320>")
     .build();
 ```
 
@@ -46,9 +46,9 @@ _pushConfig.json_
 
 ```json
 {
-    "serverUrl": "http://aerogear.example.com/ag-push",
-    "pushApplicationId": "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c",
-    "masterSecret": "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b"}
+    "serverUrl": "<pushServerURL e.g http(s)//host:port/context>",
+    "pushApplicationId": "<pushApplicationId e.g. 1234456-234320>",
+    "masterSecret": "<masterSecret e.g. 1234456-234320>"
 }
 ```
 
