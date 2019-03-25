@@ -14,7 +14,7 @@ A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](h
 | End User Documentation:  | https://docs.aerogear.org                               |
 | Community Documentation: | https://aerogear.org                                    |
 | Issue tracker:           | https://issues.jboss.org/browse/AEROGEAR                |
-| Mailing lists:           | https://groups.google.com/forum/#!forum/aerogear)       |
+| Mailing lists:           | https://groups.google.com/forum/#!forum/aerogear        |
 
 ## Getting started
 
@@ -56,7 +56,8 @@ And then :
 
 ```java
 PushSender defaultPushSender = DefaultPushSender
-    .withConfig("pushConfig.json").build();
+    .withConfig("pushConfig.json")
+    .build();
 ```
 
 
@@ -142,20 +143,14 @@ On Java7 you might see a ```SSLProtocolException: handshake alert: unrecognized_
 * in the Java app, that is _using_ the Java Client SDK: ```System.setProperty("jsse.enableSNIExtension", "false");```
 * Or via commandline argument: ```-Djsse.enableSNIExtension=false```
 
-## Documentation
+## License 
 
-For more details about the current release, please consult [our documentation](https://aerogear.org/docs/unifiedpush/).
-
-## Development
-
-If you would like to help develop AeroGear you can join our [developer's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
-
-Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
+ See [LICENSE file](./LICENSE.txt)
 
 ## Questions?
 
-Join our [user mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-users) for any questions or help! We really hope you enjoy app development with AeroGear!
+Join our [user mailing list](https://groups.google.com/forum/#!forum/aerogear) for any questions or help! We really hope you enjoy app development with AeroGear.
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AGPUSH) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AEROGEAR) with some steps to reproduce it.
