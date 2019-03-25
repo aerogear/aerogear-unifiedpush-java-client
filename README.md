@@ -106,7 +106,7 @@ Create a callback
 ```java
 MessageResponseCallback callback = new MessageResponseCallback() {
     @Override
-    public void onComplete(int statusCode) {
+    public void onComplete() {
         //do cool stuff
     }
 };
