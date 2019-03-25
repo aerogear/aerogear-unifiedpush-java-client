@@ -5,16 +5,16 @@
 [![Javadocs](http://www.javadoc.io/badge/org.jboss.aerogear/unifiedpush-java-client.svg?color=blue)](http://www.javadoc.io/doc/org.jboss.aerogear/unifiedpush-java-client)
 [![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
 
-A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server). For more information, please visit the [Java Sender Tutorial](http://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/) for example usages.
+A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server).
 
-|                 | Project Info  |
-| --------------- | ------------- |
-| License:        | Apache License, Version 2.0  |
-| Build:          | Maven  |
-| Documentation:  | https://aerogear.org/push/  |
-| Issue tracker:  | https://issues.jboss.org/browse/AGPUSH  |
-| Mailing lists:  | [aerogear-users](http://aerogear-users.1116366.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-users))  |
-|                 | [aerogear-dev](http://aerogear-dev.1069024.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-dev))  |
+|                          | Project Info                                            |
+| ------------------------ | ------------------------------------------------------- |
+| License:                 | Apache License, Version 2.0                             |
+| Build:                   | Maven                                                   |
+| End User Documentation:  | https://docs.aerogear.org                               |
+| Community Documentation: | https://aerogear.org                                    |
+| Issue tracker:           | https://issues.jboss.org/browse/AEROGEAR                |
+| Mailing lists:           | https://groups.google.com/forum/#!forum/aerogear)       |
 
 ## Getting started
 
