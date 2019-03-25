@@ -1,6 +1,9 @@
 # AeroGear Unified Push Java Client
 
 [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-java-client.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-java-client)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jboss.aerogear/unifiedpush-java-client.svg)](https://search.maven.org/artifact/org.jboss.aerogear/unifiedpush-java-client/)
+[![Javadocs](http://www.javadoc.io/badge/org.jboss.aerogear/unifiedpush-java-client.svg?color=blue)](http://www.javadoc.io/doc/org.jboss.aerogear/unifiedpush-java-client)
+[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
 
 A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server). For more information, please visit the [Java Sender Tutorial](http://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/) for example usages.
 
