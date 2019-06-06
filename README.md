@@ -1,15 +1,20 @@
-# aerogear-unifiedpush-java-client [![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-java-client.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-java-client)
+# AeroGear Unified Push Java Client
 
-A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server). For more information, please visit the [Java Sender Tutorial](http://aerogear.org/docs/unifiedpush/GetStartedwithJavaSender/) for example usages.
+[![Build Status](https://travis-ci.org/aerogear/aerogear-unifiedpush-java-client.png)](https://travis-ci.org/aerogear/aerogear-unifiedpush-java-client)
+[![Maven Central](https://img.shields.io/maven-central/v/org.jboss.aerogear/unifiedpush-java-client.svg)](https://search.maven.org/artifact/org.jboss.aerogear/unifiedpush-java-client/)
+[![Javadocs](http://www.javadoc.io/badge/org.jboss.aerogear/unifiedpush-java-client.svg?color=blue)](http://www.javadoc.io/doc/org.jboss.aerogear/unifiedpush-java-client)
+[![License](https://img.shields.io/badge/-Apache%202.0-blue.svg)](https://opensource.org/s/Apache-2.0)
 
-|                 | Project Info  |
-| --------------- | ------------- |
-| License:        | Apache License, Version 2.0  |
-| Build:          | Maven  |
-| Documentation:  | https://aerogear.org/push/  |
-| Issue tracker:  | https://issues.jboss.org/browse/AGPUSH  |
-| Mailing lists:  | [aerogear-users](http://aerogear-users.1116366.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-users))  |
-|                 | [aerogear-dev](http://aerogear-dev.1069024.n5.nabble.com/) ([subscribe](https://lists.jboss.org/mailman/listinfo/aerogear-dev))  |
+A Java API for sending Push Notifications to the [AeroGear UnifiedPush Server](https://github.com/aerogear/aerogear-unifiedpush-server).
+
+|                          | Project Info                                            |
+| ------------------------ | ------------------------------------------------------- |
+| License:                 | Apache License, Version 2.0                             |
+| Build:                   | Maven                                                   |
+| End User Documentation:  | https://docs.aerogear.org                               |
+| Community Documentation: | https://aerogear.org                                    |
+| Issue tracker:           | https://issues.jboss.org/browse/AEROGEAR                |
+| Mailing lists:           | https://groups.google.com/forum/#!forum/aerogear        |
 
 ## Getting started
 
@@ -29,9 +34,9 @@ Create a ```JavaSender```:
 
 ```java
 PushSender defaultPushSender = DefaultPushSender
-    .withRootServerURL("http://localhost:8080/ag-push")
-    .pushApplicationId("c7fc6525-5506-4ca9-9cf1-55cc261ddb9c")
-    .masterSecret("8b2f43a9-23c8-44fe-bee9-d6b0af9e316b")
+    .withRootServerURL("<pushServerURL e.g http(s)//host:port/context>")
+    .pushApplicationId("<pushApplicationId e.g. 1234456-234320>")
+    .masterSecret("<masterSecret e.g. 1234456-234320>")
     .build();
 ```
 
@@ -41,9 +46,9 @@ _pushConfig.json_
 
 ```json
 {
-    "serverUrl": "http://aerogear.example.com/ag-push",
-    "pushApplicationId": "c7fc6525-5506-4ca9-9cf1-55cc261ddb9c",
-    "masterSecret": "8b2f43a9-23c8-44fe-bee9-d6b0af9e316b"}
+    "serverUrl": "<pushServerURL e.g http(s)//host:port/context>",
+    "pushApplicationId": "<pushApplicationId e.g. 1234456-234320>",
+    "masterSecret": "<masterSecret e.g. 1234456-234320>"
 }
 ```
 
@@ -51,7 +56,8 @@ And then :
 
 ```java
 PushSender defaultPushSender = DefaultPushSender
-    .withConfig("pushConfig.json").build();
+    .withConfig("pushConfig.json")
+    .build();
 ```
 
 
@@ -101,7 +107,7 @@ Create a callback
 ```java
 MessageResponseCallback callback = new MessageResponseCallback() {
     @Override
-    public void onComplete(int statusCode) {
+    public void onComplete() {
         //do cool stuff
     }
 };
@@ -137,20 +143,14 @@ On Java7 you might see a ```SSLProtocolException: handshake alert: unrecognized_
 * in the Java app, that is _using_ the Java Client SDK: ```System.setProperty("jsse.enableSNIExtension", "false");```
 * Or via commandline argument: ```-Djsse.enableSNIExtension=false```
 
-## Documentation
+## License 
 
-For more details about the current release, please consult [our documentation](https://aerogear.org/docs/unifiedpush/).
-
-## Development
-
-If you would like to help develop AeroGear you can join our [developer's mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-dev), join #aerogear on Freenode, or shout at us on Twitter @aerogears.
-
-Also takes some time and skim the [contributor guide](http://aerogear.org/docs/guides/Contributing/)
+ See [LICENSE file](./LICENSE.txt)
 
 ## Questions?
 
-Join our [user mailing list](https://lists.jboss.org/mailman/listinfo/aerogear-users) for any questions or help! We really hope you enjoy app development with AeroGear!
+Join our [user mailing list](https://groups.google.com/forum/#!forum/aerogear) for any questions or help! We really hope you enjoy app development with AeroGear.
 
 ## Found a bug?
 
-If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AGPUSH) with some steps to reproduce it.
+If you found a bug please create a ticket for us on [Jira](https://issues.jboss.org/browse/AEROGEAR) with some steps to reproduce it.
