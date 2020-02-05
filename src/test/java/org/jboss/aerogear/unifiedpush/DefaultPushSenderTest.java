@@ -21,12 +21,14 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyString;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.powermock.api.mockito.PowerMockito.when;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -37,18 +39,16 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-
 import javax.net.ssl.HttpsURLConnection;
-
 import org.jboss.aerogear.unifiedpush.exception.PushSenderException;
 import org.jboss.aerogear.unifiedpush.exception.PushSenderHttpException;
-import org.jboss.aerogear.unifiedpush.utils.HttpRequestUtil;
 import org.jboss.aerogear.unifiedpush.message.MessageResponseCallback;
 import org.jboss.aerogear.unifiedpush.message.UnifiedMessage;
+import org.jboss.aerogear.unifiedpush.utils.HttpRequestUtil;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -99,8 +99,8 @@ public class DefaultPushSenderTest {
                                                         .build()));
         setSecureSenderClient(PowerMockito.spy(DefaultPushSender.withRootServerURL("https://aerogear.example.com/ag-push").build()));
         PowerMockito.spy(HttpRequestUtil.class);
-        PowerMockito.doReturn(connection).when(HttpRequestUtil.class, "getConnection", Matchers.startsWith("http://"), any());
-        PowerMockito.doReturn(secureConnection).when(HttpRequestUtil.class, "getConnection", Matchers.startsWith("https://"), any());
+        PowerMockito.doReturn(connection).when(HttpRequestUtil.class, "getConnection", ArgumentMatchers.startsWith("http://"), any());
+        PowerMockito.doReturn(secureConnection).when(HttpRequestUtil.class, "getConnection", ArgumentMatchers.startsWith("https://"), any());
     }
 
     @Test

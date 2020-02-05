@@ -16,11 +16,10 @@
  */
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.message.windows.BadgeType;
-import org.jboss.aerogear.unifiedpush.message.windows.TileType;
-import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
-import org.jboss.aerogear.unifiedpush.message.windows.Type;
-import org.junit.Test;
+import static org.jboss.aerogear.unifiedpush.message.Priority.HIGH;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,10 +27,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Arrays;
-import static org.jboss.aerogear.unifiedpush.message.Priority.HIGH;
-
-import static org.junit.Assert.*;
+import org.junit.Test;
 
 public class UnifiedMessageTest {
 
@@ -160,79 +156,6 @@ public class UnifiedMessageTest {
                 .build();
         assertEquals("foo-value", ((Map) unifiedMessage.getMessage().getObject().getUserData()).get("foo-key"));
         assertEquals("bar-value", ((Map) unifiedMessage.getMessage().getObject().getUserData()).get("bar-key"));
-    }
-
-    @Test
-    public void windowsBadgeMessage() {
-
-        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .badge("5")
-                .windows()
-                    .badgeType(BadgeType.busy)
-                    .build()
-                .build();
-        assertEquals(Type.badge, unifiedMessage.getMessage().getObject().getWindows().getType());
-        assertEquals(BadgeType.busy, unifiedMessage.getMessage().getObject().getWindows().getBadge());
-    }
-
-    @Test
-    public void windowsTileMessage() {
-        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .windows()
-                 .tileType(TileType.TileSquarePeekImageAndText01)
-                 .textFields(Arrays.asList("bob","alice"))
-                 .images(Arrays.asList("img/bob.png","img/alice.png"))
-                 .build()
-                .build();
-        assertEquals(Type.tile, unifiedMessage.getMessage().getObject().getWindows().getType());
-        assertEquals(TileType.TileSquarePeekImageAndText01, unifiedMessage.getMessage().getObject().getWindows().getTileType());
-        assertEquals(2, unifiedMessage.getMessage().getObject().getWindows().getTextFields().size());
-        assertEquals(2,unifiedMessage.getMessage().getObject().getWindows().getImages().size());
-    }
-
-    @Test
-    public void windowsToastMessage() {
-        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .windows()
-                 .toastType(ToastType.ToastText01)
-                 .build()
-                .build();
-        assertEquals(Type.toast, unifiedMessage.getMessage().getObject().getWindows().getType());
-        assertEquals(ToastType.ToastText01, unifiedMessage.getMessage().getObject().getWindows().getToastType());
-    }
-
-    @Test
-    public void windowsRawMessage() {
-        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .windows()
-                 .raw()
-                 .build()
-                .build();
-        assertEquals(Type.raw, unifiedMessage.getMessage().getObject().getWindows().getType());
-    }
-
-    @Test
-    public void windowsPageTest() {
-        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .windows()
-                .page("/MainPage.xaml")
-                .build()
-                .build();
-        assertEquals("/MainPage.xaml", unifiedMessage.getMessage().getObject().getWindows().getPage());
-    }
-
-    @Test
-    public void windowsAndIosCombinedMessage() {
-        UnifiedMessage unifiedMessage = UnifiedMessage.withMessage()
-                .windows()
-                  .raw()
-                  .build()
-                .apns()
-                  .contentAvailable()
-                  .build()
-                .build();
-        assertEquals(Type.raw, unifiedMessage.getMessage().getObject().getWindows().getType());
-        assertEquals(true, unifiedMessage.getMessage().getObject().getApns().isContentAvailable());
     }
 
 
