@@ -17,20 +17,13 @@
 
 package org.jboss.aerogear.unifiedpush.message;
 
-import org.jboss.aerogear.unifiedpush.message.apns.APNs;
-import org.jboss.aerogear.unifiedpush.message.windows.ToastType;
-import org.jboss.aerogear.unifiedpush.message.windows.TileType;
-import org.jboss.aerogear.unifiedpush.message.windows.BadgeType;
-import org.jboss.aerogear.unifiedpush.message.windows.DurationType;
-import org.jboss.aerogear.unifiedpush.message.windows.Type;
-import org.jboss.aerogear.unifiedpush.message.windows.Windows;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.jboss.aerogear.unifiedpush.message.apns.APNs;
 
 /**
  * A UnifiedMessage represents a message in the format expected from the Unified Push Server.
@@ -256,7 +249,6 @@ public class UnifiedMessage {
 
         private final Builder builder;
         private final Message message = new Message();
-        private WindowsBuilder windowsBuilder;
         private ApnsBuilder apnsBuilder;
 
         /**
@@ -357,21 +349,6 @@ public class UnifiedMessage {
         }
 
         /**
-         * Windows specific push notification settings support for Tile, Raw, Badge and Toast messages
-         * For all the templates as much as possible the main parts of the message are re-used. Alert is the main text
-         * as is the badge number for badge notifications. Only specific windows settings are put in this part of the message
-         * and ignored by other message senders.
-         *
-         * @return a {@link WindowsBuilder} instance
-         */
-        public WindowsBuilder windows() {
-            if (windowsBuilder == null) {
-                windowsBuilder = new WindowsBuilder(this);
-            }
-            return windowsBuilder;
-        }
-
-        /**
          * Apns specific push notification settings like "title", "actionCategory" ...
          * <a href="https://developer.apple.com/library/ios/documentation/NetworkingInternet/Conceptual/RemoteNotificationsPG/Chapters/ApplePushService.html#//apple_ref/doc/uid/TP40008194-CH100-SW9">more info about apns</a>
          *
@@ -399,135 +376,6 @@ public class UnifiedMessage {
             return message;
         }
 
-        public static class WindowsBuilder {
-
-            private final MessageBuilder messageBuilder;
-            private final Windows windows = new Windows();
-
-            public WindowsBuilder(MessageBuilder builder) {
-                this.messageBuilder = builder;
-            }
-
-            /**
-             * Set the type of message to send toast, raw, badge or tile.
-             * <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh465403.aspx">more info about the types</a>
-             *
-             * @param type of message to send
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder type(Type type) {
-                windows.setType(type);
-                return this;
-            }
-
-            /**
-             * Set the raw notification type. A raw notification is a type of push notification without any associated UI.
-             * <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761463.aspx">more info about the raw type</a>
-             *
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder raw() {
-                windows.setType(Type.raw);
-                return this;
-            }
-
-            /**
-             * Set the badge notifications type for badges that are not numbers,
-             * for numbers use {@link MessageBuilder#badge(String)} method.
-             * Check the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Tile and badge catalog</a>
-             *
-             * @param badgeType the badge notifications type
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder badgeType(BadgeType badgeType) {
-                windows.setType(Type.badge);
-                windows.setBadge(badgeType);
-                return this;
-            }
-
-            /**
-             * Set the type of the tile messages, different sizes are available.
-             * See the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761491.aspx">tile template catalog</a>
-             *
-             * @param tileType the tileType
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder tileType(TileType tileType) {
-                windows.setType(Type.tile);
-                windows.setTileType(tileType);
-                return this;
-            }
-
-            /**
-             * Set the duration of a Toast message (long or short)
-             *
-             * @param durationType the duration of a Toast message (long or short)
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder durationType(DurationType durationType) {
-                windows.setDuration(durationType);
-                return this;
-            }
-
-            /**
-             * Set the toast template.
-             * Refer to the <a href="https://msdn.microsoft.com/en-us/library/windows/apps/hh761494.aspx">Toast template catalog</a>
-             *
-             * @param toastType the toast template
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder toastType(ToastType toastType) {
-                windows.setType(Type.toast);
-                windows.setToastType(toastType);
-                return this;
-            }
-
-            /**
-             * Set a list of image's paths for the Tile Notification Type
-             *
-             * @param images a list of image's paths
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder images(List<String> images) {
-                windows.setImages(images);
-                return this;
-            }
-
-            /**
-             * Set a list of text fields for the Tile Notification Type
-             *
-             * @param textFields a list of text fields
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder textFields(List<String> textFields) {
-                windows.setTextFields(textFields);
-                return this;
-            }
-
-            /**
-             * Sets the page, this is a Windows specific setting that contains the
-             * page in you application to launch when the user 'touches' the notification
-             * in the notification dock. For cordova applications set this to 'cordova' to
-             * launch your app and invoke the javascript callback.
-             *
-             * Payload example:
-             * <pre>
-             *     "page": "/MainPage.xaml"
-             * </pre>
-             * @param page to launch when user 'touches' the notification
-             * @return the current {@link WindowsBuilder} instance
-             */
-            public WindowsBuilder page(String page){
-                windows.setPage(page);
-                return this;
-            }
-
-            public MessageBuilder build() {
-                messageBuilder.message.setWindows(windows);
-                return messageBuilder;
-            }
-
-        }
 
         public static class ApnsBuilder {
             private final MessageBuilder messageBuilder;
